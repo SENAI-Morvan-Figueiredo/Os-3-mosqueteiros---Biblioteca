@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'User.Usuario'
 
 # Application definition
 
@@ -37,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     # Apps criados
-
+    'Biblioteca',
+    'Livros',
+    'User',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'biblioteca_estrela.urls'
+ROOT_URLCONF = 'BibliotecaEstrela.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'biblioteca_estrela.wsgi.application'
+WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 
 
 # Database
@@ -119,7 +122,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'biblioteca_estrela' / 'static'
+    BASE_DIR / 'BibliotecaEstrela' / 'static'
 ]
 
 # Default primary key field type
