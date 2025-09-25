@@ -5,5 +5,6 @@ from django.contrib.auth.models import AbstractUser
 class Usuario(AbstractUser):
     email = models.EmailField()
     telefone = models.CharField()
+    cpf = models.CharField()
 
-    REQUIRED_FIELDS=['email', 'telefone']
+    REQUIRED_FIELDS=['email', 'telefone', 'cpf']
