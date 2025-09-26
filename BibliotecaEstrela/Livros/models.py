@@ -11,7 +11,7 @@ class Livros(models.Model):
     editora = models.CharField()
     descricao = models.TextField()
     data_publicacao = models.DateField()
-    imagem = models.ImageField(null=True)
+    imagem = models.ImageField(upload_to="capas/", null=True, blank=True)
     status = models.CharField()
 
 class Livros_Generos(models.Model):
