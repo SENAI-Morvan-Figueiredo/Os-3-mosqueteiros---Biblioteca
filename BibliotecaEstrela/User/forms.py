@@ -9,4 +9,4 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'telefone', 'cpf', 'password', 'password2']
+        fields = ['username', 'email', 'telefone', 'cpf']

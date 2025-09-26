@@ -60,7 +60,7 @@ ROOT_URLCONF = 'BibliotecaEstrela.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'BibliotecaEstrela' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
