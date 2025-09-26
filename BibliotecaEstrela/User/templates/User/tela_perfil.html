@@ -1,4 +1,34 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<p>a</p>
+<h2>Informações do Perfil</h2>
+<form method="POST" id="perfilForm">
+    {% csrf_token %}
+
+    <div class="campo-perfil">
+        {{ form.username }}
+        <button type="button" class="editarBtn">✏️</button>
+    </div>
+
+    <div class="campo-perfil">
+        {{ form.email }}
+        <button type="button" class="editarBtn">✏️</button>
+    </div>
+
+    <div class="campo-perfil">
+        {{ form.telefone }}
+        <button type="button" class="editarBtn">✏️</button>
+    </div>
+
+    <div class="campo-perfil">
+        {{ form.cpf }}
+        <button type="button" class="editarBtn">✏️</button>
+    </div>
+
+    <button type="submit" id="salvarBtn" style="display:none;">Salvar Alterações</button>
+</form>
+
+
+
+
 {% endblock content %}
