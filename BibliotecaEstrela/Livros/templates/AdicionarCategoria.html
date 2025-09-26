@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adicionar Categoria</title>
-</head>
-<body>
-    <div class="mb-4">
-            <h4>Cadastrar nova Categoria:</h4>
-            <form action="/livros/AdicionarCategoria/" method="POST" class="row g-3">
-                {% csrf_token %}
-                <div class="col-md-8">
-                    <input type="text" name="nome_genero" class="form-control" placeholder="Nome da categoria..." required>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-success w-100">Salvar</button>
-                </div>
-            </form>
-    </div>
+{% extends "base.html" %}
+{% block title %}Adicionar Categoria{% endblock %}
 
-    <h4>Generos cadastrados:</h4>
-            {% if generos %}
-                <ul class="list-group">
-                    {% for usuario in generos %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ usuario.nome_genero }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="alert alert-info mt-3">Nenhum genero ainda.</div>
-            {% endif %}
-</body>
-</html>
+{% block content %}
+<h2>Adicionar Categoria</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Salvar</button>
+</form>
+
+<hr>
+<h4>Gêneros cadastrados:</h4>
+{% if generos %}
+    <ul class="list-group">
+        {% for g in generos %}
+            <li class="list-group-item">{{ g.nome_genero }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="alert alert-info">Nenhum gênero ainda.</div>
+{% endif %}
+{% endblock %}
