@@ -45,3 +45,11 @@ def AdicionarCategoria(request):
     return render(request, "AdicionarCategoria.html", {
         "generos": generos
     })
+
+def Livros_view(request):
+    generos = Generos.objects.all()
+    livros = Livros.objects.all()
+    return render(request, "Livros.html", {
+        "generos": generos,
+        "livros": livros
+    })
