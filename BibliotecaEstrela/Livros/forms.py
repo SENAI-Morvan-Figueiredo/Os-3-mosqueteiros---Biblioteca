@@ -1,5 +1,5 @@
 from django import forms
-from .models import Livros, Generos
+from .models import Livros, Generos, Livros_Generos
 
 class GenerosForm(forms.ModelForm):
     class Meta:
@@ -24,4 +24,15 @@ class LivrosForm(forms.ModelForm):
             'data_publicacao': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-select'}, choices=[('disponivel','Disponível'), ('emprestado','Emprestado')]),
             'imagem': forms.ClearableFileInput(attrs={'class': 'form-control'})
+        }
+
+class LivrosGenerosForm(forms.ModelForm):
+    class Meta:
+        model = Livros_Generos
+        fields = ['id_genero']  # só o gênero
+        labels = {
+            'id_genero': 'Gênero',   # <-- aqui troca o texto do form
+        }
+        widgets = {
+            'id_genero': forms.Select(attrs={'class': 'form-select'})
         }
