@@ -1,0 +1,10 @@
+
+{% if request.path != '/user/cadastro/' and request.path != '/user/login/' %}
+<form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+{% else %}
+<p>teste</p>
+{% endif %}

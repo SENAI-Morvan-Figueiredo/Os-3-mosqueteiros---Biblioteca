@@ -31,11 +31,12 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'User.Usuario'
 
 # Application definition
+LOGIN_REDIRECT_URL = '/user/tela_perfil/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes', 
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'BibliotecaEstrela.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / 'BibliotecaEstrela' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
