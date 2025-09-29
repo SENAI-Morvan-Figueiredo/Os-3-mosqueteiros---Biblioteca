@@ -24,7 +24,7 @@ editarBtns.forEach(btn => {
 
 // Confirmação antes de enviar
 document.getElementById('perfilForm').addEventListener('submit', (e) => {
-    inputs.forEach(i => i.disabled =false);
+    inputs.forEach(i => i.disabled = false);
     if (!confirm("Tem certeza que quer alterar este campo?")) {
         e.preventDefault();
     }

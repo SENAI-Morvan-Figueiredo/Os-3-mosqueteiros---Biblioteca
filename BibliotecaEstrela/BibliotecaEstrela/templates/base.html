@@ -11,6 +11,7 @@
 
     <!-- Css -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cards-perfil.css' %}">
 
 </head>
 <body>
@@ -21,8 +22,12 @@
     </header>
 
     <!-- Conteúdo das telas -->
-    <main>
-        {% block content %}{% endblock content %}
+    <main class="text-center px-5">
+        
+        <div class="row">
+            {% block content %}{% endblock content %}
+        </div>
+        
     </main>
 
     <!-- Footer que será utilizado em todas as telas do projeto -->

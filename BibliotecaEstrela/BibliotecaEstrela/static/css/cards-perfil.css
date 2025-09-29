@@ -1,0 +1,9 @@
+.card-perfil{
+    background-color: #ffffff;
+    border-radius: 15px;
+}
+
+.card-perfil.estatisticas{
+    border-radius: 15px;
+    height: 400px;
+}
