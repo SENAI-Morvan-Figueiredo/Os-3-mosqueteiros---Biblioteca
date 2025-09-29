@@ -1,0 +1,26 @@
+/* *{border: 1px solid red;} */
+
+.nav-link, .btn{
+    color: #fff;
+    margin-right: 6em;
+    margin-left: 1em
+}
+
+.header-input{
+    border-radius: 20px;
+    width: 50em;
+    height: 2.8em;
+    padding-left: 1em;
+}
+
+.btn-header{
+    background-color: #438DDE;
+    border-radius: 20px;
+    width: 10em;
+    margin-left: .5em;
+    height: 2.8em;
+}
+
+.footer-title{
+    font-size: 24px;
+}

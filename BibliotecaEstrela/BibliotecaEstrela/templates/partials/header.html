@@ -1,7 +1,10 @@
 {% load static %}
     <nav class="navbar navbar-expand-lg bg-body-primary" style="background-color: #1D3A8C;">
         <div class="container-fluid">
-            <img src={% static "Logo_Biblioteca_Estrela-Photoroom_1-removebg-preview 2.svg" %}>
+            <a href="/">
+                <img src={% static "Logo_Biblioteca_Estrela-Photoroom_1-removebg-preview 2.svg" %}>
+            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -11,16 +14,28 @@
                     <input type="text" name="" id="" class="mt-0.8 header-input" placeholder="Pesquisar">
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-primary">Pesquisar</button>
+                    <button type="button" class="btn btn-primary btn-header">Pesquisar</button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Perfil</a>
+                    <a class="nav-link" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Catalogo</a>
+                    <a class="nav-link" href="{% url 'livros' %}">Catalogo</a>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tela_perfil' %}">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="nav-item" type="submit">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
                 </li>
                 </ul>
             </div>

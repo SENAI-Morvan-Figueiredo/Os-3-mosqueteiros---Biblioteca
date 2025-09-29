@@ -19,10 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from Biblioteca.views import index
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('User.urls')),
     path('livros/', include('Livros.urls')),
+    path('', index)
 ]
 
 if settings.DEBUG:

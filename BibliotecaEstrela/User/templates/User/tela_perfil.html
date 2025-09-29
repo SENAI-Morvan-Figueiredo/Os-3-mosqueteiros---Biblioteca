@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+{% load crispy_forms_tags %}
 <h2>Informações do Perfil</h2>
 <form method="POST" id="perfilForm">
     {% csrf_token %}

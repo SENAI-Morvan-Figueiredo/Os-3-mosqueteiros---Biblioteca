@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
+<div class="col-md-8 offset-2">
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-
+        {{ form|crispy }}
         <button>Entrar</button>
     </form>
+
+    <div>
+        Ou crie sua conta <a href="{% url 'user_register' %}">aqui</a>
+    </div>
+</div>
 {% endblock content %}
