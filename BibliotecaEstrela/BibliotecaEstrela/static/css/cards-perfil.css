@@ -1,9 +1,122 @@
+/* Estilização dos cards */
 .card-perfil{
     background-color: #ffffff;
     border-radius: 15px;
+
+    box-shadow: 0 0 4px black;
 }
 
 .card-perfil.estatisticas{
     border-radius: 15px;
     height: 400px;
+}
+
+
+/* Estilização do título dos cards */
+.card-perfil > h2{
+    color: #1E3B8B;
+    font-weight: 650;
+}
+
+/* Estilização dos labels */
+label{
+    font-size: 17px;
+    margin-bottom: 5px;
+
+    font-weight: 500;
+}
+
+/* Estilização dos inputs */
+.input-wrapper{
+    position: relative; /* Permite que o botão de editar fique dentro do input quando usar position: absolute; */
+    display: inline-block;
+    width: 100%;
+}
+
+#id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+    width: 100%;
+    height: 45px;
+
+    font-size: 20px;
+
+    background-color: #ffffff;
+
+    border-color: #00000034;
+    border-radius: 6px;
+
+    padding-right: 70px;
+
+    box-sizing: border-box;
+}
+
+/* Estilização dos botões */
+.editarBtn{
+    background-color: transparent;
+    border: none;
+
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: #2C3963;
+    font-weight: 640;
+    
+}
+
+/* Estilização do botão de salvar */
+.estilizacao{
+    background-color: #1D3A8C;
+    color: #ffffff;
+
+    padding: 4px;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 20px;
+    font-weight: 500
+}
+
+/* Estilização campo imagem */
+.imagem{
+    width: 50%;
+    height: 31.25%;
+
+    display: flex;
+    justify-self: center;
+
+    border-radius: 50%;
+
+    background-color: gray;
+
+    margin: 5% 0;
+}
+
+/* Estilização estatísticas */
+/* Estilização do título dos cards */
+.campo_estatisticas > h2{
+    color: #1E3B8B;
+    font-weight: 650;
+}
+
+.info-estatisticas{
+    font-size: 20px;
+
+    padding: 0 15px;
+}
+
+.info-estatisticas > p{
+    border: transparent;
+    border-bottom: 1px solid #00000030;
+
+    width: 100%;
+
+    padding-bottom: 5px;
+    /* margin-bottom: 5px; */
+
+    font-size: 17px;
+
+    display: flex;
+    justify-items: space-between;
 }
