@@ -33,10 +33,10 @@
 
         <div class="flex-grow-1 ms-2 d-flex flex-column gap-5"> <!-- Faz com que tudo que esteja dentro dessa div, preencha todo o tamanho. -->
 
-            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-3 py-4 px-5">
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
                 <h2>Informações do Perfil</h2>
 
-                <form method="POST" id="perfilForm" class="d-flex flex-column gap-4 w-100">
+                <form method="POST" id="perfilForm" class="d-flex flex-column gap-2 w-100">
                     {% csrf_token %}
 
                     <div class="d-flex flex-row gap-4">
@@ -86,8 +86,12 @@
 
                     <div class="campo-perfil d-flex flex-column flex-grow-1">
                         <label for="cpf" class="align-self-start">CPF</label>
-                        {{ form.cpf }}
-                        <!-- <button type="button" class="editarBtn">✏️editar</button> -->
+                        <div class="input-wrapper d-flex" id="animacao-cpf">
+                            {{ form.cpf }}
+                            <p class="aviso-cpf exclamacao" id="exclamacao">!!!</p>
+                            <p class="aviso-cpf" id="aviso-cpf">Não é possível editar esta informação, caso necessário, entre em contato com o bibliotecário.</p>
+                            <!-- <button type="button" class="editarBtn">✏️editar</button> -->
+                        </div>
                     </div>
 
                     <button type="submit" id="salvarBtn" style="display:none;" class="estilizacao">Salvar Alterações</button>

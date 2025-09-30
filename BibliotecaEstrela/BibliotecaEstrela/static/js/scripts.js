@@ -59,3 +59,19 @@ document.getElementById('perfilForm').addEventListener('submit', (e) => {
     }
     
 });
+
+const animacaoCpf = document.getElementById('animacao-cpf');
+
+// Quando passar o mouse
+animacaoCpf.addEventListener('mouseenter', () => {
+    document.getElementById('aviso-cpf').classList.add('mover');
+    document.getElementById('exclamacao').classList.add('apagar');
+});
+
+// Quando tirar o mouse (se quiser voltar ao normal)
+animacaoCpf.addEventListener('mouseleave', () => {
+    document.getElementById('aviso-cpf').classList.remove('mover');
+    document.getElementById('exclamacao').classList.remove('apagar');
+});
+
+

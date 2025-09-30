@@ -16,6 +16,7 @@
 .card-perfil > h2{
     color: #1E3B8B;
     font-weight: 650;
+    font-size: 25px;
 }
 
 /* Estilização dos labels */
@@ -31,13 +32,14 @@ label{
     position: relative; /* Permite que o botão de editar fique dentro do input quando usar position: absolute; */
     display: inline-block;
     width: 100%;
+    overflow: hidden;
 }
 
 #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
     width: 100%;
-    height: 45px;
+    height: 35px;
 
-    font-size: 20px;
+    font-size: 17px;
 
     background-color: #ffffff;
 
@@ -47,6 +49,33 @@ label{
     padding-right: 70px;
 
     box-sizing: border-box;
+}
+
+.aviso-cpf{
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    opacity: 1;
+    white-space: nowrap;
+    transition: transform 0.3s ease-in, opacity 0.5s ease;
+}
+
+.exclamacao{
+    display: flex;
+    left: 98%;
+}
+
+.mover{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(-102%); /* mantém Y e move X */
+}
+
+.apagar{
+    opacity: 0;
+    transition: opacity 0.1s ease;
 }
 
 /* Estilização dos botões */
@@ -98,6 +127,8 @@ label{
 .campo_estatisticas > h2{
     color: #1E3B8B;
     font-weight: 650;
+
+    font-size: 25px;
 }
 
 .info-estatisticas{

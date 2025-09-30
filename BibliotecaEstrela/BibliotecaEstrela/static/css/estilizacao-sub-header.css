@@ -1,0 +1,39 @@
+.sub-header{
+    height: 51px;
+    margin-bottom: 20px;
+
+    background-color: #ffffff;
+}
+
+.sub-header > a{
+    min-width: 100px;
+    max-width: 150px;
+    width: 10%;
+
+    font-size: 17px;
+
+    padding: 0 5px;
+
+    border: transparent;
+
+    background-color: #ffffff;
+    color: #00000075;
+
+    text-decoration: none;
+
+    display: flex;               /* faz virar um bloco flexível */
+    align-items: center;         /* alinha verticalmente no centro */
+    justify-content: center;     /* alinha horizontalmente no centro */
+}
+
+/* .sub-header > a:first-child{
+    border-bottom: 2px solid #213C7E;
+    color: #213C7E;
+    font-weight: 500;
+} */
+
+.sub-header > a.sub-header-btn-ativo{
+    border-bottom: 2px solid #213C7E;
+    color: #213C7E;
+    font-weight: 500;
+}

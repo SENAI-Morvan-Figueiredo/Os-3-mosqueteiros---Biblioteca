@@ -12,6 +12,7 @@
     <!-- Css -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/cards-perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilizacao-sub-header.css' %}">
 
 </head>
 <body>
@@ -20,9 +21,14 @@
     <header>
         {% include "partials/header.html" %}
     </header>
+    {% if '/user/ in request.path' or '/adm/' in request.path %}
+    <div class="sub-header d-flex flex-row">
+        {% include "partials/sub-header-perfil.html" %}
+    </div>
+    {% endif %}
 
     <!-- Conteúdo das telas -->
-    <main class="text-center px-5">
+    <main class="text-center" style="padding: 0 10%">
         
         <div class="row">
             {% block content %}{% endblock content %}
@@ -37,6 +43,7 @@
 
     <!-- Java Script -->
     <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/sub-header-selecionado.js' %}"></script>
 
 </body>
 </html>
