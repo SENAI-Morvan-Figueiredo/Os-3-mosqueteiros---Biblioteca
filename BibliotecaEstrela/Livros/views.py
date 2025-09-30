@@ -1,14 +1,22 @@
 from django.shortcuts import render, redirect
 from .models import Livros
 from .models import Generos
+from .models import Livros_Generos
+from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from .forms import GenerosForm, LivrosForm
+from django.views.generic import DetailView
+
+class LivroDetalhes(DetailView):
+    model = Livros
+    template_name = 'Detalhes_Livro.html'
+    context_object_name = 'livro'
 
 def AdicionarCategoria(request):
     if request.method == "POST":
         form = GenerosForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("Livros:AdicionarCategoria")
+            return redirect("adicionar_categoria")
     else:
         form = GenerosForm()
 
@@ -17,14 +25,26 @@ def AdicionarCategoria(request):
 
 def AdicionarLivro(request):
     if request.method == "POST":
-        form = LivrosForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("Livros:AdicionarLivro")
-    else:
-        form = LivrosForm()
+        livro_form = LivrosForm(request.POST, request.FILES)
 
-    return render(request, "AdicionarLivro.html", {"form": form})
+        if livro_form.is_valid():
+            livro = livro_form.save()  # salva o livro primeiro
+
+            # pega os gêneros enviados
+            generos_ids = request.POST.getlist("id_genero")
+            for genero_id in generos_ids:
+                Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
+
+            return redirect("adicionar_livro")
+    else:
+        livro_form = LivrosForm()
+        genero_form = LivrosGenerosForm()
+
+    return render(request, "AdicionarLivro.html", {
+        "livro_form": livro_form,
+        "genero_form": genero_form
+    })
+
 
 
 def Livros_view(request):
@@ -33,9 +53,15 @@ def Livros_view(request):
         form = LivrosForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect("Livros:Livros")  # redireciona para a mesma página
+            return redirect("livros:Livros")  # redireciona para a mesma página
     else:
         form = LivrosForm()
 
     livros = Livros.objects.all()
     return render(request, "Livros.html", {"livros": livros, "form": form})
+
+def buscar_livro(request, busca):
+    resultados = Livros.objects.filter(nome__contains=busca)
+
+    return render(request, "Livros.html", {"livros": resultados})
+

@@ -1,8 +1,15 @@
 from django.urls import path
-from . import views
+from .views import *
 
+from Biblioteca.views import criar_emprestimo, criar_reserva
+
+app_name = 'Livros'
 urlpatterns = [
-    path('AdicionarLivro/', views.AdicionarLivro, name='adicionar_livro'),
-    path('AdicionarCategoria/', views.AdicionarCategoria, name='adicionar_categoria'),
-    path("", views.Livros_view, name="livros"),
+    path('AdicionarLivro/', AdicionarLivro, name='adicionar_livro'),
+    path('AdicionarCategoria/', AdicionarCategoria, name='adicionar_categoria'),
+    path('livro/<str:busca>/', buscar_livro, name='busca_nome'),
+    path('livro/<int:pk>/', LivroDetalhes.as_view(), name='livro_detalhes'),
+    path('livro/<int:id_livro>/<int:id_user>/emprestimo', criar_emprestimo, name='criar_emprestimos'),
+    path('livro/<int:id_livro>/<int:id_user>/reserva', criar_reserva, name='criar_reserva'),
+    path("", Livros_view, name="livros"),
 ]

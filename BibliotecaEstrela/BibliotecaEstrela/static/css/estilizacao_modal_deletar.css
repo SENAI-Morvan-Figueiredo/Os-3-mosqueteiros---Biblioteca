@@ -1,0 +1,75 @@
+.modal_deletar{
+    display: none;
+    position: fixed;
+    inset: 0;
+
+    background-color: #00000050;
+}
+
+.card_modal_deletar{
+    background:white; 
+    width:400px;
+    
+    border-radius:10px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translateX(-50%) translateY(-50%);
+
+    overflow: hidden;
+}
+
+/* Estilização do título */
+.titulo_modal_deletar{
+    width: 100%;
+    height: 40px;
+    padding: 3px;
+    
+    background-color: #1D3A8C;
+    color: #ffffff;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.titulo_modal_deletar h2{
+    font-size: 20px;
+    margin: 0;
+}
+
+/* Estilização do conteúdo */
+.conteudo_modal_deletar{
+    padding: 20px;
+}
+
+.conteudo_modal_deletar input{
+    width: 100%;
+    font-size: 17px;
+}
+
+/* Estilização botões */
+.conteudo_modal_deletar button{
+    margin: 10px 10px;
+    padding: 5px 0;
+
+    width: 40%;
+
+    font-size: 20px;
+    font-weight: 500;
+
+    border-radius: 5px;
+    border: none;
+
+    color: #fff;
+}
+
+.conteudo_modal_deletar .deletar_btn_modal{
+    background-color: #D15252;
+}
+.conteudo_modal_deletar .cancelar_btn_modal{
+    background-color: #5083C8;
+}

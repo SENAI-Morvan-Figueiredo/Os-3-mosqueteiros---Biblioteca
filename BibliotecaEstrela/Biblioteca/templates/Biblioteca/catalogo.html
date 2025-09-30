@@ -1,0 +1,106 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Livros Disponíveis</h1>
+    <p class="mb-4">Veja a lista de livros que podem ser emprestados ou reservados.</p>
+    <hr>
+
+</div>
+<div class="container my-5">
+    <h2 class="mb-4">Todos os Livros</h2>
+    {% include "partials/carrossel.html" with livros=livros carrossel_id="carrosselTodos" %}
+    <div id="details-anchor-carrosselTodos"></div>
+</div>
+
+<div class="container my-5">
+    <h2 class="mb-4">Livros em Ordem Alfabética</h2>
+    {% include "partials/carrossel.html" with livros=livros_alfabetico carrossel_id="carrosselAlfab" %}
+    <div id="details-anchor-carrosselAlfab"></div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function removeExistingDetails(anchor) {
+        anchor.innerHTML = ''; 
+        document.querySelectorAll(".book-item.active").forEach(el => el.classList.remove("active"));
+    }
+
+    document.body.addEventListener("click", function (e) {
+        const bookItem = e.target.closest(".book-item");
+        if (!bookItem) return;
+
+        // descobre em qual carrossel o item está
+        const carrossel = bookItem.closest(".carousel");
+        const anchorId = "details-anchor-" + carrossel.id;
+        const detailsAnchor = document.getElementById(anchorId);
+
+        if (bookItem.classList.contains("active")) {
+            removeExistingDetails(detailsAnchor);
+            return;
+        }
+
+        removeExistingDetails(detailsAnchor);
+        bookItem.classList.add("active");
+
+        const bookData = {
+            id: bookItem.dataset.id,
+            nome: bookItem.dataset.nome,
+            autor: bookItem.dataset.autor,
+            imagem: bookItem.dataset.imagem,
+            descricao: bookItem.dataset.descricao,
+            editora: bookItem.dataset.editora,
+            status: bookItem.dataset.status
+        };
+
+        const detailsHTML = `
+            <div class="details-container">
+                <button type="button" class="btn-close close-details-btn" aria-label="Close"></button>
+                <h4 class="mb-4">Detalhes do Livro</h4>
+                <div class="row g-4">
+                    <div class="col-md-3 text-center">
+                        <img src="${bookData.imagem}" alt="Capa de ${bookData.nome}" class="img-fluid rounded shadow-sm mb-3" style="min-height: 400px; object-fit: cover;">
+                        <a href="livro/${bookData.id}/detalhes" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="detail-row">
+                            <p class="text-muted small mb-1">Título</p>
+                            <p class="fw-bold mb-0">${bookData.nome}</p>
+                        </div>
+                        <hr>
+                        <div class="detail-row">
+                            <p class="text-muted small mb-1">Autor</p>
+                            <p class="mb-0">${bookData.autor}</p>
+                        </div>
+                        <hr>
+                        <div class="detail-row">
+                            <p class="text-muted small mb-1">Sinopse</p>
+                            <p class="mb-0">${bookData.descricao}</p>
+                        </div>
+                        <hr>
+                        <div class="detail-row">
+                            <p class="text-muted small mb-1">Avaliação</p>
+                            <div class="text-warning h5">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        detailsAnchor.innerHTML = detailsHTML;
+        detailsAnchor.querySelector('.close-details-btn').addEventListener('click', () => removeExistingDetails(detailsAnchor));
+        detailsAnchor.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+});
+
+</script>
+
+{% endblock content %}
