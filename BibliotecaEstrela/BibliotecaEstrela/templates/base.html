@@ -21,7 +21,7 @@
     <header>
         {% include "partials/header.html" %}
     </header>
-    {% if '/user/ in request.path' or '/adm/' in request.path %}
+    {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
     <div class="sub-header d-flex flex-row">
         {% include "partials/sub-header-perfil.html" %}
     </div>
