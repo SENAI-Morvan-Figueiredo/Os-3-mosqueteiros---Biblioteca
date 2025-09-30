@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from Livros.models import Livros
 
 # Create your views here.
 
 def index(request):
-    return render(request, 'Biblioteca/index.html')
+    livros = Livros.objects.all()
+    return render(request, 'Biblioteca/index.html', {"livros": livros})
