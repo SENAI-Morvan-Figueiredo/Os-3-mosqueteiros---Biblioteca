@@ -23,7 +23,6 @@ class Avaliacoes(models.Model):
     titulo = models.CharField(max_length=50)
     texto = models.TextField()
 
-
 class Pedidos_extensao(models.Model):
     id_emprestimo = models.ForeignKey(Emprestimos, on_delete=models.CASCADE)
     status = models.CharField()

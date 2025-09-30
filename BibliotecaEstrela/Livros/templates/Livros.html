@@ -10,25 +10,27 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for livro in livros %}
         <div class="col">
-            <div class="card h-100">
-                {% if livro.imagem %}
-                <img src="{{ livro.imagem.url }}" class="card-img-top" style="height: 20em; object-fit: cover;" alt="{{ livro.nome }}">
-                {% else %}
-                <img src="https://via.placeholder.com/150x200?text=Sem+Capa" class="card-img-top" alt="Sem capa">
-                {% endif %}
-                <div class="card-body p-2">
-                    <h5 class="card-title">{{ livro.nome }}</h5>
-                    <p class="card-text">{{ livro.autor }}</p>
-                    <p><strong>Editora:</strong> {{ livro.editora }}</p>
-                    <p><strong>Status:</strong> 
-                        {% if livro.status == "disponivel" %}
-                            <span class="badge bg-success">Disponível</span>
-                        {% else %}
-                            <span class="badge bg-danger">Emprestado</span>
-                        {% endif %}
-                    </p>
+            <a href="{% url 'livro_detalhes' livro.id %} " style="text-decoration: none;">
+                <div class="card h-100">
+                    {% if livro.imagem %}
+                    <img src="{{ livro.imagem.url }}" class="card-img-top" style="height: 20em; object-fit: cover;" alt="{{ livro.nome }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/150x200?text=Sem+Capa" class="card-img-top" alt="Sem capa">
+                    {% endif %}
+                    <div class="card-body p-2">
+                        <h5 class="card-title">{{ livro.nome }}</h5>
+                        <p class="card-text">{{ livro.autor }}</p>
+                        <p><strong>Editora:</strong> {{ livro.editora }}</p>
+                        <p><strong>Status:</strong> 
+                            {% if livro.status == "disponivel" %}
+                                <span class="badge bg-success">Disponível</span>
+                            {% else %}
+                                <span class="badge bg-danger">Emprestado</span>
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>
