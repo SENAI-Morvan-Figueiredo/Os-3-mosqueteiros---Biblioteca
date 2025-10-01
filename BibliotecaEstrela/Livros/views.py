@@ -45,3 +45,9 @@ def Livros_view(request):
 
     livros = Livros.objects.all()
     return render(request, "Livros.html", {"livros": livros, "form": form})
+
+def buscar_livro(request, busca):
+    resultados = Livros.objects.filter(nome__contains=busca)
+
+    return render(request, "Livros.html", {"livros": resultados})
+

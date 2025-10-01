@@ -1,3 +1,18 @@
+#Removendo a pasta 'media' por enquanto ja que nao vamos adicionar imagens no repositorio por enquanto
+media
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

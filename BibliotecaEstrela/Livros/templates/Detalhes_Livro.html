@@ -7,7 +7,12 @@
             <h1 class="mb-3">Sobre o livro</h1>
 
             <div class="d-flex" style="background-color: #fafafa;">
-                <img src="{{ livro.imagem.url }}" class="img-thumbnail col-4">
+                
+                    {% if livro.imagem %}
+                        <img src="{{ livro.imagem.url }}" class="img-thumbnail col-4">
+                    {% else %}
+                        <img src="https://via.placeholder.com/150x200?text=Sem+Capa" class="card-img-top" alt="Sem capa">
+                    {% endif %}
 
                 <div class="p-3 container-fluid ms-md-5">
                     <h1 class="col-6"> {{ livro.nome }} </h1>
@@ -53,11 +58,11 @@
             
             {% else %}
             
-                {% if livro.status == 'disponivel' and user.is_authenticated %}
-                    <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Emprestimo</button>
+                {% if livro.status == 'disponivel'%}
+                    <a href="{% url 'criar_emprestimos' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Emprestimo</button></a> 
                 
                 {% else %}
-                    <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Reservar</button>
+                    <a href="{% url 'criar_reserva' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Reservar</button></a>
                 
                 {% endif %}
             {% endif %}
