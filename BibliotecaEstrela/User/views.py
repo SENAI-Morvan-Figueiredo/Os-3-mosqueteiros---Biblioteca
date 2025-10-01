@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserUpdateForm
 from .models import Usuario
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 def register(request):
@@ -23,12 +24,17 @@ def tela_perfil(request):
     user = request.user
 
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST, instance=user)
+        form = UserUpdateForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            user = form.save()
+            update_session_auth_hash(request, user)
+            print("a")
             return redirect('tela_perfil')
+        else:
+            print("Form inválido:", form.errors)
     else:
-        form = UserRegisterForm(instance=user)
+        form = UserUpdateForm(instance=user)
 
     context = {
         'form': form,

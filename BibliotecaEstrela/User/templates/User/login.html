@@ -2,6 +2,9 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="col-md-8 offset-2">
+    <h2>Login</h2>
+    <p>Acesse suas informações e seu catálogo</p>
+    
     <form method="POST">
         {% csrf_token %}
         {{ form|crispy }}
