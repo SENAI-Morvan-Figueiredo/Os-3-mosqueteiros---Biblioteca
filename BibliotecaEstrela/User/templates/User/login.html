@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="col-md-8 offset-2">
-    <h2>Login</h2>
-    <p>Acesse suas informações e seu catálogo</p>
-    
-    <form method="POST">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button>Entrar</button>
-    </form>
+<!-- Centralizar a tela -->
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro">
 
-    <div>
-        Ou crie sua conta <a href="{% url 'user_register' %}">aqui</a>
+    <!-- Garantir que os itens estejam sempre no começo do container e criar os paddings -->
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <!-- <p>Passo 1 de 2</p> -->
+        <h2>Login</h2>
+
+        <p>Acesse suas informações e seu catálogo</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button>Entrar</button>
+        </form>
+
+        <div class="redirecionamento-cadastro">
+            Não tem uma conta? crie ela <a href="{% url 'user_register' %}">aqui.</a>
+        </div>
+
+        <div class="linha-login"></div>
+
+        <div class="login-google d-flex justify-content-center"><p>a</p><p>a</p></div>
     </div>
 </div>
-
 {% endblock content %}
