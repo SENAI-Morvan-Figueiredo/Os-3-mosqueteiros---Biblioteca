@@ -235,7 +235,7 @@
                     <div class="row g-4">
                         <div class="col-md-3 text-center">
                             <img src="${bookData.imagem}" alt="Capa de ${bookData.nome}" class="img-fluid rounded shadow-sm mb-3" style="min-height: 400px; object-fit: cover;">
-                            <a href="#" class="btn btn-primary w-100 vermais">Ver mais</a>
+                            <a href="#" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
                         </div>
 
                         <div class="col-md-9">
@@ -243,26 +243,17 @@
                                 <p class="text-muted small mb-1">Título</p>
                                 <p class="fw-bold mb-0">${bookData.nome}</p>
                             </div>
+                            <hr>
                             <div class="detail-row">
                                 <p class="text-muted small mb-1">Autor</p>
                                 <p class="mb-0">${bookData.autor}</p>
                             </div>
-                            <div class="detail-row">
-                                <p class="text-muted small mb-1">Editora</p>
-                                <p class="mb-0">${bookData.editora}</p>
-                            </div>
+                            <hr>
                             <div class="detail-row">
                                 <p class="text-muted small mb-1">Sinopse</p>
                                 <p class="mb-0">${bookData.descricao}</p>
                             </div>
-                            <div class="detail-row">
-                                <p class="text-muted small mb-1">Status</p>
-                                <p class="mb-0">
-                                    ${bookData.status === "disponivel" 
-                                    ? '<span class="badge bg-success">Disponível</span>' 
-                                    : '<span class="badge bg-danger">Emprestado</span>'}
-                                </p>
-                            </div>
+                            <hr>
                             <div class="detail-row">
                                 <p class="text-muted small mb-1">Avaliação</p>
                                 <div class="text-warning h5">
