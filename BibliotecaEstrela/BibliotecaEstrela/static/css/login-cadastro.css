@@ -1,6 +1,7 @@
 .container-principal-login-cadastro{
     position: relative;
     height: 90vh;
+    margin: 40px 0;
 }
 /* Estilização do container */
 .container-login-cadastro{
@@ -26,7 +27,7 @@
 }
 
 /* Deixa os labels dos inputs no começo */
-#div_id_username, #div_id_password{
+#div_id_username, #div_id_password, #div_id_email, #div_id_telefone, #div_id_cpf, #div_id_password1, #div_id_password2{
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -66,7 +67,7 @@
     margin-top: 10px;
 }
 
-.redirecionamento-cadastro{
+.redirecionamento-cadastro-login{
     margin-top: 20px;
 }
 

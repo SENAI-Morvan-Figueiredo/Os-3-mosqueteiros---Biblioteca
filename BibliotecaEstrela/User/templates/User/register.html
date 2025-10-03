@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="col-md-8 offset-2">
-    <form method="POST">
-        {% csrf_token %}
-        
-        {{ form|crispy }}
-        
-        <button>Cadastrar</button>
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro">
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <form method="POST">
+            {% csrf_token %}
+            
+            {{ form|crispy }}
+            
+            <button>Cadastrar</button>
 
-    </form>
-    
-    <div>
-        Já tem uma conta? <a href="{% url 'login' %}">Clique aqui</a>
+        </form>
+        
+        <div class="redirecionamento-cadastro-login">
+            Já tem uma conta? <a href="{% url 'login' %}">Clique aqui</a>
+        </div>
     </div>
 </div>
 {% endblock content %}
