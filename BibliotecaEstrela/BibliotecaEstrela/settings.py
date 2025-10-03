@@ -42,11 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    'User.apps.UserConfig',
+    
+    # Sistema de login por google, apple, etc
+    "django.contrib.sites",
+    "allauth",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     
     # Apps criados
     'Biblioteca',
     'Livros',
-    'User',
+    # 'User',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'User.middleware.CompleteProfileMiddleware', 
 ]
 
 ROOT_URLCONF = 'BibliotecaEstrela.urls'
@@ -88,6 +97,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # seu login normal
+    'allauth.account.auth_backends.AuthenticationBackend',  # só necessário pro social
+]
 
 
 # Password validation

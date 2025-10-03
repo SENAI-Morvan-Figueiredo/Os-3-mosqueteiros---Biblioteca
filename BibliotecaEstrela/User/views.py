@@ -19,6 +19,21 @@ def register(request):
         
     return render(request, 'user/register.html', {'form': form})
 
+
+@login_required
+def complete_profile(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+    else:
+        form = UserUpdateForm(instance=user)
+
+    return render(request, 'user/complete_profile.html', {'form': form})
+
 @login_required
 def tela_perfil(request):
     user = request.user

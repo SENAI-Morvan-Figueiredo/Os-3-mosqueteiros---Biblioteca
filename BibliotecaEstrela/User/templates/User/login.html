@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
 {% load crispy_forms_tags %}
 {% block content %}
 <!-- Centralizar a tela -->
@@ -23,7 +24,11 @@
 
         <div class="linha-login"></div>
 
-        <div class="login-google d-flex justify-content-center"><p>a</p><p>a</p></div>
+        <div class="login-google d-flex justify-content-center">
+            <a href="{% provider_login_url 'google' %}">
+                <button type="button">Entrar com Google</button>
+            </a>
+        </div>
     </div>
 </div>
 {% endblock content %}
