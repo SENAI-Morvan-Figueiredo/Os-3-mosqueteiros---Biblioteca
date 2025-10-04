@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
 from .views import register, tela_perfil
 
