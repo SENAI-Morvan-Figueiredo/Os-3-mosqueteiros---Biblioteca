@@ -1,13 +1,15 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block title %}Adicionar Livro{% endblock %}
 
 {% block content %}
-<h2>Adicionar Livro</h2>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ livro_form.as_p }}
-    {{ genero_form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-</form>
-
+<div class="col-md-8 offset-2">
+    <h2>Adicionar Livro</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ livro_form|crispy }}
+        {{ genero_form|crispy }}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
 {% endblock %}
