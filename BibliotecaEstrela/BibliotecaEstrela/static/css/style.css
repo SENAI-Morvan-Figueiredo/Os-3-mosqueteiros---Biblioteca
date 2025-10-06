@@ -6,6 +6,12 @@
     margin-left: 1em
 }
 
+.vermais{
+    color: #fff;
+    margin-right: 0em;
+    margin-left: 0em
+}
+
 .header-input{
     border-radius: 20px;
     width: 50em;
