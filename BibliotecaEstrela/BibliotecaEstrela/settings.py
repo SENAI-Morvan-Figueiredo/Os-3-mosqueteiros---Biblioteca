@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     # Apps criados
     'Biblioteca',
     'Livros',
-    'User',
+    'User.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'User.middleware.CompleteProfileMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
 ]
