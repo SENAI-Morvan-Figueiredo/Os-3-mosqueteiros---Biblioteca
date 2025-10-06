@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Livros
 from .models import Generos
-from .forms import GenerosForm, LivrosForm
+from .models import Livros_Generos
+from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 
 def AdicionarCategoria(request):
     if request.method == "POST":
@@ -17,14 +18,26 @@ def AdicionarCategoria(request):
 
 def AdicionarLivro(request):
     if request.method == "POST":
-        form = LivrosForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        livro_form = LivrosForm(request.POST, request.FILES)
+
+        if livro_form.is_valid():
+            livro = livro_form.save()  # salva o livro primeiro
+
+            # pega os gêneros enviados
+            generos_ids = request.POST.getlist("id_genero")
+            for genero_id in generos_ids:
+                Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
+
             return redirect("Livros:AdicionarLivro")
     else:
-        form = LivrosForm()
+        livro_form = LivrosForm()
+        genero_form = LivrosGenerosForm()
 
-    return render(request, "AdicionarLivro.html", {"form": form})
+    return render(request, "AdicionarLivro.html", {
+        "livro_form": livro_form,
+        "genero_form": genero_form
+    })
+
 
 
 def Livros_view(request):

@@ -4,6 +4,8 @@ from django.db import models
 
 class Generos(models.Model):
     nome_genero = models.CharField()
+    def __str__(self):
+        return self.nome_genero
 
 class Livros(models.Model):
     nome = models.CharField()
