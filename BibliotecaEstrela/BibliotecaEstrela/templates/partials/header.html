@@ -20,7 +20,7 @@
                     <a class="nav-link" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'livros' %}">Catalogo</a>
+                    <a class="nav-link" href="{% url 'Livros:livros' %}">Catalogo</a>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'tela_perfil' %}">Perfil</a>
