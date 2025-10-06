@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Complete seu cadastro</h2>
-    <p>Precisamos de mais algumas informações antes de continuar.</p>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Salvar</button>
-    </form>
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro">
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <h2>Complete seu cadastro</h2>
+        <p>Precisamos de mais algumas informações antes de continuar.</p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
