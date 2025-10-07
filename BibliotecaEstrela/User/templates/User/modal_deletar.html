@@ -1,7 +1,43 @@
-<div id="modal_deletar" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);">
-  <div style="background:white; width:300px; margin:10% auto; padding:20px; border-radius:10px;">
-    <h3>Título do modal</h3>
-    <p>Conteúdo dentro do modal</p>
-    <button id="fechar">Fechar</button>
+<form method="post">
+  {% csrf_token %}
+  <div id="modal_deletar" class="modal_deletar">
+    <div class="card_modal_deletar">
+      <div class="titulo_modal_deletar">
+        <h2>Confirmação de exclusão</h2>
+      </div>
+      <div class="conteudo_modal_deletar">
+
+        <p>Digite <strong>DELETAR</strong> abaixo para confirmar a exclusão da sua conta.</p>
+        <input type="text" placeholder="Digite aqui..." id="input_modal">
+        <div class="btn_modal">
+          <button type="submit" name="deletar" id="deletar_btn_modal" class="deletar_btn_modal">Deletar</button>
+          <button id="fechar" class="cancelar_btn_modal">Fechar</button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</form>
+
+<script>
+  const input_modal = document.getElementById('input_modal');
+  const btn_modal = document.getElementById('deletar_btn_modal');
+
+  btn_modal.disabled = true;
+  btn_modal.style.opacity = 0.7;
+
+  input_modal.addEventListener('input', () => {
+    const texto = input_modal.value.trim().toUpperCase();
+
+    if(texto == "DELETAR"){
+      btn_modal.disabled = false;
+      btn_modal.style.opacity = 1;
+    }
+    else{
+      btn_modal.disabled = true;
+      btn_modal.style.opacity = 0.7;
+    }
+
+  })
+
+
+</script>

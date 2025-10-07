@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm, CompleteSignupForm
 from .models import Usuario
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -24,6 +26,12 @@ def tela_perfil(request):
     user = request.user
 
     if request.method == 'POST':
+        if 'deletar' in request.POST:
+            print("a")
+            user.delete()
+            return redirect('login')
+        
+
         form = UserUpdateForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
@@ -33,8 +41,12 @@ def tela_perfil(request):
             return redirect('tela_perfil')
         else:
             print("Form inválido:", form.errors)
+
+
     else:
         form = UserUpdateForm(instance=user)
+
+    
 
     context = {
         'form': form,
