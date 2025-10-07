@@ -1,0 +1,84 @@
+.container-principal-login-cadastro{
+    position: relative;
+    height: 90vh;
+    margin: 40px 0;
+}
+/* Estilização do container */
+.container-login-cadastro{
+    background-color: white;
+
+    width: 100%;
+    max-width: 40%;
+
+    border-radius: 10px;
+
+    box-shadow: 0 0 4px #00000050;
+
+    padding: 0 5%;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Deixa o input ocupar 100% do container */
+.container-login-cadastro form{
+    width: 100%;
+}
+
+/* Deixa os labels dos inputs no começo */
+#div_id_username, #div_id_password, #div_id_email, #div_id_telefone, #div_id_cpf, #div_id_password1, #div_id_password2{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+/* Tamanhos das informações */
+.container-login-cadastro h2{
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+/* .container-login-cadastro p:first-child{
+    font-size: 14px;
+
+    color: #00000090;
+    margin-bottom: 5px;
+} */
+
+.container-login-cadastro p{
+    font-size: 17px;
+}
+
+/* Estilização botão */
+.container-login-cadastro form button{
+    width: 100%;
+    padding: 5px 0;
+
+    border-radius: 5px;
+    border: none;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    background-color: #1D3A8C;
+    color: #ffffff;
+
+    margin-top: 10px;
+}
+
+.redirecionamento-cadastro-login{
+    margin-top: 20px;
+}
+
+.linha-login{
+    border: 1px solid #00000075;
+    border-radius: 1px;
+    width: 100%;
+
+    margin-top: 20px;
+}
+
+.login-google{
+    width: 100%;
+}

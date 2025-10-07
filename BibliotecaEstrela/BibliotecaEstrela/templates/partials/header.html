@@ -1,23 +1,22 @@
 {% load static %}
-    <nav class="navbar navbar-expand-lg bg-body-primary" style="background-color: #1D3A8C;">
-        <div class="container-fluid">
-            <a href="/">
-                <img src={% static "Logo_Biblioteca_Estrela-Photoroom_1-removebg-preview 2.svg" %}>
-            </a>
+<nav class="navbar navbar-expand-lg bg-body-primary" style="background-color: #1D3A8C;">
+    <div class="container-fluid">
+        <a href="/">
+            <img src={% static "Logo_Biblioteca_Estrela-Photoroom_1-removebg-preview 2.svg" %}>
+        </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <form method="GET" id="searchForm">
-                <ul class="navbar-nav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <li class="nav-item">
-                        <input type="text" name="busca_nome" id="searchInput" class="mt-0.8 header-input" placeholder="Pesquisar" required>
-                    </li>
-                    <li class="nav-item">
-                        <button type="submit" class="btn btn-primary btn-header ">Pesquisar</button>
-                    </li>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- BLOCO PESQUISA (CENTRO) -->
+                <form method="GET" id="searchForm" class="d-flex mx-auto nav-search">
+
+                    <input type="text" name="busca_nome" id="searchInput" class="header-input" placeholder="Pesquisar" required>
+
+                    <button type="submit" class="btn btn-primary btn-header ">Pesquisar</button>
 
                 </form>
 
@@ -34,28 +33,32 @@
                     };
                 </script>
 
+        <!-- BLOCO LINKS (DIREITA) -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'livros' %}">Catalogo</a>
+            </li>
+
+            {% if user.is_authenticated and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Inicio</a>
+                    <a class="nav-link" href="{% url 'tela_perfil' %}">Perfil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'livros' %}">Catalogo</a>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tela_perfil' %}">Perfil</a>
-                    </li>
-                    <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button class="nav-link" type="submit">Logout</button>
-                        </form>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="btn btn-link nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                {% endif %}
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="nav-link" type="submit">Logout</button>
+                    </form>
                 </li>
-                </ul>
-            </div>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-link nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+            {% endif %}
+
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
