@@ -21,7 +21,8 @@ def checar_livros_em_posse(id_user):
 
 
 def index(request):
-    return render(request, 'Biblioteca/index.html')
+    livros = Livros.objects.all()
+    return render(request, 'Biblioteca/index.html', {"livros": livros})
 
 
 def criar_emprestimo(request, id_livro, id_user):
@@ -50,3 +51,15 @@ def criar_reserva(request, id_livro, id_user):
     novo.save()
 
     return redirect("livros")
+
+
+def catalogo(request):
+    livros = Livros.objects.all()
+    livros_alfabetico = Livros.objects.order_by("nome")
+    livros_disponiveis = Livros.objects.filter(status="Disponível")
+
+    return render(request, "Biblioteca/catalogo.html", {
+        "livros": livros,
+        "livros_alfabetico": livros_alfabetico,
+        "livros_disponiveis": livros_disponiveis,
+    })

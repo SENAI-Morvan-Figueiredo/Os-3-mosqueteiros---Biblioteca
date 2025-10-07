@@ -1,6 +1,8 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
+
     <div style="height: 30em;">
         <ul>
             <h3>Livros</h3>
@@ -14,4 +16,269 @@
             <li><a href="{% url 'login' %}">Login</a></li>
         </ul>
     </div>
+    <style>
+        /* Estilos do painel de detalhes (mantidos) */
+        .book-item {
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .book-item:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.07);
+            transform: scale(0.95);
+        }
+
+        .book-item.active {
+            border-color: #1D3A8C;
+            box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+        }
+
+        .details-container {
+            background: #fff;
+            border: 1px solid #1D3A8C;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem; /* Aumentado para dar espaço */
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            animation: slideDown 0.4s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .details-container .detail-row {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .details-container .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .close-details-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+        }
+
+        /* --- NOVOS ESTILOS DO CARROSSEL --- */
+
+        /* Garante que os cards no carrossel tenham a mesma altura */
+        #carrosselLivros .card {
+            height: 100%;
+        }
+
+        /* Em telas pequenas (mobile), mostra apenas o primeiro card de cada slide */
+        @media (max-width: 767.98px) {
+            #carrosselLivros .carousel-inner .carousel-item > div {
+                display: none;
+            }
+            #carrosselLivros .carousel-inner .carousel-item > div:first-child {
+                display: block;
+            }
+        }
+        
+        /* Estilo para os botões de controle, deixando-os mais visíveis */
+        #carrosselLivros .carousel-control-prev,
+        #carrosselLivros .carousel-control-next {
+            width: 5%;
+        }
+        #carrosselLivros .carousel-control-prev-icon,
+        #carrosselLivros .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            padding: 1.2rem;
+        }
+    </style>
+
+    <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="width: 80%; height: 400px; overflow: hidden;">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+
+    <div class="carousel-inner" style="width: 100%;">
+        <div class="carousel-item active">
+        <img src="https://placehold.co/1000x300" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
+        </div>
+        <div class="carousel-item">
+        <img src="https://placehold.co/1000x300" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
+        </div>
+        <div class="carousel-item">
+        <img src="https://placehold.co/1000x300" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
+
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+    
+    <div class="container my-5">
+        <h2 class="mb-4">Livros Disponíveis</h2>
+        <p class="mb-4">Veja a lista de livros que podem ser emprestados ou reservados.</p>
+
+        {% if livros %}
+        <div id="carrosselLivros" class="carousel slide">
+            <div class="carousel-inner">
+
+                {% for livro in livros %}
+                    
+                    {# Abre um novo slide a cada 4 livros (0, 4, 8...) #}
+                    {% if forloop.counter0|divisibleby:4 %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="row">
+                    {% endif %}
+
+                    
+                    <div class="col-12 col-md-6 col-lg-3 mb-4">
+                        <a href="{% url 'livro_detalhes' livro.id %} " style="text-decoration: none;">
+                        <div class="card h-100 book-item shadow-sm" 
+                             data-id="{{ livro.id }}" 
+                             data-nome="{{ livro.nome }}"
+                             data-autor="{{ livro.autor }}"
+                             data-descricao="{{ livro.descricao }}"
+                             data-editora="{{ livro.editora }}"
+                             data-status="{{ livro.status }}"
+                             data-imagem="{% if livro.imagem %}{{ livro.imagem.url }}{% else %}https://via.placeholder.com/300x450?text=Sem+Capa{% endif %}">
+                            
+                            {% if livro.imagem %}
+                            <img src="{{ livro.imagem.url }}" class="card-img-top" style="height: 350px; object-fit: cover;" alt="{{ livro.nome }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 350px; object-fit: cover;" alt="Sem capa">
+                            {% endif %}
+                            
+                            <div class="card-body d-flex flex-column text-center">
+                                <h6 class="card-title fw-bold">{{ livro.nome }}</h6>
+                                <p class="card-text text-muted small mt-auto">{{ livro.autor }}</p>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+
+                    {# Fecha o slide se for o 4º item do grupo ou o último item da lista #}
+                    {% if forloop.counter|divisibleby:4 or forloop.last %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carrosselLivros" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carrosselLivros" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
+
+        {% else %}
+            <div class="alert alert-info mt-4">Nenhum livro cadastrado.</div>
+        {% endif %}
+
+        <div id="details-anchor"></div>
+
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleciona o container dos cards DENTRO do carrossel
+        const carousel = document.getElementById("carrosselLivros");
+        const detailsAnchor = document.getElementById("details-anchor");
+
+        function removeExistingDetails() {
+            detailsAnchor.innerHTML = ''; // Limpa o container
+            document.querySelectorAll(".book-item.active").forEach(el => el.classList.remove("active"));
+        }
+
+        // Adiciona o listener no carrossel
+        carousel.addEventListener("click", function (e) {
+            const bookItem = e.target.closest(".book-item");
+
+            if (!bookItem) return;
+
+            if (bookItem.classList.contains("active")) {
+                removeExistingDetails();
+                return;
+            }
+
+            removeExistingDetails();
+            bookItem.classList.add("active");
+
+            const bookData = {
+                nome: bookItem.dataset.nome,
+                autor: bookItem.dataset.autor,
+                imagem: bookItem.dataset.imagem,
+                descricao: bookItem.dataset.descricao,
+                editora: bookItem.dataset.editora,
+                status: bookItem.dataset.status
+            };
+
+            const detailsHTML = `
+                <div class="details-container">
+                    <button type="button" class="btn-close close-details-btn" aria-label="Close"></button>
+                    <h4 class="mb-4">Detalhes do Livro</h4>
+                    <div class="row g-4">
+                        <div class="col-md-3 text-center">
+                            <img src="${bookData.imagem}" alt="Capa de ${bookData.nome}" class="img-fluid rounded shadow-sm mb-3" style="min-height: 400px; object-fit: cover;">
+                            <a href="#" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="detail-row">
+                                <p class="text-muted small mb-1">Título</p>
+                                <p class="fw-bold mb-0">${bookData.nome}</p>
+                            </div>
+                            <hr>
+                            <div class="detail-row">
+                                <p class="text-muted small mb-1">Autor</p>
+                                <p class="mb-0">${bookData.autor}</p>
+                            </div>
+                            <hr>
+                            <div class="detail-row">
+                                <p class="text-muted small mb-1">Sinopse</p>
+                                <p class="mb-0">${bookData.descricao}</p>
+                            </div>
+                            <hr>
+                            <div class="detail-row">
+                                <p class="text-muted small mb-1">Avaliação</p>
+                                <div class="text-warning h5">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            detailsAnchor.innerHTML = detailsHTML;
+            
+            detailsAnchor.querySelector('.close-details-btn').addEventListener('click', removeExistingDetails);
+            
+            detailsAnchor.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+    });
+    </script>
+
 {% endblock content %}

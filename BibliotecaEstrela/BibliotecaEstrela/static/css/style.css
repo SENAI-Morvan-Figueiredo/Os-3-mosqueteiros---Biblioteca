@@ -3,13 +3,16 @@ body{
 }
 /* *{border: 1px solid red;} */
 
-#navbarNav{
-    padding: 5px 10px 5px 0;
+.nav-link, .btn{
+    color: #fff;
+    margin-right: 6em;
+    margin-left: 1em
 }
 
-.nav-search {
-    flex: 1;
-    max-width: 800px;
+.vermais{
+    color: #fff;
+    margin-right: 0em;
+    margin-left: 0em
 }
 
 .header-input {
