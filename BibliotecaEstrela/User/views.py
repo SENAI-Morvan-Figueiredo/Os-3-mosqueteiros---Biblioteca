@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm
 from .models import Usuario
+from Biblioteca.models import Reserva
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -36,7 +37,11 @@ def tela_perfil(request):
     else:
         form = UserUpdateForm(instance=user)
 
+    if request.method == 'GET':
+        reservas = Reserva.objects.filter(id_user=request.user)
+
     context = {
         'form': form,
+        'reservas': reservas,
     }
     return render(request, 'user/tela_perfil.html', context)
