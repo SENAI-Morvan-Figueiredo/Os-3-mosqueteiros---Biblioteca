@@ -105,8 +105,26 @@
                         <h2>Notificações</h2>
                     </div>
                     
-                    <div class="card-perfil d-flex align-items-start py-4 px-5">
+                    <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
+                        {% for reserva in reservas %}
                         <h2>Livros Reservados</h2>
+
+                        <div class="">
+                            <div>
+                                {% if not reserva.id_livro.imagem %}
+                                    <div>imagem do livro</div>
+                                {% else %}
+                                <div>
+                                    {{ reserva.id_livro.imagem }}
+                                </div>
+                                {% endif %}
+                                {{ reserva.id_livro.nome }}
+                                {{ reserva.id_livro.autor }}
+                                {{ reserva.data_reserva }}
+                            </div>
+                        </div>
+
+                        {% endfor %}
                     </div>
                     
 
