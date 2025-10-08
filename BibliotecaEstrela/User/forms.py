@@ -33,3 +33,14 @@ class UserUpdateForm(forms.ModelForm):
             user.save()
 
         return user
+    
+class CompleteSignupForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['telefone', 'cpf']
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.fields['telefone'].required = True
+            self.fields['cpf'].required = True

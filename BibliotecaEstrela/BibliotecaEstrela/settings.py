@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from environ import Env
+
+# Lê o arquivo .env
+env = Env()
+env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
@@ -42,11 +48,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    # Aplicações necessárias para poder acessar a biblioteca "django-allauth[socialaccount]"
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     
+    # Para poder ativar a funcionalidade do google
+    'allauth.socialaccount.providers.google',
+
     # Apps criados
     'Biblioteca',
     'Livros',
-    'User',
+    'User.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +71,29 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'User.middleware.CompleteProfileMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Serve para saber em qual site as funcionalidades do login deve funcionar
+SITE_ID = 1
+
+
+# Configurações do login com o google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': env('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': env('OAUTH_GOOGLE_SECRET'),
+            'key': ''
+        }
+    }
+}
 
 ROOT_URLCONF = 'BibliotecaEstrela.urls'
 
@@ -74,6 +110,15 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+# É necessário para que o 'allauth' funcione, está na documentação deles
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
@@ -136,3 +181,13 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Permite que não precise do nome para fazer o login
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+# Permite que possa ser feito login utilizando o email e senha
+ACCOUNT_LOGIN_METHODS = {"email"}  # método(s) de login aceitos
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
+
+# Pula 1 etapa na hora de fazer login pelo google, se quiser testar pode colocar como false e ir na tela de login, clicar no google e ver q tem uma segunda tela antes de finalmente fazer o login.
+SOCIALACCOUNT_LOGIN_ON_GET = True

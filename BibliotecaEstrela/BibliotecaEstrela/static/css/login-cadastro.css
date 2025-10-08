@@ -1,8 +1,8 @@
 .container-principal-login-cadastro{
     position: relative;
-    height: 90vh;
-    margin: 40px 0;
+    height: 70vh;
 }
+
 /* Estilização do container */
 .container-login-cadastro{
     background-color: white;

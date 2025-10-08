@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         bookItem.classList.add("active");
 
         const bookData = {
+            id: bookItem.dataset.id,
             nome: bookItem.dataset.nome,
             autor: bookItem.dataset.autor,
             imagem: bookItem.dataset.imagem,
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="row g-4">
                     <div class="col-md-3 text-center">
                         <img src="${bookData.imagem}" alt="Capa de ${bookData.nome}" class="img-fluid rounded shadow-sm mb-3" style="min-height: 400px; object-fit: cover;">
-                        <a href="#" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
+                        <a href="livro/${bookData.id}/detalhes" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
                     </div>
                     <div class="col-md-9">
                         <div class="detail-row">

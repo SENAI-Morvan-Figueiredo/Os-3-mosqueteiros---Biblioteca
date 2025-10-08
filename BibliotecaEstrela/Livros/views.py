@@ -15,7 +15,7 @@ def AdicionarCategoria(request):
         form = GenerosForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("livros:AdicionarCategoria")
+            return redirect("adicionar_categoria")
     else:
         form = GenerosForm()
 
@@ -34,7 +34,7 @@ def AdicionarLivro(request):
             for genero_id in generos_ids:
                 Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
 
-            return redirect("Livros:AdicionarLivro")
+            return redirect("adicionar_livro")
     else:
         livro_form = LivrosForm()
         genero_form = LivrosGenerosForm()
