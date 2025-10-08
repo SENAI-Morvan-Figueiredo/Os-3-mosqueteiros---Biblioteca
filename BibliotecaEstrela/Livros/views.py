@@ -3,7 +3,6 @@ from .models import Livros
 from .models import Generos
 from .models import Livros_Generos
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
-from .forms import GenerosForm, LivrosForm
 from django.views.generic import DetailView
 
 class LivroDetalhes(DetailView):
@@ -48,20 +47,17 @@ def AdicionarLivro(request):
 
 
 def Livros_view(request):
-    # Para criar novo livro via form
-    if request.method == "POST":
-        form = LivrosForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("livros:Livros")  # redireciona para a mesma página
-    else:
-        form = LivrosForm()
-
     livros = Livros.objects.all()
-    return render(request, "Livros.html", {"livros": livros, "form": form})
+    livros_alfabetico = Livros.objects.order_by("nome")
+    livros_disponiveis = Livros.objects.filter(status="Disponível")
+
+    return render(request, "Biblioteca/catalogo.html", {
+        "livros": livros,
+        "livros_alfabetico": livros_alfabetico,
+        "livros_disponiveis": livros_disponiveis,
+    })
 
 def buscar_livro(request, busca):
     resultados = Livros.objects.filter(nome__contains=busca)
 
     return render(request, "Livros.html", {"livros": resultados})
-

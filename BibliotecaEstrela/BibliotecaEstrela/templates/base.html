@@ -31,13 +31,9 @@
     {% endif %}
 
     <!-- Conteúdo das telas -->
-    <main class="text-center" style="padding: 0 10%">
-        
-        <div class="row">
-            {% block content %}{% endblock content %}
-        </div>
-        
-    </main>
+
+    {% block content %}{% endblock content %}
+
 
     <!-- Footer que será utilizado em todas as telas do projeto -->
     <footer>
