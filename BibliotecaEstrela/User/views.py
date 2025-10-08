@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm
 from .models import Usuario
-from Biblioteca.models import Reserva, Emprestimos
+from Biblioteca.models import Reserva, Emprestimos, Pedidos_extensao
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -48,14 +48,19 @@ def tela_perfil(request):
 
 @login_required
 def historico_perfil(request):
+    extensao = Pedidos_extensao.objects.none()
     if request.method == 'GET':
         reservas = Reserva.objects.filter(id_user=request.user)
 
         emprestimo = Emprestimos.objects.filter(id_user=request.user)
     
+    if request.method == 'POST':
+        extensao = Pedidos_extensao.objects.filter(id_emprestimo__id_user=request.user)
+    
     context = {
         'reservas': reservas,
         'emprestimos': emprestimo,
+        'extensoes': extensao,
     }
 
     return render(request, 'user/historico_perfil.html', context)

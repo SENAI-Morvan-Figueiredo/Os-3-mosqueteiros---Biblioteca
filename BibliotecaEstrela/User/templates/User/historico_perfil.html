@@ -58,6 +58,17 @@
 
             <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
                 <h2>Solicitar extenção do prazo</h2>
+
+                <form method="post" class="d-flex flex-column w-100">
+                    {% csrf_token %}
+
+                    <label for="livro" class="align-self-start">Selecione o livro</label>
+                    <select name="livro" id="livro" class="w-100">
+                        {% for extensao in extensoes %}
+                            <option value="{{ extensao.id_extensao }}">{{ extensao.id_extensao.id_livro }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
             </div>
 
         </div>
