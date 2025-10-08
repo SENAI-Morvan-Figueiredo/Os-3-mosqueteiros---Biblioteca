@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm
 from .models import Usuario
-from Biblioteca.models import Reserva
+from Biblioteca.models import Reserva, Emprestimos
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -45,3 +45,17 @@ def tela_perfil(request):
         'reservas': reservas,
     }
     return render(request, 'user/tela_perfil.html', context)
+
+@login_required
+def historico_perfil(request):
+    if request.method == 'GET':
+        reservas = Reserva.objects.filter(id_user=request.user)
+
+        emprestimo = Emprestimos.objects.filter(id_user=request.user)
+    
+    context = {
+        'reservas': reservas,
+        'emprestimos': emprestimo,
+    }
+
+    return render(request, 'user/historico_perfil.html', context)

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <main class="text-center" style="padding: 0 10%">
+        <div class="d-flex gap-5 flex-column">
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Livros em reserva</h2>
+
+                {% for reserva in reservas %}
+                <div class="">
+                    <div>
+                        {% if not reserva.id_livro.imagem %}
+                            <div>imagem do livro</div>
+                        {% else %}
+                        <div>
+                            {{ reserva.id_livro.imagem }}
+                        </div>
+                        {% endif %}
+                        {{ reserva.id_livro.nome }}
+                        {{ reserva.id_livro.autor }}
+                        {{ reserva.data_reserva }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Livros em emprestimo</h2>
+
+                {% for emprestimo in emprestimos %}
+                <div class="">
+                    <div>
+                        {% if not emprestimo.id_livro.imagem %}
+                            <div>imagem do livro</div>
+                        {% else %}
+                        <div>
+                            {{ emprestimo.id_livro.imagem }}
+                        </div>
+                        {% endif %}
+                        {{ emprestimo.id_livro.nome }}
+                        {{ emprestimo.id_livro.autor }}
+                        {{ emprestimo.data_emprestimo }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock content %}
