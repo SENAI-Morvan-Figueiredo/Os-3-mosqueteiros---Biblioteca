@@ -107,24 +107,29 @@
                     
                     <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
                         <h2>Livros Reservados</h2>
-                        {% for reserva in reservas %}
 
-                        <div class="">
-                            <div>
-                                {% if not reserva.id_livro.imagem %}
-                                    <div>imagem do livro</div>
-                                {% else %}
-                                <div>
-                                    {{ reserva.id_livro.imagem }}
+                        <div class="d-flex flex-row w-100 gap-4">
+                            {% for reserva in reservas %}
+
+                            <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
+                                <div class="card h-100 book-item shadow-sm">
+                                    {% if not reserva.id_livro.imagem %}
+                                        <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 350px; object-fit: cover;" alt="Sem capa">
+                                    {% else %}
+                                    <div>
+                                        <img src="{{ reserva.id_livro.imagem.url }}" class="card-img-top" style="height: 350px; object-fit: cover;" alt="{{ livro.nome }}">
+                                    </div>
+                                    {% endif %}
+                                    <div class="card-body d-flex flex-column text-center">
+                                        <h6 class="card-title fw-bold">{{ reserva.id_livro.nome }}</h6>
+                                        <p class="card-text text-muted small mt-auto">{{ reserva.id_livro.autor }}</p>
+                                        {{ reserva.data_reserva }}
+                                    </div>
                                 </div>
-                                {% endif %}
-                                {{ reserva.id_livro.nome }}
-                                {{ reserva.id_livro.autor }}
-                                {{ reserva.data_reserva }}
                             </div>
-                        </div>
 
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                     
 
