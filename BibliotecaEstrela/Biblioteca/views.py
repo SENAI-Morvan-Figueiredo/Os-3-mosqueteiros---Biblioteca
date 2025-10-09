@@ -19,21 +19,6 @@ def checar_livros_em_posse(id_user):
 
     return em_posse
 
-
-def checar_livros_em_posse(id_user):
-    #Busca de empréstimos feitos pelo user
-    emprestimos_feitos = Emprestimos.objects.filter(id_user=id_user).all()
-
-    em_posse = []
-
-    #Checagem e armazenamento de quais não foram devolvidos
-    for i in emprestimos_feitos:
-        if i.status != 'Devolvido':
-            em_posse.append(i)
-
-    return em_posse
-
-
 def index(request):
     livros = Livros.objects.all()
     return render(request, 'Biblioteca/index.html', {"livros": livros})

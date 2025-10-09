@@ -5,10 +5,47 @@ from .models import Livros_Generos
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 
-class LivroDetalhes(DetailView):
+from django.views.generic.edit import ModelFormMixin
+from Biblioteca.forms import FormAval
+from Biblioteca.models import Avaliacoes
+
+def calc_nota(id):
+    try:
+        avals = [i.nota for i in Avaliacoes.objects.filter(id_livro_id=id)]
+        nota = sum(avals)/len(avals)
+        return {'nota': f'{nota:.2f}', 'num_avals': len(avals)}
+    
+    except:
+        return 0
+
+class LivroDetalhes(ModelFormMixin, DetailView):
     model = Livros
     template_name = 'Detalhes_Livro.html'
-    context_object_name = 'livro'
+
+    form_class = FormAval
+    
+    def get_context_data(self, **kwargs):
+        livro = super().get_context_data(**kwargs)
+        avaliacoes = Avaliacoes.objects.filter(id_livro_id=livro['livros'].pk)
+        form = self.get_form()
+
+        return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk)}
+    
+    def form_valid(self, form):
+        form.instance.id_user_id = self.request.user.id
+        form.instance.id_livro_id = self.object.id
+        return super(LivroDetalhes, self).form_valid(form)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        self.object = self.get_object()
+
+        if form.is_valid() and int(form.data['nota'])<=5 and int(form.data['nota'])>=0:
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        
+    success_url = '#'
 
 def AdicionarCategoria(request):
     if request.method == "POST":
