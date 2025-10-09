@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Ações Rápidas</h4>
+                    <div class="d-flex justify-content-start gap-3 mt-3">
+                        <a href="#" class="btn btn-primary">Registrar Retirada</a>
+                        <a href="#" class="btn btn-primary">Registrar Devolução</a>
+                        <a href="#" class="btn btn-primary">Adicionar Livro</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Empréstimos</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Data empréstimo</th>
+                                    <th>Data devolução</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.livro.titulo }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.status }}</td>
+                                    <td><a href="#">Detalhes</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6">Nenhum empréstimo registrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-2">
+                        <a href="#" class="btn btn-light">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Acervo</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Livro</th>
+                                    <th>Editora</th>
+                                    <th>Autor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for livro in livros %}
+                                <tr>
+                                    <td>{{ livro.titulo }}</td>
+                                    <td>{{ livro.editora }}</td>
+                                    <td>{{ livro.autor }}</td>
+                                    <td>{{ livro.status }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">Nenhum livro encontrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-2">
+                        <a href="#" class="btn btn-light">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Usuários</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Email Contato</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                <tr>
+                                    <td>{{ usuario.nome }}</td>
+                                    <td>{{ usuario.email }}</td>
+                                    <td>{{ usuario.status }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">Nenhum usuário cadastrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-2">
+                        <a href="#" class="btn btn-light">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
