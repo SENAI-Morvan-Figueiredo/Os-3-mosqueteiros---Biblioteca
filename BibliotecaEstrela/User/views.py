@@ -25,6 +25,10 @@ def register(request):
 def tela_perfil(request):
     user = request.user
 
+    if user.is_superuser:
+        print("ok - adm")
+        return redirect('Bibliotecario:teste')
+
     if request.method == 'POST':
         if 'deletar' in request.POST:
             print("a")
