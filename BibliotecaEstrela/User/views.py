@@ -48,19 +48,29 @@ def tela_perfil(request):
 
 @login_required
 def historico_perfil(request):
-    extensao = Pedidos_extensao.objects.none()
-    if request.method == 'GET':
-        reservas = Reserva.objects.filter(id_user=request.user)
+    reservas = Reserva.objects.filter(id_user=request.user)
+    emprestimos = Emprestimos.objects.filter(id_user=request.user)
+    
+    # Aqui vamos usar os empréstimos como base para o select
+    extensoes = emprestimos
 
-        emprestimo = Emprestimos.objects.filter(id_user=request.user)
-    
     if request.method == 'POST':
-        extensao = Pedidos_extensao.objects.filter(id_emprestimo__id_user=request.user)
-    
+        id_emprestimo = request.POST.get('livro')
+
+        # Evita duplicar pedidos de extensão para o mesmo empréstimo
+        ja_existe = Pedidos_extensao.objects.filter(id_emprestimo=id_emprestimo).exists()
+
+        if not ja_existe:
+            emprestimo = Emprestimos.objects.get(id=id_emprestimo)
+            Pedidos_extensao.objects.create(
+                id_emprestimo=emprestimo,
+                status="Pendente"
+            )
+
     context = {
         'reservas': reservas,
-        'emprestimos': emprestimo,
-        'extensoes': extensao,
+        'emprestimos': emprestimos,
+        'extensoes': extensoes,
     }
 
     return render(request, 'user/historico_perfil.html', context)
