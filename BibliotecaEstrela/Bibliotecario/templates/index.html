@@ -57,7 +57,7 @@
                                     <th>Usuário</th>
                                     <th>Livro</th>
                                     <th>Data empréstimo</th>
-                                    <th>Data devolução</th>
+                                    <!-- <th>Data devolução</th> -->
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
@@ -66,9 +66,9 @@
                                 {% for emprestimo in emprestimos %}
                                 <tr>
                                     <td>{{ emprestimo.id_user.username }}</td>
-                                    <td>{{ emprestimo.livro.titulo }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
                                     <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
-                                    <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td>
+                                    <!-- <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td> -->
                                     <td>{{ emprestimo.status }}</td>
                                     <td><a href="#">Detalhes</a></td>
                                 </tr>
@@ -102,7 +102,7 @@
                             <tbody>
                                 {% for livro in livros %}
                                 <tr>
-                                    <td>{{ livro.titulo }}</td>
+                                    <td>{{ livro.nome }}</td>
                                     <td>{{ livro.editora }}</td>
                                     <td>{{ livro.autor }}</td>
                                     <td>{{ livro.status }}</td>
@@ -130,15 +130,15 @@
                                 <tr>
                                     <th>Usuário</th>
                                     <th>Email Contato</th>
-                                    <th>Status</th>
+                                    <!-- <th>Status</th> -->
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for usuario in usuarios %}
                                 <tr>
-                                    <td>{{ usuario.nome }}</td>
+                                    <td>{{ usuario.username }}</td>
                                     <td>{{ usuario.email }}</td>
-                                    <td>{{ usuario.status }}</td>
+                                    <!-- <td>{{ usuario.status }}</td> -->
                                 </tr>
                                 {% empty %}
                                 <tr>
