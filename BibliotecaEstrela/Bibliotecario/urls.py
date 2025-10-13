@@ -3,4 +3,5 @@ from .views import *
 app_name = 'Bibliotecario'
 urlpatterns = [
     path("", teste, name="teste"),
+    path("/livros", livros, name="livros_adm")
 ]
