@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 
 {% block content %}
@@ -76,6 +77,20 @@
                     </div>
                     <div class="text-end mt-2">
                         <a href="#" class="btn btn-primary">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Adicionar Livro</h4>
+                    <div class="col-md-8 offset-2">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ livro_form|crispy }}
+                            {{ genero_form|crispy }}
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </form>
                     </div>
                 </div>
             </div>
