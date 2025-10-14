@@ -23,6 +23,7 @@ def register(request):
 @login_required
 def tela_perfil(request):
     user = request.user
+    reservas = Reserva.objects.filter(id_user=request.user)
 
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=user)
@@ -37,8 +38,6 @@ def tela_perfil(request):
     else:
         form = UserUpdateForm(instance=user)
 
-    if request.method == 'GET':
-        reservas = Reserva.objects.filter(id_user=request.user)
 
     context = {
         'form': form,
