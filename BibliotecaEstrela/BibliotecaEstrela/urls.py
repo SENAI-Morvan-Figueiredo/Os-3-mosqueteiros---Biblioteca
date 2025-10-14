@@ -28,7 +28,7 @@ urlpatterns = [
     path('', index),
     path("accounts/", include("allauth.urls")), 
     path('catalogo/', catalogo),
-    path('biliotecario', include("Bibliotecario.urls"))
+    path('bibliotecario', include("Bibliotecario.urls"))
 ]
 
 if settings.DEBUG:
