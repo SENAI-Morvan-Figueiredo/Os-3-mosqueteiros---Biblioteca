@@ -4,5 +4,6 @@ app_name = 'Bibliotecario'
 urlpatterns = [
     path("", teste, name="teste"),
     path("/livros", livros, name="livros_adm"),
-    path("/emprestimos_atuais", emprestimos_atuais, name="emprestimos_atuais")
+    path("/emprestimos_atuais", emprestimos_atuais, name="emprestimos_atuais"),
+    path("/emprestimos_historico", emprestimos_historico, name="emprestimos_historico")
 ]

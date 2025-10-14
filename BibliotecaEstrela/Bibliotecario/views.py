@@ -32,6 +32,20 @@ def emprestimos_atuais(request):
     }
     return render(request, 'emprestimos_atuais.html', context)
 
+# view para empréstimos todos (pesquisa/histórico)
+def emprestimos_historico(request):
+    livros = Livros.objects.all()
+    usuarios = Usuario.objects.all()
+    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
+    emprestimos = Emprestimos.objects.all()
+    reservas = Reserva.objects.all()
+    context = {
+        "livros": livros,
+        "usuarios": usuarios,
+        "emprestimos":  emprestimos,
+        "reservas": reservas,
+    }
+    return render(request, 'emprestimos_historico.html', context)
 
 # view para livro para adm:
 def livros(request):
