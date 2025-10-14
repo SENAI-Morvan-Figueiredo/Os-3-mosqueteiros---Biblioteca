@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from Livros.models import Livros, Generos, Livros_Generos
 from User.models import Usuario
-from Biblioteca.models import Emprestimos
+from Biblioteca.models import Emprestimos, Reserva
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 
@@ -17,8 +17,23 @@ def teste(request):
     }
     return render(request, 'index.html', context)
 
-# view para livro para adm:
+# view para empréstimos atuais
+def emprestimos_atuais(request):
+    livros = Livros.objects.all()
+    usuarios = Usuario.objects.all()
+    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
+    emprestimos = Emprestimos.objects.filter(status="Disponível para retirar")
+    reservas = Reserva.objects.filter(status="Em espera")
+    context = {
+        "livros": livros,
+        "usuarios": usuarios,
+        "emprestimos":  emprestimos,
+        "reservas": reservas,
+    }
+    return render(request, 'emprestimos_atuais.html', context)
 
+
+# view para livro para adm:
 def livros(request):
     if request.method == "POST":
         livro_form = LivrosForm(request.POST, request.FILES)
