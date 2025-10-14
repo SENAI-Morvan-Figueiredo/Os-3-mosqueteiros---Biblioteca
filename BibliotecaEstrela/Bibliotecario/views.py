@@ -22,6 +22,9 @@ def emprestimos_atuais(request):
     livros = Livros.objects.all()
     usuarios = Usuario.objects.all()
     # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # todo: adicionar uma variável para unicamente o card a esquerda (não gerar conflito)
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     emprestimos = Emprestimos.objects.filter(status="Disponível para retirar")
     reservas = Reserva.objects.filter(status="Em espera")
     context = {
@@ -46,6 +49,21 @@ def emprestimos_historico(request):
         "reservas": reservas,
     }
     return render(request, 'emprestimos_historico.html', context)
+
+# view para todos os usuários (pesquisa/histórico)
+def usuarios(request):
+    livros = Livros.objects.all()
+    usuarios = Usuario.objects.all()
+    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
+    emprestimos = Emprestimos.objects.all()
+    reservas = Reserva.objects.all()
+    context = {
+        "livros": livros,
+        "usuarios": usuarios,
+        "emprestimos":  emprestimos,
+        "reservas": reservas,
+    }
+    return render(request, 'usuarios.html', context)
 
 # view para livro para adm:
 def livros(request):
