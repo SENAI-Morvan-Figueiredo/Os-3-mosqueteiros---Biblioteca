@@ -103,3 +103,22 @@ def livros(request):
         "form": form,
     }
     return render(request, 'adm_livros.html', context)
+
+
+# view para dashboard adm
+
+# !!!
+# A base é esta, falta filtrar e adicionar as funcionalidades de multa, etc
+# !!!
+def dashboard(request):
+    livros = Livros.objects.all()
+    usuarios = Usuario.objects.all()
+    emprestimos = Emprestimos.objects.all()
+    reservas = Reserva.objects.all()
+    context = {
+        "livros": livros,
+        "usuarios": usuarios,
+        "emprestimos":  emprestimos,
+        "reservas": reservas,
+    }
+    return render(request, 'dashboard.html', context)

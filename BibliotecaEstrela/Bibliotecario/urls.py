@@ -7,4 +7,5 @@ urlpatterns = [
     path("/emprestimos_atuais", emprestimos_atuais, name="emprestimos_atuais"),
     path("/emprestimos_historico", emprestimos_historico, name="emprestimos_historico"),
     path("/usuarios", usuarios, name="usuarios"),
+    path("/dashboard", dashboard, name="dashboard"),
 ]
