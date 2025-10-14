@@ -8,7 +8,26 @@
                 
                 <div class="card-perfil estatisticas text-align-start" style="flex:0 0 250px">
                     
-                    <div class="imagem"></div>
+                    
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <label for="id_imagem" class="imagem-label">
+                            <div class="imagem">
+                                <img id="preview" 
+                                    src="{% if user.imagem %}{{ user.imagem.url }}{% else %}{% static 'img/placeholder.png' %}{% endif %}" 
+                                >
+                                    
+                            </div>
+                            {{ imagem_form.imagem }}
+                        </label>
+
+                        <button type="submit" name="salvar_imagem" class="estilizacao" style="display: none;">Salvar Imagem</button>
+                    </form>
+
+                        
+                    
 
                     <div class="campo_estatisticas d-flex flex-column gap-0">
 
@@ -97,7 +116,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" id="salvarBtn" style="display:none;" class="estilizacao">Salvar Alterações</button>
+                            <button type="submit" id="salvarBtn" name="salvar_dados" style="display:none;" class="estilizacao">Salvar Alterações</button>
                         </form>
                     </div>
 
@@ -136,6 +155,17 @@
                 </div>
             </div>
         </div>
+
+    <script>
+        document.getElementById('id_imagem').addEventListener('change', function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    </script>
+
     </main>
 
 {% endblock content %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, UserUpdateImageForm
 from .models import Usuario
 from Biblioteca.models import Reserva, Emprestimos, Pedidos_extensao
 
@@ -26,21 +26,38 @@ def tela_perfil(request):
     reservas = Reserva.objects.filter(id_user=request.user)
 
     if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            user = form.save()
-            update_session_auth_hash(request, user)
-            print("a")
-            return redirect('tela_perfil')
-        else:
-            print("Form inválido:", form.errors)
+
+        if 'salvar_dados' in request.POST:
+            form = UserUpdateForm(request.POST, instance=user)
+            imagem_form = UserUpdateImageForm(instance=user)
+
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)
+                return redirect('tela_perfil')
+            
+            else:
+                print("Form inválido:", form.errors)
+
+        elif 'salvar_imagem' in request.POST:
+            form = UserUpdateForm(instance=user)
+            imagem_form = UserUpdateImageForm(request.POST, request.FILES, instance=user)
+
+            if imagem_form.is_valid():
+                imagem_form.save()
+                return redirect('tela_perfil')
+            
+            else:
+                print("Imagem inválida:", imagem_form.errors)
+
     else:
         form = UserUpdateForm(instance=user)
+        imagem_form = UserUpdateImageForm(instance=user)
 
 
     context = {
         'form': form,
+        'imagem_form': imagem_form,
         'reservas': reservas,
     }
     return render(request, 'user/tela_perfil.html', context)

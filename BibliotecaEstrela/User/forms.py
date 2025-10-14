@@ -23,6 +23,11 @@ class UserUpdateForm(forms.ModelForm):
         model = Usuario
         fields = ['username', 'email', 'cpf', 'telefone', 'imagem']
 
+class UserUpdateImageForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['imagem']
+
     def save(self, commit=True):
         user = super().save(commit=False)
         password = self.cleaned_data.get('new_password')
