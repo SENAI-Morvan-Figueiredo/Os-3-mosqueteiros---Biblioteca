@@ -54,7 +54,9 @@ def criar_emprestimo(request, id_livro, id_user):
 
 
 def criar_reserva(request, id_livro, id_user):
-
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
     #em_posse = checar_livros_em_posse(id_user)
     #if len(em_posse) <= 5 :
     
