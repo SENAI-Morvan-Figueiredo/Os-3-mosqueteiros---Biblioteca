@@ -56,25 +56,27 @@
                 </div>
             </div>
 
-            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
-                <h2>Solicitar extensão do prazo</h2>
+            {% if extensoes %}
+                <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                    <h2>Solicitar extensão do prazo</h2>
 
-                <form method="post" class="d-flex flex-column w-100">
-                    {% csrf_token %}
+                    <form method="post" class="d-flex flex-column w-100">
+                        {% csrf_token %}
 
-                    <label for="livro" class="align-self-start">Selecione o livro</label>
-                    <select name="livro" id="livro" class="custom-select" required>
-                        <option value="">Selecione um livro</option>
-                        {% for emprestimo in extensoes %}
-                            <option value="{{ emprestimo.id }}" class="ultima-opcao">
-                                {{ emprestimo.id_livro.nome }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                        <label for="livro" class="align-self-start">Selecione o livro</label>
+                        <select name="livro" id="livro" class="custom-select" required>
+                            <option value="">Selecione um livro</option>
+                            {% for emprestimo in extensoes %}
+                                <option value="{{ emprestimo.id }}" class="ultima-opcao">
+                                    {{ emprestimo.id_livro.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
 
-                    <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
-                </form>
-            </div>
+                        <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
+                    </form>
+                </div>
+            {% endif %}
 
         </div>
     </main>

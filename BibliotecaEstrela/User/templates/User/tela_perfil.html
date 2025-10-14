@@ -20,19 +20,19 @@
                         <h2>Estatísticas</h2>
 
                         <div class="info-estatisticas">
-                            <p>Livros reservados</p>
+                            <p>Livros em posse: {{ em_posse|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Livros devolvidos</p>
+                            <p>Livros reservados: {{ reservas|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Avaliações</p>
+                            <p>Livros devolvidos: {{ devolvidos|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Lista de desejos</p>
+                            <p>Avaliações: {{ avaliacoes|length }} </p>
                         </div>
 
                     </div>
@@ -112,7 +112,37 @@
                     <div class="card-perfil d-flex align-items-start py-4 px-5">
                         <h2>Notificações</h2>
                     </div>
-                    
+ 
+
+                    <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
+                        <h2>Livros em sua posse</h2>
+
+                        <div class="d-flex flex-row w-100 gap-4">
+                            {% for livro in em_posse %}
+
+                            <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
+                                <div class="card h-100 book-item shadow-sm">
+                                    {% if not livro.id_livro.imagem %}
+                                        <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 350px; object-fit: cover;" alt="Sem capa">
+                                    {% else %}
+                                    <div>
+                                        <img src="{{ livro.id_livro.imagem.url }}" class="card-img-top" style="height: 350px; object-fit: cover;" alt="{{ livro.nome }}">
+                                    </div>
+                                    {% endif %}
+                                    <div class="card-body d-flex flex-column text-center">
+                                        <h6 class="card-title fw-bold">{{ livro.id_livro.nome }}</h6>
+                                        <p class="card-text text-muted small mt-auto">{{ livro.id_livro.autor }}</p>
+                                        {{ livro.data_emprestimo }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
                     <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
                         <h2>Livros Reservados</h2>
 
@@ -139,6 +169,7 @@
                             {% endfor %}
                         </div>
                     </div>
+
                     
 
                 </div>

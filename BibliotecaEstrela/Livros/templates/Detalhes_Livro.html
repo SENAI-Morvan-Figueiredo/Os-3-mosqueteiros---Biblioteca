@@ -4,6 +4,24 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+    <style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    textarea {
+        resize: none;
+    }
+    </style>
+
     <div class="container-fluid">
         <div class="col-12 col-xl-8 offset-xl-2 mt-5">
             <h1 class="mb-3">Sobre o livro</h1>
@@ -95,7 +113,7 @@
                 {% csrf_token %}
                 <fieldset class="form-group mt-3">
                     <legend class="border-bottom mb-4">Deixe sua avaliação!</legend>
-                    <h6>Notas de 0 a 5*</h6>
+                    <i> <h6>Notas de 0 a 5*</h6> </i>
                     {{ form|crispy }}
                 </fieldset>
                 <div class="form-group">
