@@ -22,6 +22,7 @@ def teste(request):
 def livros(request):
     if request.method == "POST":
         livro_form = LivrosForm(request.POST, request.FILES)
+        categoria_form = GenerosForm(request.POST)
 
         if livro_form.is_valid():
             livro = livro_form.save()  # salva o livro primeiro
@@ -32,9 +33,14 @@ def livros(request):
                 Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
 
             return redirect("livros")
+    
+        if categoria_form.is_valid():
+            categoria_form.save()
+            return redirect("livros")
     else:
         livro_form = LivrosForm()
         genero_form = LivrosGenerosForm()
+        form = GenerosForm()
 
     livros = Livros.objects.all()
     generos = Generos.objects.all()
@@ -47,5 +53,6 @@ def livros(request):
         "emprestimos": emprestimos,
         "livro_form": livro_form,
         "genero_form": genero_form,
+        "form": form,
     }
     return render(request, 'adm_livros.html', context)
