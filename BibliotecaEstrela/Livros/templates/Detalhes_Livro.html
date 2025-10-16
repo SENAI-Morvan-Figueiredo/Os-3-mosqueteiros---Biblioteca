@@ -73,7 +73,7 @@
         <div class="col-12 col-xl-8 offset-xl-2 mt-5" id="acoes">
             
             {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}"><h2 class="ps-5">Faça login para poder pedir empréstimos</h2></a>
+                <a href="{% url 'login' %}"><h2 class="ps-5">Faça login para poder pedir empréstimos</h2></a>
             
             {% elif not user_data.emprestimos and not user_data.reservas %}
             <h1>Ações:</h1>
@@ -114,9 +114,9 @@
                         <h3>Período de empréstimo</h3>
                         Uma vez retirado, você terá duas semanas para utilizar o livro. Para mais tempo, solicite aumento de prazo na área de seu perfil.
                     </div>
-
-                    <a href="{% url 'criar_emprestimos' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Emprestimo</button></a> 
-                
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'criar_emprestimos' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Emprestimo</button></a> 
+                    {% endif %}
                 {% else %}
 
                     <div class="col-10 p-5 mb-5 offset-1" style="border: 1px solid gray; background-color: #fafafa;">
@@ -124,9 +124,9 @@
                         Ao confirmar a reserva você será colocado na fila de espera.<br>
                         Você será notificado quando o livro estiver disponível para ser retirado na biblioteca.
                     </div>
-
-                    <a href="{% url 'criar_reserva' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Confirmar Reserva</button></a>
-                
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'criar_reserva' livro.id user.id %}"> <button type="button" class="btn btn-outline-primary inline" style="color: blue;">Confirmar Reserva</button></a>
+                    {% endif %}
                 {% endif %}
             `
         }
