@@ -79,11 +79,11 @@ def livros(request):
             for genero_id in generos_ids:
                 Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
 
-            return redirect("livros")
+            return redirect("Bibliotecario:livros_adm")
     
         if categoria_form.is_valid():
             categoria_form.save()
-            return redirect("livros")
+            return redirect("Bibliotecario:livros_adm")
     else:
         livro_form = LivrosForm()
         genero_form = LivrosGenerosForm()
