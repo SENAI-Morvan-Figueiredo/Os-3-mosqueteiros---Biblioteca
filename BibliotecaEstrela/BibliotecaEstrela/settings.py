@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'biblioteca-estrela.onrender.com']
 
 AUTH_USER_MODEL = 'User.Usuario'
 
