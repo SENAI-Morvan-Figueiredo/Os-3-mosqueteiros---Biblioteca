@@ -88,78 +88,92 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Empréstimos Atuais:</h4>
-                    <div class="table-responsive mt-3">
-                        <table class="table table-bordered text-center">
-                            <thead>
-                                <tr>
-                                    <th>Usuário</th>
-                                    <th>Livro</th>
-                                    <th>Data empréstimo</th>
-                                    <!-- <th>Data devolução</th> -->
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for emprestimo in emprestimos %}
-                                <tr>
-                                    <td>{{ emprestimo.id_user.username }}</td>
-                                    <td>{{ emprestimo.id_livro.nome }}</td>
-                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
-                                    <!-- <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td> -->
-                                    <td>{{ emprestimo.status }}</td>
-                                    <td><a href="#">Detalhes</a></td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6">Nenhum empréstimo registrado.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
-                    </div>
+                    <form method="post" action="{% url 'Bibliotecario:atualizar_status' %}">
+                        {% csrf_token %}
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Usuário</th>
+                                                <th>Livro</th>
+                                                <th>Data empréstimo</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for emprestimo in emprestimos %}
+                                            <tr>
+                                                <td>{{ emprestimo.id_user.username }}</td>
+                                                <td>{{ emprestimo.id_livro.nome }}</td>
+                                                <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                                <td>
+                                                    <select class="form-select" name="status_{{ emprestimo.id }}">
+                                                        <option value="Disponível para retirar" {% if emprestimo.status == "Disponível para retirar" %}selected{% endif %}>Disponível para Retirar</option>
+                                                        <option value="Retirado" {% if emprestimo.status == "Retirado" %}selected{% endif %}>Retirado</option>
+                                                        <option value="Devolvido" {% if emprestimo.status == "Devolvido" %}selected{% endif %}>Devolvido</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4">Nenhum empréstimo registrado.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="text-end mt-2">
+                                    <a href="#" class="btn btn-primary">Ver mais</a>
+                                    <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                                </div>
+                    </form>
+
                 </div>
             </div>
 
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Reservas Atuais:</h4>
-                    <div class="table-responsive mt-3">
-                        <table class="table table-bordered text-center">
-                            <thead>
-                                <tr>
-                                    <th>Usuário</th>
-                                    <th>Livro</th>
-                                    <th>Data Reserva</th>
-                                    <!-- <th>Data devolução</th> -->
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for reserva in reservas %}
-                                <tr>
-                                    <td>{{ reserva.id_user.username }}</td>
-                                    <td>{{ reserva.id_livro.nome }}</td>
-                                    <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
-                                    <!-- <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td> -->
-                                    <td>{{ reserva.status }}</td>
-                                    <td><a href="#">Detalhes</a></td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6">Nenhum empréstimo registrado.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
-                    </div>
+                    <form method="post" action="{% url 'Bibliotecario:atualizar_status_reservas' %}">
+                        {% csrf_token %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Livro</th>
+                                        <th>Data Reserva</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reserva in reservas %}
+                                    <tr>
+                                        <td>{{ reserva.id_user.username }}</td>
+                                        <td>{{ reserva.id_livro.nome }}</td>
+                                        <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <select class="form-select" name="status_{{ reserva.id }}">
+                                                <option value="Em espera" {% if reserva.status == "Em espera" %}selected{% endif %}>Em espera</option>
+                                                <option value="Finalizado" {% if reserva.status == "Finalizado" %}selected{% endif %}>Finalizado</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">Nenhuma reserva registrada.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-end mt-2">
+                            <a href="#" class="btn btn-primary">Ver mais</a>
+                            <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         

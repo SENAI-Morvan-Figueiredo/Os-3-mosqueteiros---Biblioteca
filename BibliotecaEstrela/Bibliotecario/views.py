@@ -5,6 +5,8 @@ from Biblioteca.models import Emprestimos, Reserva
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 
+
+
 # view para tela inicial (todo: trocar nomes)
 def teste(request):
     livros = Livros.objects.all()
@@ -34,6 +36,71 @@ def emprestimos_atuais(request):
         "reservas": reservas,
     }
     return render(request, 'emprestimos_atuais.html', context)
+
+from django.contrib import messages
+
+# atualizar status emprestimo
+
+"""
+!!!!!!!!!!!!!!!!!!!!!
+IMPORTANTE:
+Tome cuidado com o "disponivel" ou "indisponivel", digamos que são as "palavras chave", não altera se não estiverenm nestas condições.
+!!!!!!!!!!!!!!!!!!!!!
+"""
+def atualizar_status(request):
+    if request.method == "POST":
+        for key, value in request.POST.items():
+            if key.startswith("status_"):
+                emprestimo_id = key.split("_")[1]
+                novo_status = value
+
+                # Atualiza o status do empréstimo
+                emprestimo = Emprestimos.objects.filter(id=emprestimo_id).first()
+                if emprestimo:
+                    emprestimo.status = novo_status
+                    emprestimo.save()
+
+                    # Atualiza o status do livro (models do livro)
+                    livro = emprestimo.id_livro
+                    if novo_status == "Retirado":
+                        livro.status = "Indisponivel"
+                        livro.save()
+                    elif novo_status == "Devolvido":
+                        livro.status = "disponivel"
+                        livro.save()
+
+        messages.success(request, "Status dos empréstimos atualizados com sucesso!")
+    return redirect("Bibliotecario:emprestimos_atuais")
+
+
+from django.utils import timezone
+
+# atualiza reserva (muda de reserva para empréstimo)
+def atualizar_status_reservas(request):
+    if request.method == "POST":
+        for key, value in request.POST.items():
+            if key.startswith("status_"):
+                reserva_id = key.split("_")[1]
+                novo_status = value
+
+                # Atualiza a reserva
+                reserva = Reserva.objects.filter(id=reserva_id).first()
+                if reserva:
+                    reserva.status = novo_status
+                    reserva.save()
+
+                    # Se for Finalizado, cria um empréstimo automaticamente
+                    if novo_status == "Finalizado":
+                        Emprestimos.objects.create(
+                            id_user=reserva.id_user,
+                            id_livro=reserva.id_livro,
+                            data_emprestimo=timezone.now(),
+                            status="Disponível para retirar"
+                        )
+        messages.success(request, "Status das reservas atualizadas com sucesso!")
+    return redirect("Bibliotecario:emprestimos_atuais")
+
+
 
 # view para empréstimos todos (pesquisa/histórico)
 def emprestimos_historico(request):
