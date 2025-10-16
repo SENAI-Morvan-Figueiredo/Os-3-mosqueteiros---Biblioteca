@@ -27,14 +27,8 @@ class UserUpdateImageForm(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['imagem']
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        password = self.cleaned_data.get('new_password')
-
-        if password:
-            user.set_password(password)
-        if commit:
-            user.save()
-
-        return user
+        widgets = {
+            'imagem': forms.FileInput(attrs={
+                'accept': 'image/*',  # opcional: limita a imagens
+            }),
+        }

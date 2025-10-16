@@ -10,7 +10,7 @@
                     
                     
 
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center">
                         {% csrf_token %}
 
                         <label for="id_imagem" class="imagem-label">
@@ -23,7 +23,7 @@
                             {{ imagem_form.imagem }}
                         </label>
 
-                        <button type="submit" name="salvar_imagem" class="estilizacao" style="display: none;">Salvar Imagem</button>
+                        <button id="btn_salvar-imagem" type="submit" name="salvar_imagem" class="estilizacao" style="display: none;">Salvar Imagem</button>
                     </form>
 
                         
@@ -163,7 +163,11 @@
                 document.getElementById('preview').src = e.target.result;
             }
             reader.readAsDataURL(event.target.files[0]);
+
+            document.getElementById('btn_salvar-imagem').style.display = 'flex';
         });
+
+        document.getElementById('btn_salvar-imagem').onclick = style.display = 'none'
     </script>
 
     </main>
