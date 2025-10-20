@@ -1,6 +1,7 @@
 from django.db import models
 from User.models import Usuario
 from Livros.models import Livros
+from datetime import date, timedelta
 
 # Create your models here.
 
@@ -9,6 +10,11 @@ class Emprestimos(models.Model):
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
     data_emprestimo = models.DateField(auto_now_add=True)
     status = models.CharField()
+
+    def calcular_multa(self):
+        prazo = self.data_emprestimo + timedelta(days=0)  # prazo de devolução
+        atraso = (date.today() - prazo).days
+        return max(atraso * 2, 0)  # R$2 por dia, no mínimo 0
 
 class Reserva(models.Model):
     id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)

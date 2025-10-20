@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'Biblioteca',
     'Livros',
     'User',
+    'Multas'
 ]
 
 MIDDLEWARE = [
