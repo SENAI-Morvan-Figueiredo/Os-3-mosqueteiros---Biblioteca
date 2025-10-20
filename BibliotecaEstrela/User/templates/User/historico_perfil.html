@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <main class="text-center" style="padding: 0 10%">
+        <div class="d-flex gap-5 flex-column">
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Livros em reserva</h2>
+
+                <div class="d-flex flex-row w-100 gap-4">
+                    {% for reserva in reservas %}
+
+                    <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 book-item shadow-sm">
+                            {% if not reserva.id_livro.imagem %}
+                                <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
+                            {% else %}
+                            <div>
+                                <img src="{{ reserva.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
+                            </div>
+                            {% endif %}
+                            <div class="card-body d-flex flex-column text-center">
+                                <h6 class="card-title fw-bold">{{ reserva.id_livro.nome }}</h6>
+                                <p class="card-text text-muted small mt-auto">{{ reserva.id_livro.autor }}</p>
+                                {{ reserva.data_reserva }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Livros em emprestimo</h2>
+
+                <div class="d-flex flex-row w-100 gap-4">
+                    {% for emprestimo in emprestimos %}
+                        <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 book-item shadow-sm">
+                                {% if not emprestimo.id_livro.imagem %}
+                                    <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
+                                {% else %}
+                                <div>
+                                    <img src="{{ emprestimo.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
+                                </div>
+                                {% endif %}
+                                <div class="card-body d-flex flex-column text-center">
+                                    <h6 class="card-title fw-bold">{{ emprestimo.id_livro.nome }}</h6>
+                                    <p class="card-text text-muted small mt-auto">{{ emprestimo.id_livro.autor }}</p>
+                                    {{ emprestimo.data_reserva }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Solicitar extenção do prazo</h2>
+
+                <form method="post" class="d-flex flex-column w-100">
+                    {% csrf_token %}
+
+                    <label for="livro" class="align-self-start">Selecione o livro</label>
+                    <select name="livro" id="livro" class="w-100">
+                        {% for extensao in extensoes %}
+                            <option value="{{ extensao.id_extensao }}">{{ extensao.id_extensao.id_livro }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+        </div>
+    </main>
+{% endblock content %}

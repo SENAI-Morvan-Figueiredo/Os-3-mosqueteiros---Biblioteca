@@ -121,17 +121,61 @@ label{
 
 /* Estilização campo imagem */
 .imagem{
-    width: 50%;
-    height: 31.25%;
+    position: relative;
 
-    display: flex;
-    justify-self: center;
+    width: 125px;
+    height: 125px;
 
     border-radius: 50%;
+    border: 2px solid #ccc;
 
-    background-color: gray;
+    overflow: hidden;
+    cursor: pointer;
 
-    margin: 5% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #f0f0f0;
+    
+    transition: 0.3s;
+
+    margin: 10px 0;
+}
+
+.imagem-label{
+    margin-bottom: 0;
+}
+
+.imagem:hover {
+    opacity: 0.85;
+    border-color: #888;
+}
+
+.imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* texto centralizado */
+.placeholder-text {
+    position: absolute;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* esconde o texto quando há imagem */
+.imagem img[src] + .placeholder-text {
+    display: none;
+}
+
+/* esconde o input */
+input[type="file"] {
+    display: none;
 }
 
 /* Estilização do título dos cards */
