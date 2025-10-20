@@ -47,7 +47,7 @@
         <div class="col-lg-2 col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px;"></div>
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
                     
                     <h5 class="card-title mb-4">Estatísticas</h5>
 
@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="text-end mt-2">
-                                    <a href="#" class="btn btn-primary">Ver mais</a>
+                                    <a href="{% url 'Bibliotecario:emprestimos_historico' %}" class="btn btn-primary">Ver mais</a>
                                     <button type="submit" class="btn btn-primary">Atualizar Status</button>
                                 </div>
                     </form>
@@ -170,7 +170,7 @@
                         </div>
 
                         <div class="text-end mt-2">
-                            <a href="#" class="btn btn-primary">Ver mais</a>
+                            <a href="{% url 'Bibliotecario:emprestimos_historico' %}" class="btn btn-primary">Ver mais</a>
                             <button type="submit" class="btn btn-primary">Atualizar Status</button>
                         </div>
                     </form>

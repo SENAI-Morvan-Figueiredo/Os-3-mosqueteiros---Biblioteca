@@ -45,7 +45,7 @@
         <div class="col-lg-2 col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px;"></div>
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
                     
                     <h5 class="card-title mb-4">Estatísticas</h5>
 
@@ -76,9 +76,16 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Buscar</h4>
-                    <div class="d-flex justify-content-start gap-3 mt-3">
-                        aqui é a barra de pesquisa
-                    </div>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:usuarios' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por nome, email ou CPF..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
                 </div>
             </div>
 
@@ -97,7 +104,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for usuario in usuarios %}
+                                {% for usuario in usuarios_lista_tabela %}
                                 <tr>
                                     <td>{{ usuario.username }}</td>
                                     <td>{{ usuario.email }}</td>
@@ -112,9 +119,6 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>
-                    <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
                     </div>
                 </div>
             </div>

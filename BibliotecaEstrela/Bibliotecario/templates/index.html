@@ -46,7 +46,7 @@
         <div class="col-lg-2 col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px;"></div>
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
                     
                     <h5 class="card-title mb-4">Estatísticas</h5>
 
@@ -78,9 +78,8 @@
                 <div class="card-body">
                     <h4 class="card-title">Ações Rápidas</h4>
                     <div class="d-flex justify-content-start gap-3 mt-3">
-                        <a href="#" class="btn btn-primary">Registrar Retirada</a>
-                        <a href="#" class="btn btn-primary">Registrar Devolução</a>
-                        <a href="#" class="btn btn-primary">Adicionar Livro</a>
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Registrar Retirada ou Devolução</a>
+                        <a href="{% url 'Bibliotecario:livros_adm' %}" class="btn btn-primary">Adicionar Livro</a>
                     </div>
                 </div>
             </div>
@@ -119,7 +118,7 @@
                         </table>
                     </div>
                     <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Ver mais</a>
                     </div>
                 </div>
             </div>
@@ -154,7 +153,7 @@
                         </table>
                     </div>
                     <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
+                        <a href="{% url 'Bibliotecario:livros_adm' %}" class="btn btn-primary">Ver mais</a>
                     </div>
                 </div>
             </div>
@@ -187,7 +186,7 @@
                         </table>
                     </div>
                     <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
+                        <a href="{% url 'Bibliotecario:usuarios' %}" class="btn btn-primary">Ver mais</a>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@ from User.models import Usuario
 from Biblioteca.models import Emprestimos, Reserva
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
-
+from django.db.models import Q
 
 
 # view para tela inicial (todo: trocar nomes)
@@ -104,34 +104,77 @@ def atualizar_status_reservas(request):
 
 # view para empréstimos todos (pesquisa/histórico)
 def emprestimos_historico(request):
-    livros = Livros.objects.all()
-    usuarios = Usuario.objects.all()
-    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
-    emprestimos = Emprestimos.objects.all()
-    reservas = Reserva.objects.all()
+    # 1. Pega os dados para os cards de estatística (sempre todos)
+    livros_stats = Livros.objects.all()
+    usuarios_stats = Usuario.objects.all()
+    emprestimos_stats = Emprestimos.objects.all() # Usado no card da esquerda
+    
+    # 2. Pega o termo da busca
+    query = request.GET.get('q')
+
+    if query:
+        # 3. Se houver busca, filtra as DUAS listas
+        # Busca por nome do usuário (no model Usuario) ou nome do livro (no model Livros)
+        emprestimos_lista = Emprestimos.objects.filter(
+            Q(id_user__username__icontains=query) | 
+            Q(id_livro__nome__icontains=query)
+        )
+        
+        reservas_lista = Reserva.objects.filter(
+            Q(id_user__username__icontains=query) | 
+            Q(id_livro__nome__icontains=query)
+        )
+    else:
+        # 4. Se não houver busca, pega todos os registros
+        emprestimos_lista = Emprestimos.objects.all()
+        reservas_lista = Reserva.objects.all()
+
     context = {
-        "livros": livros,
-        "usuarios": usuarios,
-        "emprestimos":  emprestimos,
-        "reservas": reservas,
+        # Variáveis para os cards de estatística
+        "livros": livros_stats,
+        "usuarios": usuarios_stats,
+        "emprestimos": emprestimos_stats, # Para o card
+        
+        # Variáveis NOVAS para as tabelas (filtradas ou não)
+        "emprestimos_tabela": emprestimos_lista,
+        "reservas_tabela": reservas_lista,
     }
     return render(request, 'emprestimos_historico.html', context)
 
 # view para todos os usuários (pesquisa/histórico)
 def usuarios(request):
-    livros = Livros.objects.all()
-    usuarios = Usuario.objects.all()
-    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
-    emprestimos = Emprestimos.objects.all()
-    reservas = Reserva.objects.all()
+    # Pega os dados para os cards de estatística (sempre todos)
+    livros_stats = Livros.objects.all()
+    usuarios_stats = Usuario.objects.all()
+    emprestimos_stats = Emprestimos.objects.all()
+    
+    # --- Lógica da Busca ---
+    # Pega o parâmetro 'q' da URL (ex: /usuarios/?q=teo)
+    query = request.GET.get('q')
+
+    if query:
+        # Se houver uma query, filtra a lista de usuários
+        # Busca por nome, email ou CPF que contenham o texto da query
+        usuarios_lista = Usuario.objects.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(cpf__icontains=query)
+        )
+    else:
+        # Se não houver query, mostra todos os usuários
+        usuarios_lista = Usuario.objects.all()
+    # --- Fim da Lógica da Busca ---
+
     context = {
-        "livros": livros,
-        "usuarios": usuarios,
-        "emprestimos":  emprestimos,
-        "reservas": reservas,
+        # Dados para os cards da esquerda (estatísticas)
+        "livros": livros_stats,
+        "usuarios": usuarios_stats, # 'usuarios' para o card de estatísticas
+        "emprestimos": emprestimos_stats,
+        
+        # 'usuarios_lista' para a tabela (filtrada ou não)
+        "usuarios_lista_tabela": usuarios_lista, 
     }
     return render(request, 'usuarios.html', context)
-
 # view para livro para adm:
 def livros(request):
     if request.method == "POST":
@@ -189,3 +232,10 @@ def dashboard(request):
         "reservas": reservas,
     }
     return render(request, 'dashboard.html', context)
+
+
+########
+# VIEWS PARA PESQUISAS
+########
+
+# view para pesquisa de usuário:

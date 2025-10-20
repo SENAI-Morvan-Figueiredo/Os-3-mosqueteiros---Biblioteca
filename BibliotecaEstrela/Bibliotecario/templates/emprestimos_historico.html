@@ -45,7 +45,7 @@
         <div class="col-lg-2 col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px;"></div>
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
                     
                     <h5 class="card-title mb-4">Estatísticas</h5>
 
@@ -76,9 +76,16 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Buscar</h4>
-                    <div class="d-flex justify-content-start gap-3 mt-3">
-                        aqui é a barra de pesquisa
-                    </div>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:emprestimos_historico' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por nome do usuário ou livro..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
                 </div>
             </div>
 
@@ -90,35 +97,30 @@
                             <thead>
                                 <tr>
                                     <th>Usuário</th>
-                                    <th>Livro</th>
-                                    <th>Data empréstimo</th>
-                                    <!-- <th>Data devolução</th> -->
+                                    <th>Título do Livro</th>
+                                    <th>Data do Empréstimo</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for emprestimo in emprestimos %}
+                                {% for emprestimo in emprestimos_tabela %}
                                 <tr>
                                     <td>{{ emprestimo.id_user.username }}</td>
                                     <td>{{ emprestimo.id_livro.nome }}</td>
                                     <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
-                                    <!-- <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td> -->
                                     <td>{{ emprestimo.status }}</td>
                                     <td><a href="#">Detalhes</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="6">Nenhum empréstimo registrado.</td>
+                                    <td colspan="5">Nenhum empréstimo encontrado.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
                     </div>
-                </div>
             </div>
 
             <div class="card shadow-sm mb-4">
@@ -129,35 +131,30 @@
                             <thead>
                                 <tr>
                                     <th>Usuário</th>
-                                    <th>Livro</th>
-                                    <th>Data Reserva</th>
-                                    <!-- <th>Data devolução</th> -->
+                                    <th>Título do Livro</th>
+                                    <th>Data da Reserva</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for reserva in reservas %}
+                                {% for reserva in reservas_tabela %}
                                 <tr>
                                     <td>{{ reserva.id_user.username }}</td>
                                     <td>{{ reserva.id_livro.nome }}</td>
                                     <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
-                                    <!-- <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td> -->
                                     <td>{{ reserva.status }}</td>
                                     <td><a href="#">Detalhes</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="6">Nenhum empréstimo registrado.</td>
+                                    <td colspan="5">Nenhuma reserva encontrada.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-end mt-2">
-                        <a href="#" class="btn btn-primary">Ver mais</a>
                     </div>
-                </div>
             </div>
         
 
