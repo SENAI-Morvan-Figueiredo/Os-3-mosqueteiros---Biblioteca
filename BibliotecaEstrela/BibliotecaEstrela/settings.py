@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'Biblioteca',
     'Livros',
     'User.apps.UserConfig',
+    'Bibliotecario',
 ]
 
 MIDDLEWARE = [

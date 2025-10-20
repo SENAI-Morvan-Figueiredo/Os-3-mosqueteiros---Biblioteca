@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .table-responsive{
+        max-height: 300px; 
+        overflow-y: auto; 
+    }
+</style>
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-5"  
+           style="color: black;" 
+           href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+           href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link active px-5" aria-current="page"
+           style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+           href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+           href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar</h4>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:emprestimos_historico' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por nome do usuário ou livro..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Empréstimos Atuais:</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Título do Livro</th>
+                                    <th>Data do Empréstimo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_tabela %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.status }}</td>
+                                    <td><a href="#">Detalhes</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">Nenhum empréstimo encontrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Reservas Atuais:</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Título do Livro</th>
+                                    <th>Data da Reserva</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reserva in reservas_tabela %}
+                                <tr>
+                                    <td>{{ reserva.id_user.username }}</td>
+                                    <td>{{ reserva.id_livro.nome }}</td>
+                                    <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
+                                    <td>{{ reserva.status }}</td>
+                                    <td><a href="#">Detalhes</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">Nenhuma reserva encontrada.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+            </div>
+        
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
