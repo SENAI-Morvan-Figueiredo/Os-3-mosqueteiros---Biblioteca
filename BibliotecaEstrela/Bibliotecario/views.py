@@ -27,7 +27,9 @@ def emprestimos_atuais(request):
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # todo: adicionar uma variável para unicamente o card a esquerda (não gerar conflito)
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    emprestimos = Emprestimos.objects.filter(status="Disponível para retirar")
+    emprestimos = Emprestimos.objects.filter(
+    Q(status="Disponível para retirar") | Q(status="Retirado")
+    )
     reservas = Reserva.objects.filter(status="Em espera")
     context = {
         "livros": livros,
