@@ -134,7 +134,7 @@ WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:senha123@localhost:5432/Biblioteca',
+        default=env(DATABASE_URL),
         conn_max_age=600
     )
 }
