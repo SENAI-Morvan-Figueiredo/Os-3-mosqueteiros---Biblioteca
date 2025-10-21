@@ -98,8 +98,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': env('OAUTH_GOOGLE_CLIENT_ID'),
-            'secret': env('OAUTH_GOOGLE_SECRET'),
+            'client_id': getenv('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': getenv('OAUTH_GOOGLE_SECRET'),
             'key': ''
         }
     }
