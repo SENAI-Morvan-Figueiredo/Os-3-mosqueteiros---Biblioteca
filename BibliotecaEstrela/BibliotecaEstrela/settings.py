@@ -209,3 +209,10 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
 
 # Pula 1 etapa na hora de fazer login pelo google, se quiser testar pode colocar como false e ir na tela de login, clicar no google e ver q tem uma segunda tela antes de finalmente fazer o login.
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 3600  # 1 hora
+
+SECURE_SSL_REDIRECT = True
+
+CSRF_COOKIE_SECURE = True
