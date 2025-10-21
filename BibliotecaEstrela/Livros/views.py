@@ -7,7 +7,7 @@ from django.views.generic import DetailView
 
 from django.views.generic.edit import ModelFormMixin
 from Biblioteca.forms import FormAval
-from Biblioteca.models import Avaliacoes
+from Biblioteca.models import Avaliacoes, Reserva, Emprestimos
 
 def calc_nota(id):
     try:
@@ -27,9 +27,18 @@ class LivroDetalhes(ModelFormMixin, DetailView):
     def get_context_data(self, **kwargs):
         livro = super().get_context_data(**kwargs)
         avaliacoes = Avaliacoes.objects.filter(id_livro_id=livro['livros'].pk)
+
+        user_data = {}
+
+        if self.request.user.is_authenticated:
+            user_data['reservas'] = (Reserva.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id))
+            user_data['emprestimos'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id))
+
+        print(user_data)
+
         form = self.get_form()
 
-        return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk)}
+        return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data}
     
     def form_valid(self, form):
         form.instance.id_user_id = self.request.user.id
@@ -98,3 +107,6 @@ def buscar_livro(request, busca):
     resultados = Livros.objects.filter(nome__contains=busca)
 
     return render(request, "Livros.html", {"livros": resultados})
+
+def tela_confirmar(request):
+    return render(request, "Confirmar_emprestimo.html")

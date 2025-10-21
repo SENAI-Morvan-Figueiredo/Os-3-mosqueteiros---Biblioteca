@@ -56,21 +56,75 @@
                 </div>
             </div>
 
-            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
-                <h2>Solicitar extenção do prazo</h2>
+            {% if extensoes %}
+                <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                    <h2>Solicitar extensão do prazo</h2>
 
-                <form method="post" class="d-flex flex-column w-100">
-                    {% csrf_token %}
+                    <form method="post" class="d-flex flex-column w-100">
+                        {% csrf_token %}
 
-                    <label for="livro" class="align-self-start">Selecione o livro</label>
-                    <select name="livro" id="livro" class="w-100">
-                        {% for extensao in extensoes %}
-                            <option value="{{ extensao.id_extensao }}">{{ extensao.id_extensao.id_livro }}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-            </div>
+                        <label for="livro" class="align-self-start">Selecione o livro</label>
+                        <select name="livro" id="livro" class="custom-select" required>
+                            <option value="">Selecione um livro</option>
+                            {% for emprestimo in extensoes %}
+                                <option value="{{ emprestimo.id }}" class="ultima-opcao">
+                                    {{ emprestimo.id_livro.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
+                    </form>
+                </div>
+            {% endif %}
 
         </div>
     </main>
+
+
+    <style>
+        select{
+            padding: 5px 0;
+
+            border-radius: 6px;
+        }
+
+        .custom-select {
+            appearance: none; /* remove o estilo nativo */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            width: 100%;
+            padding: 8px 35px 8px 10px; /* espaço extra pra seta */
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #ffffff;
+
+            /* adiciona uma seta personalizada */
+            background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            }
+
+            .custom-select:focus {
+            outline: none;
+            border-color: #999999;
+            box-shadow: 0 0 3px #3b80ff50;
+            }
+
+        .solicitar-extensao-btn{
+            font-size: 17px;
+            padding: 5px 0;
+            font-weight: 500;
+    
+            color: #0D074490;
+    
+            background-color: #3B80FF37;
+
+            border: none;
+            border-radius: 6px;
+        }
+    </style>
 {% endblock content %}
