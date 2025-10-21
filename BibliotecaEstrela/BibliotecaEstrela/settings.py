@@ -14,6 +14,9 @@ from pathlib import Path
 
 from environ import Env
 
+
+from os import getenv
+
 # Lê o arquivo .env
 env = Env()
 env.read_env()
@@ -133,7 +136,7 @@ WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:senha123@localhost:5432/Biblioteca',
+        default=getenv('DATABASE_URL'),
         conn_max_age=600
     )
 }
