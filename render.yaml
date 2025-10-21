@@ -10,7 +10,7 @@ services:
     name: BibliotecaEstrela
     runtime: python
     buildCommand: './build.sh'
-    startCommand: 'pwd && python -m gunicorn asgi.py:application -k uvicorn.workers.UvicornWorker'
+    startCommand: 'pwd && python -m gunicorn asgi.py:application -k uvicorn.workers.UvicornWorker --host 0.0.0.0 --port $PORT'
     envVars:
       - key: DATABASE_URL
         fromDatabase:
