@@ -24,12 +24,14 @@
             </form>
         </div>
 
-        {% if pix_qr %}
+        <!-- {% if pix_qr %} -->
             <hr>
             <p><b>QR Code gerado:</b></p>
-            <img src="data:image/png;base64,{{ pix_qr }}" width="200">
-            <pre>{{ payment.pix_code }}</pre>
-        {% endif %}
+            <!-- <img src="data:image/png;base64,{{ pix_qr }}" width="200">
+            <pre>{{ payment.pix_code }}</pre> -->
+        <!-- {% endif %} -->
+
+        <a href="{{ link_pagamento }}">botão</a>
     </div>
 </div>
 
