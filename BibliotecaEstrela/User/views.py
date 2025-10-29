@@ -51,7 +51,8 @@ def tela_perfil(request):
             imagem_form = UserUpdateImageForm(request.POST, request.FILES, instance=user)
 
             if imagem_form.is_valid():
-                print(imagem_form.save())
+                print('a')
+                imagem_form.save()
                 return redirect('tela_perfil')
             
             else:
@@ -63,15 +64,17 @@ def tela_perfil(request):
             return redirect('login')
         
 
-        form = UserUpdateForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            user = form.save()
-            update_session_auth_hash(request, user)
-            print("a")
-            return redirect('tela_perfil')
-        else:
-            print("Form inválido:", form.errors)
+        # form = UserUpdateForm(request.POST, instance=user)
+        # if form.is_valid():
+        #     form.save()
+        #     user = form.save()
+        #     update_session_auth_hash(request, user)
+        #     print("a")
+        #     return redirect('tela_perfil')
+        # else:
+        #     print("Form inválido:", form.errors)
+
+
     else:
         form = UserUpdateForm(instance=user)
         imagem_form = UserUpdateImageForm(instance=user)

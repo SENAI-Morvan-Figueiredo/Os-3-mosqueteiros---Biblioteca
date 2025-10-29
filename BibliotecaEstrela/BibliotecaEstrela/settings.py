@@ -38,7 +38,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['bibliotecaestrela.onrender.com', 'https://bibliotecaestrela.onrender.com', '*']
 
@@ -144,7 +144,6 @@ DATABASES = {
     )
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -213,6 +212,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600  # 1 hora
 
-SECURE_SSL_REDIRECT = True
+#Alterar para true no deploy
+SECURE_SSL_REDIRECT = False
 
 CSRF_COOKIE_SECURE = True
