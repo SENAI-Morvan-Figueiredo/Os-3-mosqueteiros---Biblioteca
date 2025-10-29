@@ -4,6 +4,7 @@ from .models import Emprestimos, Reserva, Avaliacoes, Pedidos_extensao
 from User.models import Usuario
 from Livros.models import Livros
 
+from django.core.mail import send_mail
 # Create your views here.
 
 def checar_livros_em_posse(id_user):
@@ -33,7 +34,7 @@ def catalogo(request):
         "livros_alfabetico": livros_alfabetico,
         "livros_disponiveis": livros_disponiveis,
     })
-    return render(request, 'Biblioteca/index.html')
+    #return render(request, 'Biblioteca/index.html')
 
 
 def criar_emprestimo(request, id_livro, id_user):
@@ -50,6 +51,16 @@ def criar_emprestimo(request, id_livro, id_user):
     livro.status="indisponivel"
     livro.save()
 
+
+    send_mail(
+        "Empréstimo realizado",
+        f'Seu empréstimo do livro "{livro.nome}" foi realizado com sucesso\n\nVocê tem 7 dias para retirá-lo presencialmente na biblioteca ou seu empréstimo será cancelado.',
+        "biblioteca.estrela1@gmail.com",
+        [request.user.email],
+        fail_silently=False,
+    )
+        
+
     return redirect("livros")
 
 
@@ -61,6 +72,15 @@ def criar_reserva(request, id_livro, id_user):
     #if len(em_posse) <= 5 :
     
     novo = Reserva(id_user=Usuario.objects.get(id=id_user), id_livro=Livros.objects.get(id=id_livro), status="Em espera")
+    livro = Livros.objects.get(id=id_livro)
     novo.save()
+
+    send_mail(
+        "Reserva realizado",
+        f'Sua reserva do livro "{livro.nome}" foi realizado com sucesso\n\nVocê será notificado via e-mail quando o livro estiver disponível.',
+        "biblioteca.estrela1@gmail.com",
+        [request.user.email],
+        fail_silently=False,
+    )
 
     return redirect("livros")

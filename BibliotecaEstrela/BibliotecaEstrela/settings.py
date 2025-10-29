@@ -216,3 +216,10 @@ SESSION_COOKIE_AGE = 3600  # 1 hora
 SECURE_SSL_REDIRECT = False
 
 CSRF_COOKIE_SECURE = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER="biblioteca.estrela1@gmail.com"
+EMAIL_HOST_PASSWORD="axrjntfffyjcqqet"
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST="smtp.gmail.com"
