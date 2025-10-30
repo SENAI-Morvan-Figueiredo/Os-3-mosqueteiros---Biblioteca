@@ -35,6 +35,7 @@ def criar_pagamento(request):
                 'id': '1',
                 'title': 'Livro 1',
                 'quantity': 1,
+                "currency_id": "BRL",
                 'unit_price': 100
             }
         ],
