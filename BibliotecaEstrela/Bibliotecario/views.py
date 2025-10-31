@@ -223,15 +223,37 @@ def livros(request):
 # A base é esta, falta filtrar e adicionar as funcionalidades de multa, etc
 # !!!
 def dashboard(request):
-    livros = Livros.objects.all()
-    usuarios = Usuario.objects.all()
-    emprestimos = Emprestimos.objects.all()
-    reservas = Reserva.objects.all()
+    # --- Estatísticas para os cards ---
+    livros_stats = Livros.objects.all()
+    usuarios_stats = Usuario.objects.all()
+    
+    # Filtra reservas ativas (use o status correto do seu model)
+    reservas_stats = Reserva.objects.filter(status="Em espera") 
+    
+    # Filtra empréstimos ativos (não inclui devolvidos, cancelados ou atrasados)
+    emprestimos_ativos = Emprestimos.objects.filter(
+        Q(status="Disponível para retirar") | Q(status="Retirado")
+    )
+    
+    # --- Listas para as novas tabelas ---
+    emprestimos_atrasados = Emprestimos.objects.filter(
+        status="Atrasado"
+    ).order_by('data_emprestimo') # Ordena do mais antigo para o mais novo
+    
+    emprestimos_cancelados = Emprestimos.objects.filter(
+        status="Cancelado"
+    ).order_by('-data_emprestimo') # Ordena do mais novo para o mais antigo
+
     context = {
-        "livros": livros,
-        "usuarios": usuarios,
-        "emprestimos":  emprestimos,
-        "reservas": reservas,
+        # Para os cards de estatística
+        "livros": livros_stats,
+        "usuarios": usuarios_stats,
+        "reservas": reservas_stats, # Usando a contagem de reservas ativas
+        "emprestimos_ativos": emprestimos_ativos, # Usando a contagem de ativos
+        
+        # Para as novas tabelas
+        "emprestimos_atrasados": emprestimos_atrasados,
+        "emprestimos_cancelados": emprestimos_cancelados,
     }
     return render(request, 'dashboard.html', context)
 
