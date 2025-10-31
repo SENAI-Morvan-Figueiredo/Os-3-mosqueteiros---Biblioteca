@@ -16,6 +16,18 @@ class Emprestimos(models.Model):
         atraso = (date.today() - prazo).days
         return max(atraso * 2, 0)  # R$2 por dia, no mínimo 0
 
+    def get_dados_multa_livro(self):
+        livro = self.id_livro
+
+        return {
+            'id_livro': livro,
+            'titulo_livro_copia': livro.nome,
+            'autor_livro_copia': livro.autor,
+            'quantidade': 1,
+            'valor_unitario': 0.00
+        }
+
+
 class Reserva(models.Model):
     id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
