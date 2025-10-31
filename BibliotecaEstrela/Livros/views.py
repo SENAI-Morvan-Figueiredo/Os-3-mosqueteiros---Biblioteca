@@ -31,10 +31,9 @@ class LivroDetalhes(ModelFormMixin, DetailView):
         user_data = {}
 
         if self.request.user.is_authenticated:
-            user_data['reservas'] = (Reserva.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id))
-            user_data['emprestimos'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id))
-
-        print(user_data)
+            user_data['reservas'] = (Reserva.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Em espera"))
+            user_data['emprestimos'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Disponível para retirar"))
+            user_data['emprestimos2'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Retirado"))
 
         form = self.get_form()
 

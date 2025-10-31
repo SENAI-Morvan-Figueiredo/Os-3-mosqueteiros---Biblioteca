@@ -6,6 +6,7 @@ from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 from django.db.models import Q
 
+from django.core.mail import send_mail
 
 # view para tela inicial (todo: trocar nomes)
 def teste(request):
@@ -64,18 +65,41 @@ def atualizar_status(request):
 
                     # Atualiza o status do livro (models do livro)
                     livro = emprestimo.id_livro
-                    if novo_status == "Retirado":
-                        livro.status = "Indisponivel"
-                        livro.save()
-                    elif novo_status == "Devolvido":
-                        livro.status = "disponivel"
-                        livro.save()
+                    atualizacao_reserva_e_msg(livro)
 
         messages.success(request, "Status dos empréstimos atualizados com sucesso!")
     return redirect("Bibliotecario:emprestimos_atuais")
 
 
 from django.utils import timezone
+
+def atualizacao_reserva_e_msg(livro):
+    reserva = Reserva.objects.filter(id_livro=livro, status="Em espera").first()
+
+    if reserva:
+        Emprestimos.objects.create(
+            id_user=reserva.id_user,
+            id_livro=reserva.id_livro,
+            data_emprestimo=timezone.now(),
+            status="Disponível para retirar"
+        )
+
+        livro.status = "Indisponivel"
+        livro.save()
+
+        reserva.status = "Finalizado"
+        reserva.save()
+
+        send_mail(
+            f'"{livro.nome}" já está disponível para retirar',
+            f'O livro "{livro.nome}" que você reservou já está disponível para ser retirado por na biblioteca.\n\nVocê tem 7 dias para retirá-lo presencialmente na biblioteca ou seu empréstimo será cancelado.',
+            "biblioteca.estrela1@gmail.com",
+            [reserva.id_user.email],
+            fail_silently=True,
+        )
+    else:
+        livro.status = "disponivel"
+        livro.save()
 
 # atualiza reserva (muda de reserva para empréstimo)
 def atualizar_status_reservas(request):

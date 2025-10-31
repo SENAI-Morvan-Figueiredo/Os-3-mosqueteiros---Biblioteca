@@ -57,10 +57,9 @@ def criar_emprestimo(request, id_livro, id_user):
         f'Seu empréstimo do livro "{livro.nome}" foi realizado com sucesso\n\nVocê tem 7 dias para retirá-lo presencialmente na biblioteca ou seu empréstimo será cancelado.',
         "biblioteca.estrela1@gmail.com",
         [request.user.email],
-        fail_silently=False,
+        fail_silently=True,
     )
         
-
     return redirect("livros")
 
 
@@ -80,7 +79,7 @@ def criar_reserva(request, id_livro, id_user):
         f'Sua reserva do livro "{livro.nome}" foi realizado com sucesso\n\nVocê será notificado via e-mail quando o livro estiver disponível.',
         "biblioteca.estrela1@gmail.com",
         [request.user.email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
     return redirect("livros")
