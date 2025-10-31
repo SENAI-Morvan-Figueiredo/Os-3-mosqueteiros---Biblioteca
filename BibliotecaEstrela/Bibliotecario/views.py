@@ -6,6 +6,8 @@ from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 from django.db.models import Q
 
+from Biblioteca.models import Notificacoes
+
 from django.core.mail import send_mail
 
 # view para tela inicial (todo: trocar nomes)
@@ -89,6 +91,12 @@ def atualizacao_reserva_e_msg(livro):
 
         reserva.status = "Finalizado"
         reserva.save()
+
+        Notificacoes.objects.create(
+        id_user=reserva.id_user,
+        mensagem=f'O livro "{livro.nome}" que você reservou já está disponível!',
+        lido=False
+        )
 
         send_mail(
             f'"{livro.nome}" já está disponível para retirar',

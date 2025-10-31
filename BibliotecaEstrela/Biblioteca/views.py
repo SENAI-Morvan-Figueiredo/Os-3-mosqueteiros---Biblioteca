@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Emprestimos, Reserva, Avaliacoes, Pedidos_extensao
+from .models import Emprestimos, Reserva, Avaliacoes, Pedidos_extensao, Notificacoes
 
 from User.models import Usuario
 from Livros.models import Livros
@@ -51,6 +51,13 @@ def criar_emprestimo(request, id_livro, id_user):
     livro.status="indisponivel"
     livro.save()
 
+    user=Usuario.objects.get(id=id_user)
+
+    Notificacoes.objects.create(
+        id_user=user,
+        mensagem=f'Você fez empréstimo do livro "{livro.nome}".',
+        lido=False
+    )
 
     send_mail(
         "Empréstimo realizado",
@@ -73,6 +80,14 @@ def criar_reserva(request, id_livro, id_user):
     novo = Reserva(id_user=Usuario.objects.get(id=id_user), id_livro=Livros.objects.get(id=id_livro), status="Em espera")
     livro = Livros.objects.get(id=id_livro)
     novo.save()
+
+    user=Usuario.objects.get(id=id_user)
+
+    Notificacoes.objects.create(
+        id_user=user,
+        mensagem=f'Você fez reserva do livro "{livro.nome}".',
+        lido=False
+    )
 
     send_mail(
         "Reserva realizado",
