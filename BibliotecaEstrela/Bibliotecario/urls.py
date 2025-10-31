@@ -10,5 +10,6 @@ urlpatterns = [
     path("/dashboard", dashboard, name="dashboard"),
     path("emprestimos/atualizar_status/", atualizar_status, name="atualizar_status"),
     path("reservas/atualizar_status/", atualizar_status_reservas, name="atualizar_status_reservas"),
+    path('/verificar_pendencias', verificar_pendencias, name='verificar_pendencias'),
 
 ]
