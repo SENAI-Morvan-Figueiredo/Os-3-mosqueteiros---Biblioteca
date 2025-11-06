@@ -41,7 +41,7 @@ def emitir_multa(emprestimo_objeto):
         id_usuario=usuario,
         nome_usuario_copia=usuario.username,
         cpf_usuario_copia=usuario.cpf,
-        valor_multa=valor_atraso, 
+        valor_multa=valor_atraso,
         status='PENDENTE'
     )
 
@@ -60,10 +60,26 @@ def criar_pagamento(request):
     usuario = request.user
     sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
 
-    multas_pendentes = Multas.objects.filter(id_usuario=usuario, status='PENDENTE')
+    # 1️⃣ Busca todos os empréstimos do usuário
+    emprestimos = Emprestimos.objects.filter(id_user=usuario)
+    print("Usuário:", usuario.username)
+    print("Total de empréstimos:", emprestimos.count())
 
-    if not multas_pendentes.exists:
-        return HttpResponse('Você não possui multas pendentes', status=200)
+    for emprestimo in emprestimos:
+        print(f"> Verificando empréstimo {emprestimo.id} - status: {emprestimo.status}")
+        print("  - is_atrasado():", emprestimo.is_atrasado())
+        print("  - calcular_multa():", emprestimo.calcular_multa())
+
+        if emprestimo.is_atrasado():
+            print("  ⚠️ Está atrasado! Verificando se já tem multa...")
+            if not Multas.objects.filter(id_emprestimo=emprestimo).exists():
+                print("  🧾 Criando nova multa...")
+                emitir_multa(emprestimo)
+            else:
+                print("  🔄 Já existe multa, pulando...")
+
+    multas_pendentes = Multas.objects.filter(id_usuario=usuario, status='PENDENTE')
+    print("Multas pendentes encontradas:", multas_pendentes.count())
     
     itens_pagamento = []
 
@@ -76,6 +92,8 @@ def criar_pagamento(request):
                 "currency_id": "BRL",
                 'unit_price': float(multa.valor_multa)
             })
+
+    print(len(itens_pagamento))
     
     if len(itens_pagamento) > 0:
         pagamento_data = {

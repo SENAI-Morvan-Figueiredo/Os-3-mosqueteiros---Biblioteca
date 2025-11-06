@@ -1,69 +1,94 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-    .opcao_pagamento {
-        font-size: 25px;
-        font-weight: 700;
-        cursor: pointer;
+    .card-perfil {
+        min-height: 600px;
+        max-height: 600px;
+        overflow-y: auto;
+        position: relative;
+        padding-bottom: 70px; /* espaço pro botão não cobrir o conteúdo final */
     }
+
+    .pos_fixa {
+        position: sticky;
+        bottom: 10px; /* um pequeno espaçamento do fundo */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        z-index: 2; /* garante que fique acima do conteúdo rolável */
+    }
+
+
+    .alinhamento{
+        text-align: start;
+    }
+
+    .multas{
+        justify-content: space-between;
+        align-items: center;
+
+        border-bottom: 1px solid #00000025;
+
+        padding: 0;
+
+        & .livros_multa{
+
+            & h4{
+                color: #F50000;
+
+                font-size: 20px;
+                margin-bottom: 3px;
+
+                & p{
+                    font-size: 17px;
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        & .valor_multa{
+            font-size: 20px;
+            color: #F50000;
+        }
+
+    }
+
 </style>
 
-<div class="container_multas" style="padding: 10px 15%;">
-    <div class="card">
-        <div class="tipo_pagamento" style="display: flex; justify-content: center; gap: 20px; margin: 5px 0;">
-            <h5 id="cartao" class="opcao_pagamento">Cartão</h5>
-            <h5 id="pix" class="opcao_pagamento">Pix</h5>
-        </div>
+<div class="container_multas" style="padding: 10px 10%;">
+    <div class="card-perfil d-flex flex-column gap-1 py-4 px-5">
+        <h2 class="alinhamento">Multas a serem pagas</h2>
 
-        <div class="pagamento">
-            <p>Escolha uma forma de pagamento</p>
-            <form id="formPix" method="post" style="display:none;">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="generate_pix">
-                <button type="submit">Gerar QR Code Pix</button>
-            </form>
-        </div>
+        <div class="multas_p_pagar">
+            <div class="multas d-flex">
+                <div class="livros_multa">
+                    <h4>Em espera</h4>
+                    <p>O livro 'Pequeno Príncipe' está atrasado para entrega.</p>
+                </div>
 
-        <!-- {% if pix_qr %} -->
-            <hr>
-            <p><b>QR Code gerado:</b></p>
-            <!-- <img src="data:image/png;base64,{{ pix_qr }}" width="200">
-            <pre>{{ payment.pix_code }}</pre> -->
-        <!-- {% endif %} -->
+                <p class="valor_multa">R$10,00</p>
+            </div>
+        </div>
 
         <a href="{{ link_pagamento }}">botão</a>
+        <button id="adicionar" class="pos_fixa">adicionar</button>
     </div>
 </div>
 
 <script>
-    const opcao_cartao = document.getElementById('cartao');
-    const opcao_pix = document.getElementById('pix');
-    const conteudo = document.querySelector('.pagamento p');
-    const formPix = document.getElementById('formPix');
+    const container = document.querySelector('.multas_p_pagar');
 
-    let metodoAtivo = null;
-
-    opcao_cartao.addEventListener('click', () => {
-        metodoAtivo = 'cartao';
-        atualizarEstado();
-    });
-
-    opcao_pix.addEventListener('click', () => {
-        metodoAtivo = 'pix';
-        atualizarEstado();
-    });
-
-    function atualizarEstado() {
-        if (metodoAtivo === 'cartao') {
-            conteudo.textContent = 'Pagamento via Cartão';
-            formPix.style.display = 'none';
-        } else {
-            conteudo.textContent = 'Pagamento via Pix';
-            formPix.style.display = 'block';
-        }
-
-        opcao_cartao.style.color = (metodoAtivo === 'cartao') ? 'blue' : 'black';
-        opcao_pix.style.color = (metodoAtivo === 'pix') ? 'blue' : 'black';
+    document.getElementById('adicionar').onclick = () => {
+        container.insertAdjacentHTML('beforeend', `
+                                        <div class="multas d-flex">
+                                            <div class="livros_multa">
+                                                <h4>Em espera</h4>
+                                                <p>O livro 'Pequeno Príncipe' está atrasado para entrega.</p>
+                                            </div>
+                                            <p class="valor_multa">R$10,00</p>
+                                        </div>
+                                    `);
     }
 </script>
+
 {% endblock %}
