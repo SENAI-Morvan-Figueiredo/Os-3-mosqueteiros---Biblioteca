@@ -85,7 +85,7 @@
                         <a href="#" class="btn btn-primary">Reservas Atuais: <span class="badge bg-primary rounded-pill">{{ reservas.count }}</span></a>
                         <form method="POST" action="{% url 'Bibliotecario:verificar_pendencias' %}" class="ms-auto">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-warning shadow-sm">
+                            <button type="submit" class="btn btn-secondary shadow-sm">
                                 Verificar Pendências
                             </button>
                         </form>

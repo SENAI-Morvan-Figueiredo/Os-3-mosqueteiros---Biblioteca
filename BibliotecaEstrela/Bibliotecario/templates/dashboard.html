@@ -107,6 +107,7 @@
                                     <th>Usuário</th>
                                     <th>Livro</th>
                                     <th>Data do Empréstimo</th>
+                                    <th>Dias de Atraso</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,6 +116,7 @@
                                     <td>{{ emprestimo.id_user.username }}</td>
                                     <td>{{ emprestimo.id_livro.nome }}</td>
                                     <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.dias_atraso }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>

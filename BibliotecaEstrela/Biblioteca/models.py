@@ -9,7 +9,35 @@ class Emprestimos(models.Model):
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
     data_emprestimo = models.DateField(auto_now_add=True)
     status = models.CharField()
+    @property
+    def esta_atrasado(self):
+        """Retorna True se o empréstimo estiver atrasado (mais de 21 dias desde a data_emprestimo)."""
+        from datetime import date, timedelta
+        try:
+            hoje = date.today()
+            limite = self.data_emprestimo + timedelta(days=21)
+            if self.status in ('Devolvido', 'Cancelado', 'Atrasado'):
+                return False
+            return hoje > limite
+        except Exception:
+            return False
 
+    @property
+    def dias_atraso(self):
+        """Retorna a quantidade de dias de atraso além do prazo de 21 dias.
+
+        Retorna 0 se não estiver atrasado ou em caso de erro.
+        """
+        from datetime import date, timedelta
+        try:
+            hoje = date.today()
+            limite = self.data_emprestimo + timedelta(days=21)
+            if self.status in ('Devolvido', 'Cancelado'):
+                return 0
+            dias = (hoje - limite).days
+            return dias if dias > 0 else 0
+        except Exception:
+            return 0
 class Reserva(models.Model):
     id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
