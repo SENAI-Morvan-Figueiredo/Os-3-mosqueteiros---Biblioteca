@@ -161,6 +161,51 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Multas</h4>
+                    <form method="post" action="{% url 'Bibliotecario:atualizar_status_multas' %}">
+                        {% csrf_token %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Valor (R$)</th>
+                                        <th>Data Emissão</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for multa in multas %}
+                                    <tr>
+                                        <td>{{ multa.nome_usuario_copia }}</td>
+                                        <td>{{ multa.valor_multa }}</td>
+                                        <td>{{ multa.data_emissao|date:'d/m/Y' }}</td>
+                                        <td>
+                                            <select class="form-select" name="multa_{{ multa.id }}">
+                                                <option value="PENDENTE" {% if multa.status == 'PENDENTE' %}selected{% endif %}>Pendente</option>
+                                                <option value="PAGO" {% if multa.status == 'PAGO' %}selected{% endif %}>Pago</option>
+                                            </select>
+                                        </td>
+                                        <td><a href="#">Detalhes</a></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">Nenhuma multa registrada.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-end mt-2">
+                            <button type="submit" class="btn btn-primary">Atualizar Multas</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div> </div>
 </div>
 

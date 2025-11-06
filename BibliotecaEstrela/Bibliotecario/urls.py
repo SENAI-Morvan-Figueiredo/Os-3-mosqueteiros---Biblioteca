@@ -8,6 +8,7 @@ urlpatterns = [
     path("/emprestimos_historico", emprestimos_historico, name="emprestimos_historico"),
     path("/usuarios", usuarios, name="usuarios"),
     path("/dashboard", dashboard, name="dashboard"),
+    path("/multas/atualizar_status", atualizar_status_multas, name="atualizar_status_multas"),
     path("emprestimos/atualizar_status/", atualizar_status, name="atualizar_status"),
     path("reservas/atualizar_status/", atualizar_status_reservas, name="atualizar_status_reservas"),
     path('/verificar_pendencias', verificar_pendencias, name='verificar_pendencias'),

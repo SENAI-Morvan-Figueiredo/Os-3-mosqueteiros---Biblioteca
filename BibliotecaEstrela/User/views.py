@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from Multas.models import Multas
 
 # Create your views here.
 def register(request):
@@ -52,8 +53,12 @@ def tela_perfil(request):
 
     
 
+    # Busca multas pendentes do usuário
+    multas_pendentes = Multas.objects.filter(id_usuario=user, status='PENDENTE')
+
     context = {
         'form': form,
+        'multas_pendentes': multas_pendentes,
     }
     return render(request, 'user/tela_perfil.html', context)
 

@@ -76,6 +76,8 @@ def atualizar_status(request):
 
 
 from django.utils import timezone
+from decimal import Decimal
+from Multas.models import Multas, MultaLivro
 
 # atualiza reserva (muda de reserva para empréstimo)
 def atualizar_status_reservas(request):
@@ -243,6 +245,8 @@ def dashboard(request):
     emprestimos_cancelados = Emprestimos.objects.filter(
         status="Cancelado"
     ).order_by('-data_emprestimo') # Ordena do mais novo para o mais antigo
+    # Multas (para exibir no dashboard do bibliotecário/admin)
+    multas = Multas.objects.all().order_by('-data_emissao')
 
     context = {
         # Para os cards de estatística
@@ -254,8 +258,23 @@ def dashboard(request):
         # Para as novas tabelas
         "emprestimos_atrasados": emprestimos_atrasados,
         "emprestimos_cancelados": emprestimos_cancelados,
+        "multas": multas,
     }
     return render(request, 'dashboard.html', context)
+
+
+def atualizar_status_multas(request):
+    if request.method == 'POST':
+        for key, value in request.POST.items():
+            if key.startswith('multa_'):
+                multa_id = key.split('_')[1]
+                novo_status = value
+                multa = Multas.objects.filter(id=multa_id).first()
+                if multa:
+                    multa.status = novo_status
+                    multa.save()
+        messages.success(request, 'Status das multas atualizados com sucesso!')
+    return redirect('Bibliotecario:dashboard')
 
 
 def verificar_pendencias(request):
@@ -295,16 +314,49 @@ def verificar_pendencias(request):
         # --- Lógica 2: Marcar Empréstimos Atrasados ---
         # "Retirado" e passou de 14 dias (2 semanas)
         data_limite_atraso = hoje - datetime.timedelta(days=14)
-        
-        emprestimos_para_atrasar = Emprestimos.objects.filter(
+
+        emprestimos_para_atrasar_qs = Emprestimos.objects.filter(
             status="Retirado", # Se está "Retirado"
             data_emprestimo__lt=data_limite_atraso # E foi emprestado há mais de 14 dias
         )
-        
-        # .update() é mais rápido para atualizar muitos objetos
-        count_atrasados = emprestimos_para_atrasar.update(
-            status="Atrasado" # <-- NOVO STATUS
-        )
+
+        emprestimos_para_atrasar = list(emprestimos_para_atrasar_qs)
+
+        # Para cada empréstimo, marcar como Atrasado e criar/atualizar multa
+        for emprestimo in emprestimos_para_atrasar:
+            emprestimo.status = "Atrasado"
+            emprestimo.save()
+
+            # calcula dias de atraso a partir da propriedade do model
+            dias = getattr(emprestimo, 'dias_atraso', 0)
+            valor = Decimal(dias) * Decimal('1.00')
+
+            # Atualiza ou cria multa associada
+            multa = Multas.objects.filter(id_emprestimo=emprestimo).first()
+            if multa:
+                # só atualiza se estiver pendente
+                if multa.status == 'PENDENTE':
+                    multa.valor_multa = valor
+                    multa.save()
+            else:
+                multa = Multas.objects.create(
+                    id_emprestimo=emprestimo,
+                    id_usuario=emprestimo.id_user,
+                    nome_usuario_copia=str(emprestimo.id_user.username),
+                    cpf_usuario_copia=getattr(emprestimo.id_user, 'cpf', ''),
+                    valor_multa=valor,
+                )
+                # cria registro de livro vinculado
+                MultaLivro.objects.create(
+                    id_multa=multa,
+                    id_livro=emprestimo.id_livro,
+                    titulo_livro_copia=getattr(emprestimo.id_livro, 'nome', ''),
+                    autor_livro_copia=getattr(emprestimo.id_livro, 'autor', ''),
+                    quantidade=1,
+                    valor_unitario=valor,
+                )
+
+        count_atrasados = len(emprestimos_para_atrasar)
 
         # Envia uma mensagem de sucesso para o template
         messages.success(request, f"Verificação concluída: {count_cancelados} empréstimos cancelados e {count_atrasados} marcados como atrasados.")
