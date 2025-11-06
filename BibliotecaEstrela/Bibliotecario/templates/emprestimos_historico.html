@@ -10,32 +10,12 @@
 </style>
 <div class="container-fluid px-3">
     <nav class="nav nav-underline gap-3">
-        <a class="nav-link px-5"  
-           style="color: black;" 
-           href="{% url 'Bibliotecario:teste' %}">
-            Início
-        </a>
-        <a class="nav-link px-5" style="color: black;" 
-           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
-            Empréstimos
-        </a>
-        <a class="nav-link px-5" style="color: black;" 
-           href="{% url 'Bibliotecario:livros_adm' %}">
-            Acervo
-        </a>
-        <a class="nav-link active px-5" aria-current="page"
-           style="color: black;" 
-           href="{% url 'Bibliotecario:emprestimos_historico' %}">
-            Histórico
-        </a>
-        <a class="nav-link px-5" style="color: black;" 
-           href="{% url 'Bibliotecario:usuarios' %}">
-            Perfis
-        </a>
-        <a class="nav-link px-5" style="color: black;" 
-           href="{% url 'Bibliotecario:dashboard' %}">
-            Relatórios
-        </a>
+        <a class="nav-link px-5" style="color: black;" href="{% url 'Bibliotecario:teste' %}">Início</a>
+        <a class="nav-link px-5" style="color: black;" href="{% url 'Bibliotecario:emprestimos_atuais' %}">Empréstimos</a>
+        <a class="nav-link px-5" style="color: black;" href="{% url 'Bibliotecario:livros_adm' %}">Acervo</a>
+        <a class="nav-link active px-5" aria-current="page" style="color: black;" href="{% url 'Bibliotecario:emprestimos_historico' %}">Histórico</a>
+        <a class="nav-link px-5" style="color: black;" href="{% url 'Bibliotecario:usuarios' %}">Perfis</a>
+        <a class="nav-link px-5" style="color: black;" href="{% url 'Bibliotecario:dashboard' %}">Relatórios</a>
     </nav>
 </div>
 
@@ -93,28 +73,32 @@
                 <div class="card-body">
                     <h4 class="card-title">Empréstimos Atuais:</h4>
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered text-center">
-                            <thead>
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
                                 <tr>
                                     <th>Usuário</th>
                                     <th>Título do Livro</th>
-                                    <th>Data do Empréstimo</th>
+                                    <th>Data Empréstimo</th>
+                                    <th>Data Prevista de Devolução</th>
+                                    <th>Dias Restantes</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for emprestimo in emprestimos_tabela %}
-                                <tr>
+                                <tr class="{% if emprestimo.esta_atrasado %}table-danger{% endif %}">
                                     <td>{{ emprestimo.id_user.username }}</td>
                                     <td>{{ emprestimo.id_livro.nome }}</td>
                                     <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td title="Entrega prevista: {{ emprestimo.data_vencimento|date:'d/m/Y' }}">{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
+                                    <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
                                     <td>{{ emprestimo.status }}</td>
                                     <td><a href="#">Detalhes</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5">Nenhum empréstimo encontrado.</td>
+                                    <td colspan="7">Nenhum empréstimo encontrado.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

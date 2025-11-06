@@ -114,7 +114,9 @@
                                             <tr>
                                                 <th>Usuário</th>
                                                 <th>Livro</th>
-                                                <th>Data empréstimo</th>
+                                                <th>Data Empréstimo</th>
+                                                <th>Data prevista de devolução</th>
+                                                <th>Dias Restantes</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -124,6 +126,8 @@
                                                 <td>{{ emprestimo.id_user.username }}</td>
                                                 <td>{{ emprestimo.id_livro.nome }}</td>
                                                 <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                                <td>{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
+                                                <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
                                                 <td>
                                                     <select class="form-select" name="status_{{ emprestimo.id }}">
                                                         <option value="Disponível para retirar" {% if emprestimo.status == "Disponível para retirar" %}selected{% endif %}>Disponível para Retirar</option>

@@ -236,9 +236,9 @@ def dashboard(request):
     )
     
     # --- Listas para as novas tabelas ---
-    emprestimos_atrasados = Emprestimos.objects.filter(
-        status="Atrasado"
-    ).order_by('data_emprestimo') # Ordena do mais antigo para o mais novo
+    # Mostrar empréstimos atrasados dinamicamente (propriedade calculada) OU status explícito 'Atrasado'
+    todos_emprestimos = Emprestimos.objects.all().order_by('data_emprestimo')
+    emprestimos_atrasados = [e for e in todos_emprestimos if getattr(e, 'esta_atrasado', False) or (getattr(e, 'status', '') == 'Atrasado')]
     
     emprestimos_cancelados = Emprestimos.objects.filter(
         status="Cancelado"
