@@ -27,6 +27,8 @@ class Multas(models.Model):
 
     livros_a_pagar = models.ManyToManyField(Livros, through='MultaLivro')
 
+    def __str__(self):
+        return self.pk
 class MultaLivro(models.Model):
     id_multa = models.ForeignKey(Multas, on_delete=models.CASCADE,) 
     id_livro = models.ForeignKey(Livros, on_delete=models.SET_NULL,null=True)
@@ -36,6 +38,9 @@ class MultaLivro(models.Model):
 
     quantidade = models.PositiveIntegerField(default=1)
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return self.titulo_livro_copia
 
     class Meta:
         unique_together = ('id_multa', 'id_livro')
