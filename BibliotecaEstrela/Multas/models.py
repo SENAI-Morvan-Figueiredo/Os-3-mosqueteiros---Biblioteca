@@ -28,7 +28,8 @@ class Multas(models.Model):
     livros_a_pagar = models.ManyToManyField(Livros, through='MultaLivro')
 
     def __str__(self):
-        return self.pk
+        return self.id_emprestimo
+    
 class MultaLivro(models.Model):
     id_multa = models.ForeignKey(Multas, on_delete=models.CASCADE,) 
     id_livro = models.ForeignKey(Livros, on_delete=models.SET_NULL,null=True)

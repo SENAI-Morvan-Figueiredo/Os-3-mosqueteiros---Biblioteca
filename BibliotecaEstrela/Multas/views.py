@@ -87,7 +87,7 @@ def criar_pagamento(request):
         if multa.valor_multa:
             itens_pagamento.append({
                 'id': f'ATRASO-{multa.pk}',
-                'title': f'Multa por atraso - Empréstimo #{multa.id_emprestimo}',
+                'title': f'{multa.id_emprestimo.id_livro.nome}',
                 'quantity': 1,
                 "currency_id": "BRL",
                 'unit_price': float(multa.valor_multa)
