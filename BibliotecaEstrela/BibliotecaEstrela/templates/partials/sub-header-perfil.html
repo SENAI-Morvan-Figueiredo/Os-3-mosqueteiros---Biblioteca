@@ -1,6 +1,6 @@
 {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' and request.path != '/user/completar_cadastro/' %}
     <a href="{% url 'tela_perfil' %}" class="estilizacao-btn-sub-header">Perfil</a>
     <a href="{% url 'historico_perfil' %}" class="estilizacao-btn-sub-header">Histórico</a>
-    <a href="#" class="estilizacao-btn-sub-header">Notificações</a>
+    <a href="{% url 'notificacoes_perfil' %}" class="estilizacao-btn-sub-header">Notificações</a>
     <a href="#" class="estilizacao-btn-sub-header">Multas</a>
 {% endif %}

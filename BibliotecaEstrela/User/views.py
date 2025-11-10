@@ -5,6 +5,8 @@ from Biblioteca.models import Reserva, Emprestimos, Pedidos_extensao, Avaliacoes
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 
+from Biblioteca.models import Notificacoes
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 
@@ -100,7 +102,7 @@ def tela_perfil(request):
 @login_required
 def historico_perfil(request):
     reservas = Reserva.objects.filter(id_user=request.user)
-    emprestimos = Emprestimos.objects.filter(id_user=request.user)
+    emprestimos = Emprestimos.objects.filter(id_user=request.user, status="Disponível para retirar")
     
     # Aqui vamos usar os empréstimos como base para o select
     extensoes = emprestimos
@@ -125,6 +127,25 @@ def historico_perfil(request):
     }
 
     return render(request, 'user/historico_perfil.html', context)
+
+
+
+@login_required
+def notificacoes_perfil(request):
+    user = request.user.id
+    notificacoes = Notificacoes.objects.filter(id_user=user).all()
+
+    return render(request, 'user/notificacoes.html', {'notificacoes': notificacoes})
+
+def atualizar_notif(request, notif, tipo):
+    notificacao = Notificacoes.objects.get(id=notif)
+    if tipo == 'deletar':
+        notificacao.delete()
+    elif tipo == 'lido':
+        notificacao.lido = True
+        notificacao.save()
+
+    return redirect('notificacoes_perfil')
 
 # Completa as informações que estão faltando ao fazer login utilizando a conta do google.
 @login_required

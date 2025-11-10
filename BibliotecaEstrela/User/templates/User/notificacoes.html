@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+        <div class="col-10 offset-1">
+            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                <h2>Notificações</h2>
+
+                <div class="w-100 gap-4">
+                    <hr>
+                    {% if notificacoes %}
+                        {% for notif in notificacoes %}
+
+                            {% if notif.lido %}
+                                <div class="card-perfil mb-4 px-5 py-2" style="background-color: #a1a1a1; width: 100%;">
+                            {% else %}
+                                <div class="card-perfil mb-4 px-5 py-2" style="width: 100%;">
+                            {% endif %}
+
+                                {{notif.mensagem}} 
+
+                                {% if not notif.lido %}
+                                    <a href="{% url 'atualizar_notif' notif.id 'lido' %}" class="btn btn-primary ms-5">👀 Marcar como lido</a>
+                                {% endif %}
+                                <a href="{% url 'atualizar_notif' notif.id 'deletar' %}" class="btn btn-primary">❌</a>
+                                
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h2>Você não possui nenhuma notificação pendente</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+{% endblock content %}
