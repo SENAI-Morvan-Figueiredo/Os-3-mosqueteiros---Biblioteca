@@ -22,6 +22,12 @@ class Emprestimos(models.Model):
         except Exception:
             return False
 
+class Notificacoes(models.Model):
+    id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    mensagem = models.CharField(max_length=150)
+    lido = models.BooleanField("Marca uma notificação como lida/não lida")
+    data = models.DateField(auto_now_add=True)
+
     @property
     def dias_atraso(self):
         """Retorna a quantidade de dias de atraso além do prazo de 21 dias.

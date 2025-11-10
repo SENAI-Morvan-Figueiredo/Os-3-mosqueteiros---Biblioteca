@@ -21,7 +21,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'cpf', 'telefone']
+        fields = ['username', 'email', 'cpf', 'telefone', 'imagem']
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -44,3 +44,13 @@ class CompleteSignupForm(forms.ModelForm):
 
             self.fields['telefone'].required = True
             self.fields['cpf'].required = True
+            
+class UserUpdateImageForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['imagem']
+        widgets = {
+            'imagem': forms.FileInput(attrs={
+                'accept': 'image/*',  # opcional: limita a imagens
+            }),
+        }
