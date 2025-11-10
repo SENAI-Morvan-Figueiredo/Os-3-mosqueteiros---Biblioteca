@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+
 <style>
     .table-responsive{
         max-height: 300px; 
@@ -81,9 +83,25 @@
                     <div class="d-flex justify-content-start gap-3 mt-3">
                         <a href="#" class="btn btn-primary">Empréstimos atuais: <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span></a>
                         <a href="#" class="btn btn-primary">Reservas Atuais: <span class="badge bg-primary rounded-pill">{{ reservas.count }}</span></a>
+                        <form method="POST" action="{% url 'Bibliotecario:verificar_pendencias' %}" class="ms-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary shadow-sm">
+                                Verificar Pendências
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
+            {% if messages %}
+                <div class="container-fluid">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
@@ -96,7 +114,9 @@
                                             <tr>
                                                 <th>Usuário</th>
                                                 <th>Livro</th>
-                                                <th>Data empréstimo</th>
+                                                <th>Data Empréstimo</th>
+                                                <th>Data prevista de devolução</th>
+                                                <th>Dias Restantes</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -106,6 +126,8 @@
                                                 <td>{{ emprestimo.id_user.username }}</td>
                                                 <td>{{ emprestimo.id_livro.nome }}</td>
                                                 <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                                <td>{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
+                                                <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
                                                 <td>
                                                     <select class="form-select" name="status_{{ emprestimo.id }}">
                                                         <option value="Disponível para retirar" {% if emprestimo.status == "Disponível para retirar" %}selected{% endif %}>Disponível para Retirar</option>

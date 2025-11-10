@@ -9,6 +9,7 @@ from django.db.models import Q
 from Biblioteca.models import Notificacoes
 
 from django.core.mail import send_mail
+import datetime
 
 # view para tela inicial (todo: trocar nomes)
 def teste(request):
@@ -255,18 +256,94 @@ def livros(request):
 # A base é esta, falta filtrar e adicionar as funcionalidades de multa, etc
 # !!!
 def dashboard(request):
-    livros = Livros.objects.all()
-    usuarios = Usuario.objects.all()
-    emprestimos = Emprestimos.objects.all()
-    reservas = Reserva.objects.all()
+    # --- Estatísticas para os cards ---
+    livros_stats = Livros.objects.all()
+    usuarios_stats = Usuario.objects.all()
+    
+    # Filtra reservas ativas (use o status correto do seu model)
+    reservas_stats = Reserva.objects.filter(status="Em espera") 
+    
+    # Filtra empréstimos ativos (não inclui devolvidos, cancelados ou atrasados)
+    emprestimos_ativos = Emprestimos.objects.filter(
+        Q(status="Disponível para retirar") | Q(status="Retirado")
+    )
+    
+    # --- Listas para as novas tabelas ---
+    # Mostrar empréstimos atrasados dinamicamente (propriedade calculada) OU status explícito 'Atrasado'
+    todos_emprestimos = Emprestimos.objects.all().order_by('data_emprestimo')
+    emprestimos_atrasados = [e for e in todos_emprestimos if getattr(e, 'esta_atrasado', False) or (getattr(e, 'status', '') == 'Atrasado')]
+    
+    emprestimos_cancelados = Emprestimos.objects.filter(
+        status="Cancelado"
+    ).order_by('-data_emprestimo') # Ordena do mais novo para o mais antigo
+
     context = {
-        "livros": livros,
-        "usuarios": usuarios,
-        "emprestimos":  emprestimos,
-        "reservas": reservas,
+        # Para os cards de estatística
+        "livros": livros_stats,
+        "usuarios": usuarios_stats,
+        "reservas": reservas_stats, # Usando a contagem de reservas ativas
+        "emprestimos_ativos": emprestimos_ativos, # Usando a contagem de ativos
+        
+        # Para as novas tabelas
+        "emprestimos_atrasados": emprestimos_atrasados,
+        "emprestimos_cancelados": emprestimos_cancelados,
     }
     return render(request, 'dashboard.html', context)
 
+
+def verificar_pendencias(request):
+    """
+    Esta view é chamada pelo botão manual "Verificar Pendências".
+    Ela executa a lógica de cancelamento e atraso.
+    """
+    
+    # Apenas POST requests devem modificar dados
+    if request.method == "POST":
+        hoje = timezone.now().date()
+        
+        count_cancelados = 0
+        count_atrasados = 0
+
+        # --- Lógica 1: Cancelar Empréstimos não retirados ---
+        # "Disponível para retirar" e passou de 7 dias
+        data_limite_cancelar = hoje - datetime.timedelta(days=7)
+        
+        # Encontra os empréstimos que estão "Disponível para retirar"
+        # e foram criados há mais de 7 dias
+        emprestimos_para_cancelar = Emprestimos.objects.filter(
+            status="Disponível para retirar",
+            data_emprestimo__lt=data_limite_cancelar # __lt = "less than" (menor que)
+        )
+        
+        for emprestimo in emprestimos_para_cancelar:
+            emprestimo.status = "Cancelado"  # <-- NOVO STATUS
+            emprestimo.save()
+            
+            # Importante: Devolve o livro para a prateleira virtual
+            livro = emprestimo.id_livro
+            livro.status = "disponivel"  # Use o status que seu Model Livros entende
+            livro.save()
+            count_cancelados += 1
+
+        # --- Lógica 2: Marcar Empréstimos Atrasados ---
+        # "Retirado" e passou de 14 dias (2 semanas)
+        data_limite_atraso = hoje - datetime.timedelta(days=14)
+        
+        emprestimos_para_atrasar = Emprestimos.objects.filter(
+            status="Retirado", # Se está "Retirado"
+            data_emprestimo__lt=data_limite_atraso # E foi emprestado há mais de 14 dias
+        )
+        
+        # .update() é mais rápido para atualizar muitos objetos
+        count_atrasados = emprestimos_para_atrasar.update(
+            status="Atrasado" # <-- NOVO STATUS
+        )
+
+        # Envia uma mensagem de sucesso para o template
+        messages.success(request, f"Verificação concluída: {count_cancelados} empréstimos cancelados e {count_atrasados} marcados como atrasados.")
+
+    # Redireciona de volta para a página principal de empréstimos
+    return redirect("Bibliotecario:emprestimos_atuais")
 
 ########
 # VIEWS PARA PESQUISAS
