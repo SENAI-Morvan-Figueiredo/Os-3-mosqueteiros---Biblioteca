@@ -32,7 +32,11 @@ SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    'underbred-adriana-formally.ngrok-free.dev',
+    ]
 
 AUTH_USER_MODEL = 'User.Usuario'
 
@@ -54,6 +58,10 @@ INSTALLED_APPS = [
     'Livros',
     'User',
     'Multas'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://underbred-adriana-formally.ngrok-free.dev"
 ]
 
 MIDDLEWARE = [

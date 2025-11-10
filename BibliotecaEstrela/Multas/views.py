@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from User.models import Usuario
 from Livros.models import Livros
@@ -29,6 +31,15 @@ from django.conf import settings
 
 #     return render(request, "user/multas.html", {"pagamentos": pagamentos})
 
+@csrf_exempt
+def mp_webhook(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        print("📦 Webhook recebido:", data)
+
+        return JsonResponse({"status": "ok"})
+    
+    return JsonResponse({"error": "Método não suportado"}, status=400)
 
 @transaction.atomic
 def emitir_multa(emprestimo_objeto):
@@ -59,6 +70,12 @@ def emitir_multa(emprestimo_objeto):
 def criar_pagamento(request):
     usuario = request.user
     sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
+    status = request.GET.get('status')
+
+    if status:
+        if status == 'approved':
+            Multas.objects.filter(id_usuario=request.user, status='PENDENTE').update(status='PAGO')
+
 
     # 1️⃣ Busca todos os empréstimos do usuário
     emprestimos = Emprestimos.objects.filter(id_user=usuario)
@@ -99,16 +116,23 @@ def criar_pagamento(request):
         pagamento_data = {
             'items': itens_pagamento,
             'back_urls': {
-                'success': 'http://127.0.0.1:8000/user/multas/',
-                'failure': 'http://127.0.0.1:8000/user/multas/',
-                'pending': 'http://127.0.0.1:8000/user/multas/',
+                'success': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
+                'failure': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
+                'pending': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
             },
-            
+            'auto_return': 'approved',
+            "external_reference": f"MULTA-{usuario.id}"
         }
 
         preference = sdk.preference().create(pagamento_data)
         response_data = preference.get('response', {})
         print("Resposta do Mercado Pago:", response_data)
+
+        preference_id = response_data.get('id')
+
+        for multa in multas_pendentes:
+            multa.preference_id = preference_id
+            multa.save()
 
         link_pagamento = response_data.get('sandbox_init_point')
         print(link_pagamento)
@@ -116,8 +140,13 @@ def criar_pagamento(request):
         # ✅ Se o Mercado Pago retornou erro, não tente redirecionar
         if not link_pagamento or not isinstance(link_pagamento, str):
             return HttpResponse(f"Erro ao criar pagamento:<br><pre>{response_data}</pre>", status=400)
+        
+        context = {
+            'link_pagamento': link_pagamento,
+            'itens_pagamento': itens_pagamento,
+        }
 
-        return render(request, 'user/multas.html', {'link_pagamento': link_pagamento})
+        return render(request, 'user/multas.html', context)
     
     else:
         return render(request, 'user/multas.html')
