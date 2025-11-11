@@ -13,6 +13,8 @@ from .models import Multas, MultaLivro
 import mercadopago
 from django.conf import settings
 
+from decimal import Decimal
+
 # @login_required
 # def minhas_multas(request):
 #     # 1️⃣ Buscar empréstimos do usuário que ainda não foram devolvidos
@@ -111,6 +113,9 @@ def criar_pagamento(request):
             })
 
     print(len(itens_pagamento))
+    print(itens_pagamento)
+    
+    total = Decimal('0.00')
     
     if len(itens_pagamento) > 0:
         pagamento_data = {
@@ -134,6 +139,10 @@ def criar_pagamento(request):
             multa.preference_id = preference_id
             multa.save()
 
+    
+        for valor in multas_pendentes:
+            total += valor.valor_multa
+
         link_pagamento = response_data.get('sandbox_init_point')
         print(link_pagamento)
 
@@ -144,9 +153,11 @@ def criar_pagamento(request):
         context = {
             'link_pagamento': link_pagamento,
             'itens_pagamento': itens_pagamento,
+            'total_multa': total,
+            'tamanho_lista_multas': itens_pagamento
         }
 
         return render(request, 'user/multas.html', context)
     
     else:
-        return render(request, 'user/multas.html')
+        return render(request, 'user/multas.html', {'total_multa': total})

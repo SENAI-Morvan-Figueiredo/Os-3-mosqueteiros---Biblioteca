@@ -3,20 +3,50 @@
 {% block content %}
 <style>
     .card-perfil {
-        min-height: 600px;
-        max-height: 600px;
+        box-sizing: border-box;
+        height: 600px;              /* seu tamanho fixo */
+        width: 100%;
+        padding: 24px;              /* padding geral do card */
+        position: relative;         /* necessário para o botão absoluto */
+        border-radius: 10px;
+        background: #fff;
+        /* NÃO aplicar overflow aqui */
+        display: block;
+    }
+
+    .card-body {
+        flex: 1;                   /* ← ocupa todo o espaço disponível */
         overflow-y: auto;
-        position: relative;
-        padding-bottom: 70px; /* espaço pro botão não cobrir o conteúdo final */
+        padding: 10px 20px;
+
+        border: 1px solid #00000010;
+        border-radius: 5px;
     }
 
     .pos_fixa {
         position: sticky;
-        bottom: 10px; /* um pequeno espaçamento do fundo */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        z-index: 2; /* garante que fique acima do conteúdo rolável */
+
+        bottom: 0;
+
+        min-width: 100px;
+        max-width: 250px;
+        width: 100%;
+
+        text-align: center;
+        align-self: center;
+
+        padding: 5px 0;
+
+        border-radius: 5px;
+        border: none;
+
+        font-size: 18px;
+        font-weight: 600;
+
+        background-color: #1D3A8C;
+        color: #ffffff;
+
+        margin-top: 10px;
     }
 
 
@@ -32,7 +62,11 @@
 
         padding: 0;
 
+        margin-bottom: 10px;
+
         & .livros_multa{
+
+            padding: 0 10px;
 
             & h4{
                 color: #F50000;
@@ -40,60 +74,90 @@
                 font-size: 20px;
                 margin-bottom: 3px;
 
-                & p{
-                    font-size: 17px;
-                    margin-bottom: 0;
-                }
+                
+
+                margin-top: 4px;
             }
+
+            & p{
+                    font-size: 17px;
+                    margin-bottom: 10px;
+                }
         }
 
         & .valor_multa{
             font-size: 20px;
             color: #F50000;
+            margin-right: 10px;
+            margin-bottom: 0;
         }
 
     }
 
 </style>
-
+{% if tamanho_lista_multas %}
 <div class="container_multas" style="padding: 10px 10%;">
     <div class="card-perfil d-flex flex-column gap-1 py-4 px-5">
         <h2 class="alinhamento">Multas a serem pagas</h2>
-
-        {% for livro in itens_pagamento %}
-            <div class="multas_p_pagar">
-                <div class="multas d-flex">
-                    <div class="livros_multa">
+        
+        <div class="card-body lista_multas d-flex flex-column">
+            {% for livro in itens_pagamento %}
+                <div class="multas_p_pagar">
+                    <div class="multas d-flex align-items-center">
+                        <div class="livros_multa">
+                            
+                            <h4>Em espera</h4>
+                            <p>O livro '{{ livro.title }}' está atrasado para entrega.</p>
                         
-                        <h4>Em espera</h4>
-                        <p>O livro '{{ livro.title }}' está atrasado para entrega.</p>
-                    
+                        </div>
+                        
+                        <p class="valor_multa">R${{ livro.unit_price|virgula }}</p>
                     </div>
-
-                    <p class="valor_multa">R${{ livro.unit_price|virgula }}</p>
                 </div>
-            </div>
-        {% endfor %}
+                
+            {% endfor %}
+            <p class="align-self-center" style="font-weight: 700; font-size: 20px; color: #1D3A8C;">Total: R${{ total_multa|virgula }}</p>
+        </div>
 
-        <button onclick="window.location.href='{{ link_pagamento }}'" class="pos_fixa">botão</button>
+        <button onclick="window.location.href='{{ link_pagamento }}'" class="pos_fixa">Pagar</button>
         <!-- <button id="adicionar" class="pos_fixa">adicionar</button> -->
     </div>
 </div>
+{% else %}
+<div class="container_multas" style="padding: 10px 10%;">
+    <div class="card-perfil d-flex flex-column gap-1 py-4 px-5">
+        <h2 class="alinhamento">Multas a serem pagas</h2>
+        
+        <div class="card-body lista_multas" style="display: flex; align-items: center; justify-content: center;">
+            <h3 style="color: rgb(0, 204, 0);">Não há multas a serem pagas!</h3> 
+        </div>
+
+    </div>
+</div>
+{% endif %}
 
 <!-- <script>
-    const container = document.querySelector('.multas_p_pagar');
+document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById('adicionar').onclick = () => {
+    const container = document.querySelector('.lista_multas'); 
+    const botao = document.getElementById('adicionar');
+
+    botao.onclick = () => {
         container.insertAdjacentHTML('beforeend', `
-                                        <div class="multas d-flex">
-                                            <div class="livros_multa">
-                                                <h4>Em espera</h4>
-                                                <p>O livro 'Pequeno Príncipe' está atrasado para entrega.</p>
-                                            </div>
-                                            <p class="valor_multa">R$10,00</p>
-                                        </div>
-                                    `);
-    }
+            <div class="multas_p_pagar">
+                <div class="multas d-flex">
+                    <div class="livros_multa">
+                        <h4>Em espera</h4>
+                        <p>O livro 'Pequeno Príncipe' está atrasado para entrega.</p>
+                    </div>
+                    <p class="valor_multa">R$10,00</p>
+                </div>
+            </div>
+        `);
+    };
+
+});
 </script> -->
+
 
 {% endblock %}

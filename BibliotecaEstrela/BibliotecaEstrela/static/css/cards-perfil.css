@@ -13,7 +13,7 @@
 
 
 /* Estilização do título dos cards */
-.card-perfil > h2{
+.card-perfil h2{
     color: #1E3B8B;
     font-weight: 650;
     font-size: 25px;

@@ -49,7 +49,7 @@
                         <a href="{% url 'tela_perfil' %}">Perfil</a>
                         <a href="{% url 'historico_perfil' %}">Histórico</a>
                         <a href="#">Notificações</a>
-                        <a href="#">Multas</a>
+                        <a href="{% url 'multas' %}">Multas</a>
                         <form action="{% url 'logout' %}" method="post">
                         {% csrf_token %}
                         <button type="submit">Logout</button>
