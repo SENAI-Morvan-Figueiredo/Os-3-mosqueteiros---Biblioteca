@@ -54,7 +54,7 @@
         text-align: start;
     }
 
-    .multas{
+    .multas {
         justify-content: space-between;
         align-items: center;
 
@@ -63,35 +63,149 @@
         padding: 0;
 
         margin-bottom: 10px;
+    }
 
-        & .livros_multa{
+    .multas .livros_multa {
+        padding: 0 10px;
+    }
 
-            padding: 0 10px;
+    .multas .livros_multa h4 {
+        color: #F50000;
+        font-size: 20px;
+        margin-bottom: 3px;
+        margin-top: 4px;
+    }
 
-            & h4{
-                color: #F50000;
+    .multas .livros_multa p {
+        font-size: 17px;
+        margin-bottom: 10px;
+    }
 
-                font-size: 20px;
-                margin-bottom: 3px;
+    .multas .valor_multa {
+        font-size: 20px;
+        color: #F50000;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
 
-                
+    .total_multa{
+        font-weight: 700; 
+        font-size: 20px; 
+        color: #1D3A8C;
+    }
 
-                margin-top: 4px;
-            }
-
-            & p{
-                    font-size: 17px;
-                    margin-bottom: 10px;
-                }
+    @media(max-width: 970px){
+        .card-perfil{
+            height: 500px;
         }
 
-        & .valor_multa{
-            font-size: 20px;
-            color: #F50000;
-            margin-right: 10px;
-            margin-bottom: 0;
+        .livros_multa {
+            padding: 0 5px;
         }
 
+        .multas .livros_multa h4 {
+            font-size: 15px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 12px;
+        }
+
+        .multas .valor_multa{
+            font-size: 15px;
+        }
+
+        .total_multa{
+            font-size: 15px;
+        }
+
+        .pos_fixa {
+            width: 200px;
+
+            padding: 4px 0;
+
+            border-radius: 4px;
+
+            font-size: 15px;
+
+            margin-top: 10px;
+        }
+    }
+
+    @media(max-width: 600px){
+        .card-perfil{
+            height: 400px;
+        }
+
+        .livros_multa {
+            padding: 0 3px;
+        }
+
+        .multas .livros_multa h4 {
+            font-size: 12px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 9px;
+        }
+
+        .multas .valor_multa{
+            font-size: 12px;
+        }
+
+        .total_multa{
+            font-size: 12px;
+        }
+
+        .pos_fixa {
+            width: 150px;
+
+            padding: 3px 0;
+
+            border-radius: 3px;
+
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+    }
+
+    @media(max-width: 450px){
+        .card-perfil{
+            height: 300px;
+        }
+
+        .livros_multa {
+            padding: 0 1px;
+        }
+
+        .multas .livros_multa h4 {
+            font-size: 9px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 6px;
+        }
+
+        .multas .valor_multa{
+            font-size: 9px;
+        }
+
+        .total_multa{
+            font-size: 9px;
+        }
+
+        .pos_fixa {
+            width: 100px;
+
+            padding: 2px 0;
+
+            border-radius: 2px;
+
+            font-size: 9px;
+
+            margin-top: 5px;
+        }
     }
 
 </style>
@@ -116,7 +230,7 @@
                 </div>
                 
             {% endfor %}
-            <p class="align-self-center" style="font-weight: 700; font-size: 20px; color: #1D3A8C;">Total: R${{ total_multa|virgula }}</p>
+            <p class="align-self-center total_multa">Total: R${{ total_multa|virgula }}</p>
         </div>
 
         <button onclick="window.location.href='{{ link_pagamento }}'" class="pos_fixa">Pagar</button>

@@ -6,7 +6,7 @@
     box-shadow: 0 0 4px black;
 }
 
-.card-perfil.estatisticas{
+.card-perfil .estatisticas{
     border-radius: 15px;
     height: 400px;
 }
@@ -194,4 +194,22 @@ input[type="file"] {
 
     display: flex;
     justify-items: space-between;
+}
+
+@media(max-width:970px){
+    .card-perfil h2{
+        font-size: 20px;
+    }
+}
+
+@media(max-width:600px){
+    .card-perfil h2{
+        font-size: 17px;
+    }
+}
+
+@media(max-width:450px){
+    .card-perfil h2{
+        font-size: 14px;
+    }
 }
