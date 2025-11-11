@@ -92,6 +92,60 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Guia de Status dos Empréstimos</h4>
+                    
+                    <div class="row text-center">
+                    <!-- Disponível para retirar -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-primary fw-bold">📦 Disponível para Retirar</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Após o empréstimo ser criado, o usuário tem <b>7 dias</b> para retirar o livro na biblioteca.
+                            </p>
+                            </div>
+                        </div>
+
+                        <!-- Retirado -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-success fw-bold">📚 Retirado</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Quando o livro é retirado, o usuário tem <b>21 dias</b> para devolver o exemplar.
+                            </p>
+                            </div>
+                        </div>
+
+                        <!-- Devolvido -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-secondary fw-bold">✅ Devolvido</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Ao devolver o livro, o status deve ser atualizado para <b>“Devolvido”</b>, e o empréstimo é considerado <b>completo</b>.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-md-12 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text fw-bold">🔎 Verificar Pendências</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                O botão <b>“Verificar Pendências”</b>, localizado acima, analisa todos os empréstimos e reservas em andamento. <br>
+                                Ele atualiza automaticamente os que estão <b>em atraso</b> e <b>cancela</b> aqueles que não foram retirados dentro do prazo.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-4 mb-0" style="font-size: 0.9rem;">
+                    💡 <b>Dica:</b> mantenha os status atualizados para evitar confusões e garantir o controle correto dos empréstimos.
+                    </p>
+                </div>
+            </div>
             {% if messages %}
                 <div class="container-fluid">
                     {% for message in messages %}
