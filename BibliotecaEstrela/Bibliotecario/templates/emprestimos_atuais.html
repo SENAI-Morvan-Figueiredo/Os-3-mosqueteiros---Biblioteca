@@ -126,8 +126,30 @@
                                                 <td>{{ emprestimo.id_user.username }}</td>
                                                 <td>{{ emprestimo.id_livro.nome }}</td>
                                                 <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
-                                                <td>{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
-                                                <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
+                                                <td>
+                                                    {% if emprestimo.status == 'Disponível para retirar' %}
+                                                        {{ emprestimo.data_retirada_limite|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        {{ emprestimo.data_vencimento|date:"d/m/Y" }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if emprestimo.status == 'Disponível para retirar' %}
+                                                        {% if emprestimo.dias_para_retirada > 0 %}
+                                                            {{ emprestimo.dias_para_retirada }} dias
+                                                        {% else %}
+                                                            Último dia
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if emprestimo.dias_restantes > 0 %}
+                                                            {{ emprestimo.dias_restantes }} dias
+                                                        {% elif emprestimo.dias_atraso > 0 %}
+                                                            Atrasado {{ emprestimo.dias_atraso }} dias
+                                                        {% else %}
+                                                            Hoje
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
                                                 <td>
                                                     <select class="form-select" name="status_{{ emprestimo.id }}">
                                                         <option value="Disponível para retirar" {% if emprestimo.status == "Disponível para retirar" %}selected{% endif %}>Disponível para Retirar</option>

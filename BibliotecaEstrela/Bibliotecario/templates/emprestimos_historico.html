@@ -91,8 +91,34 @@
                                     <td>{{ emprestimo.id_user.username }}</td>
                                     <td>{{ emprestimo.id_livro.nome }}</td>
                                     <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
-                                    <td title="Entrega prevista: {{ emprestimo.data_vencimento|date:'d/m/Y' }}">{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
-                                    <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
+                                    <td>
+                                        {% if emprestimo.status == 'Disponível para retirar' %}
+                                            {{ emprestimo.data_retirada_limite|date:"d/m/Y" }}
+                                        {% else %}
+                                            {{ emprestimo.data_vencimento|date:"d/m/Y" }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if emprestimo.status == 'Devolvido' %}
+                                            —
+                                        {% else %}
+                                            {% if emprestimo.status == 'Disponível para retirar' %}
+                                                {% if emprestimo.dias_para_retirada > 0 %}
+                                                    {{ emprestimo.dias_para_retirada }} dias
+                                                {% else %}
+                                                    Último dia
+                                                {% endif %}
+                                            {% else %}
+                                                {% if emprestimo.dias_restantes > 0 %}
+                                                    {{ emprestimo.dias_restantes }} dias
+                                                {% elif emprestimo.dias_atraso > 0 %}
+                                                    Atrasado {{ emprestimo.dias_atraso }} dias
+                                                {% else %}
+                                                    Hoje
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
                                     <td>{{ emprestimo.status }}</td>
                                     <td><a href="#">Detalhes</a></td>
                                 </tr>

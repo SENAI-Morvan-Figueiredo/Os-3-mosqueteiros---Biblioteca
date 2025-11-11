@@ -22,12 +22,6 @@ class Emprestimos(models.Model):
         except Exception:
             return False
 
-class Notificacoes(models.Model):
-    id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    mensagem = models.CharField(max_length=150)
-    lido = models.BooleanField("Marca uma notificação como lida/não lida")
-    data = models.DateField(auto_now_add=True)
-
     @property
     def dias_atraso(self):
         """Retorna a quantidade de dias de atraso além do prazo de 21 dias.
@@ -65,6 +59,34 @@ class Notificacoes(models.Model):
             return dias if dias > 0 else 0
         except Exception:
             return 0
+
+    @property
+    def data_retirada_limite(self):
+        """Data limite para o usuário retirar o livro (quando status é 'Disponível para retirar'). 7 dias a partir de data_emprestimo."""
+        from datetime import timedelta
+        try:
+            return self.data_emprestimo + timedelta(days=7)
+        except Exception:
+            return None
+
+    @property
+    def dias_para_retirada(self):
+        """Dias restantes para retirar o livro (apenas relevante quando o status é 'Disponível para retirar')."""
+        from datetime import date
+        try:
+            limite = self.data_retirada_limite
+            if not limite:
+                return 0
+            dias = (limite - date.today()).days
+            return dias if dias > 0 else 0
+        except Exception:
+            return 0
+
+class Notificacoes(models.Model):
+    id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    mensagem = models.CharField(max_length=150)
+    lido = models.BooleanField("Marca uma notificação como lida/não lida")
+    data = models.DateField(auto_now_add=True)
 class Reserva(models.Model):
     id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
