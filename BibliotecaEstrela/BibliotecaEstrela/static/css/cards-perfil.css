@@ -62,9 +62,15 @@ label{
     transition: transform 0.3s ease-in, opacity 0.5s ease;
 }
 
+.aviso-cpf-celular{
+    display: none;
+}
+
 .exclamacao{
     display: flex;
     left: 98%;
+    margin-right: 40px;
+    /* right: 200px; */
 }
 
 .mover{
@@ -166,7 +172,6 @@ input[type="file"] {
     display: none;
 }
 
-/* Estilização estatísticas */
 /* Estilização do título dos cards */
 .campo_estatisticas > h2{
     color: #1E3B8B;
@@ -176,8 +181,6 @@ input[type="file"] {
 }
 
 .info-estatisticas{
-    font-size: 20px;
-
     padding: 0 15px;
 }
 
@@ -196,20 +199,194 @@ input[type="file"] {
     justify-items: space-between;
 }
 
+@media(max-width:1720px){
+    .exclamacao{
+        left: 97%;
+    }
+}
+
+@media(max-width:1350px){
+    
+    .exclamacao{
+        left: 96%;
+    }
+}
+
+@media(max-width:1200px){
+    .info-estatisticas{
+        padding: 0 48px;
+    }
+}
+
+@media(max-width:1024px){
+    .aviso-cpf{
+        display: none;
+    }
+
+    .aviso-cpf-celular{
+        display: flex;
+        justify-content: center;
+
+        color: #00000060;
+        font-style: italic;
+        font-size: 10px;
+    }
+
+    .exclamacao{
+        display: none;
+    }
+}
+
 @media(max-width:970px){
+    .card-perfil{
+        border-radius: 13px;
+    }
+
     .card-perfil h2{
         font-size: 20px;
+    }
+
+    .imagem{
+        width: 90px;
+        height: 90px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 4px;
+
+        font-size: 12px;
+    }
+
+    .editarBtn{
+        font-size: 12px;
+        right: 6px;
+    }
+
+    label{
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 30px;
+
+        font-size: 12px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+    }
+    
+}
+
+@media(max-width:920px){
+    .editarBtn{
+        font-size: 13px;
+
+        padding: 0 3px;
+
+        right: 7px;
+    }
+}
+
+@media(max-width:767px){
+    .info-estatisticas{
+        padding: 0 24px;
     }
 }
 
 @media(max-width:600px){
+    .card-perfil{
+        border-radius: 11px;
+    }
+
     .card-perfil h2{
         font-size: 17px;
     }
+
+    .imagem{
+        width: 75px;
+        height: 75px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 4px;
+
+        font-size: 9px;
+    }
+
+    .editarBtn{
+        font-size: 9px;
+    }
+    
+    .aviso-cpf-celular{
+        font-size: 8px;
+    }
+
+    label{
+        font-size: 9px;
+        margin-bottom: 3px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 25px;
+
+        font-size: 9px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+    }
 }
 
-@media(max-width:450px){
+/* @media(max-width:450px){
+    .card-perfil{
+        border-radius: 10px;
+
+        height: 300px;
+    }
+
     .card-perfil h2{
         font-size: 14px;
     }
-}
+
+    .imagem{
+        width: 50px;
+        height: 50px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 3px;
+
+        font-size: 6px;
+    }
+
+    .editarBtn{
+        font-size: 6px;
+    }
+
+     .aviso-cpf-celular{
+        font-size: 5px;
+    }
+
+    label{
+        font-size: 6px;
+        margin-bottom: 2px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 20px;
+
+        font-size: 6px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+    }
+} */
