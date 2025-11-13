@@ -6,9 +6,9 @@
     box-shadow: 0 0 4px black;
 }
 
-.card-perfil .estatisticas{
+.estatisticas{
     border-radius: 15px;
-    height: 400px;
+    max-height: 400px;
 }
 
 
