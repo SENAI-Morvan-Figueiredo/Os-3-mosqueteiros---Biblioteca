@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from environ import Env
+
+env = Env()
+env.read_env()
+
+MERCADO_PAGO_ACCESS_TOKEN = env('MERCADO_PAGO_ACCESS_TOKEN')
 
 from environ import Env
 
@@ -40,6 +46,11 @@ SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     'underbred-adriana-formally.ngrok-free.dev',
+#     ]
 ALLOWED_HOSTS = ['bibliotecaestrela.onrender.com', 'https://bibliotecaestrela.onrender.com', '*']
 
 AUTH_USER_MODEL = 'User.Usuario'
@@ -68,6 +79,13 @@ INSTALLED_APPS = [
     # Apps criados
     'Biblioteca',
     'Livros',
+    'User',
+    'Multas',
+    'Bibliotecario'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://underbred-adriana-formally.ngrok-free.dev"
     'User.apps.UserConfig',
     'Bibliotecario',
 ]

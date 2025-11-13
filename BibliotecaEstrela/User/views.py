@@ -10,6 +10,8 @@ from Biblioteca.models import Notificacoes
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 
+from django.http import HttpResponse
+
 # Create your views here.
 def register(request):
     if request.method == 'POST':

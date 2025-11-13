@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load filters %}
+{% block content %}
+<style>
+    .card-perfil {
+        box-sizing: border-box;
+        height: 600px;              /* seu tamanho fixo */
+        width: 100%;
+        padding: 24px;              /* padding geral do card */
+        position: relative;         /* necessário para o botão absoluto */
+        border-radius: 10px;
+        background: #fff;
+        /* NÃO aplicar overflow aqui */
+        display: block;
+    }
+
+    .card-body {
+        flex: 1;                   /* ← ocupa todo o espaço disponível */
+        overflow-y: auto;
+        padding: 10px 20px;
+
+        border: 1px solid #00000010;
+        border-radius: 5px;
+    }
+
+    .pos_fixa {
+        position: sticky;
+
+        bottom: 0;
+
+        min-width: 100px;
+        max-width: 250px;
+        width: 100%;
+
+        text-align: center;
+        align-self: center;
+
+        padding: 5px 0;
+
+        border-radius: 5px;
+        border: none;
+
+        font-size: 18px;
+        font-weight: 600;
+
+        background-color: #1D3A8C;
+        color: #ffffff;
+
+        margin-top: 10px;
+    }
+
+
+    .alinhamento{
+        text-align: start;
+    }
+
+    .multas {
+        justify-content: space-between;
+        align-items: center;
+
+        border-bottom: 1px solid #00000025;
+
+        padding: 0;
+
+        margin-bottom: 10px;
+    }
+
+    .multas .livros_multa {
+        padding: 0 10px;
+    }
+
+    .multas .livros_multa h4 {
+        color: #F50000;
+        font-size: 20px;
+        margin-bottom: 3px;
+        margin-top: 4px;
+    }
+
+    .multas .livros_multa p {
+        font-size: 17px;
+        margin-bottom: 10px;
+    }
+
+    .multas .valor_multa {
+        font-size: 20px;
+        color: #F50000;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+    .total_multa{
+        font-weight: 700; 
+        font-size: 20px; 
+        color: #1D3A8C;
+    }
+
+    @media(max-width: 970px){
+        .card-perfil{
+            height: 500px;
+        }
+
+        .livros_multa {
+            padding: 0 5px;
+        }
+
+        .multas .livros_multa h4 {
+            font-size: 15px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 12px;
+        }
+
+        .multas .valor_multa{
+            font-size: 15px;
+        }
+
+        .total_multa{
+            font-size: 15px;
+        }
+
+        .pos_fixa {
+            width: 200px;
+
+            padding: 4px 0;
+
+            border-radius: 4px;
+
+            font-size: 15px;
+
+            margin-top: 10px;
+        }
+    }
+
+    @media(max-width: 600px){
+        .card-perfil{
+            height: 400px;
+        }
+
+        .livros_multa {
+            padding: 0 3px;
+        }
+
+        .multas .livros_multa h4 {
+            font-size: 12px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 9px;
+        }
+
+        .multas .valor_multa{
+            font-size: 12px;
+        }
+
+        .total_multa{
+            font-size: 12px;
+        }
+
+        .pos_fixa {
+            width: 150px;
+
+            padding: 3px 0;
+
+            border-radius: 3px;
+
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+    }
+
+    @media(max-width: 450px){
+        .card-perfil{
+            height: 300px;
+        }
+
+        .livros_multa {
+            padding: 0 1px;
+        }
+
+        .multas .livros_multa h4 {
+            font-size: 9px;
+        }
+
+        .multas .livros_multa p{
+            font-size: 6px;
+        }
+
+        .multas .valor_multa{
+            font-size: 9px;
+        }
+
+        .total_multa{
+            font-size: 9px;
+        }
+
+        .pos_fixa {
+            width: 100px;
+
+            padding: 2px 0;
+
+            border-radius: 2px;
+
+            font-size: 9px;
+
+            margin-top: 5px;
+        }
+    }
+
+</style>
+{% if tamanho_lista_multas %}
+<div class="container_multas" style="padding: 10px 10%;">
+    <div class="card-perfil d-flex flex-column gap-1 py-4 px-5">
+        <h2 class="alinhamento">Multas a serem pagas</h2>
+        
+        <div class="card-body lista_multas d-flex flex-column">
+            {% for livro in itens_pagamento %}
+                <div class="multas_p_pagar">
+                    <div class="multas d-flex align-items-center">
+                        <div class="livros_multa">
+                            
+                            <h4>Em espera</h4>
+                            <p>O livro '{{ livro.title }}' está atrasado para entrega.</p>
+                        
+                        </div>
+                        
+                        <p class="valor_multa">R${{ livro.unit_price|virgula }}</p>
+                    </div>
+                </div>
+                
+            {% endfor %}
+            <p class="align-self-center total_multa">Total: R${{ total_multa|virgula }}</p>
+        </div>
+
+        <button onclick="window.location.href='{{ link_pagamento }}'" class="pos_fixa">Pagar</button>
+        <!-- <button id="adicionar" class="pos_fixa">adicionar</button> -->
+    </div>
+</div>
+{% else %}
+<div class="container_multas" style="padding: 10px 10%;">
+    <div class="card-perfil d-flex flex-column gap-1 py-4 px-5">
+        <h2 class="alinhamento">Multas a serem pagas</h2>
+        
+        <div class="card-body lista_multas" style="display: flex; align-items: center; justify-content: center;">
+            <h3 style="color: rgb(0, 204, 0);">Não há multas a serem pagas!</h3> 
+        </div>
+
+    </div>
+</div>
+{% endif %}
+
+<!-- <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const container = document.querySelector('.lista_multas'); 
+    const botao = document.getElementById('adicionar');
+
+    botao.onclick = () => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="multas_p_pagar">
+                <div class="multas d-flex">
+                    <div class="livros_multa">
+                        <h4>Em espera</h4>
+                        <p>O livro 'Pequeno Príncipe' está atrasado para entrega.</p>
+                    </div>
+                    <p class="valor_multa">R$10,00</p>
+                </div>
+            </div>
+        `);
+    };
+
+});
+</script> -->
+
+
+{% endblock %}
