@@ -37,10 +37,10 @@
                 <div class="p-3 container-fluid ms-md-5">
                     <h1 class="col-6"> {{ livro.nome }} </h1>
 
-                    <p class="mb-5 pb-md-5">{{ livro.autor }}</p>
-                    <p class="mb-5">{{ livro.descricao }}</p>
+                    <p class="mb-5 pb-md-5"><strong>Autor: </strong>{{ livro.autor }}</p>
+                    <p class="mb-5"><strong>Descrição: </strong> {{ livro.descricao }}</p>
 
-                    <p class="mb-5 pt-md-5 pb-md-5">Categoria: {{ livro.categoria}}</p>
+                    <p class="mb-5 pt-md-5 pb-md-5"><strong>Categoria: </strong> {% if generos %}{{ generos|join:", " }}{% else %}Sem categoria{% endif %}</p>
 
                     <div class="container d-flex ps-0">
 
