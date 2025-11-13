@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .table-responsive{
+        max-height: 300px; 
+        overflow-y: auto; 
+    }
+</style>
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-5" 
+            style="color: black;" 
+            href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+            href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+            href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+            href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link px-5" style="color: black;" 
+            href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link active px-5" aria-current="page" 
+            style="color: black;" 
+            href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos_ativos.count }}</span> 
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12" id="relatorio-content">
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Informações</h4>
+                    <div class="d-flex justify-content-start align-items-center gap-3 mt-3">
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Empréstimos atuais: <span class="badge bg-light text-dark rounded-pill">{{ emprestimos_ativos.count }}</span></a>
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Reservas Atuais: <span class="badge bg-light text-dark rounded-pill">{{ reservas.count }}</span></a>
+                        
+                        <button id="btn-gerar-pdf" class="btn btn-success ms-auto">
+                            <i class="bi bi-download"></i> Baixar Relatório
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar</h4>
+                    <div class="d-flex justify-content-start gap-3 mt-3">
+                        (aqui é a barra de pesquisa)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-danger">Empréstimos Atrasados</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Data Empréstimo</th>
+                                    <th>Data Prevista de Devolução</th>
+                                    <th>Dias Restantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_atrasados %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
+                                    <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Nenhum empréstimo atrasado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-warning">Empréstimos Cancelados (Não retirados)</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Data (Limite)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_cancelados %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Nenhum empréstimo cancelado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    // Espera o documento carregar
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Pega o botão
+        const pdfButton = document.getElementById('btn-gerar-pdf');
+        
+        pdfButton.addEventListener('click', function() {
+            // Pega o conteúdo da div #relatorio-content
+            const content = document.getElementById('relatorio-content');
+            
+            // Feedback visual para o usuário
+            pdfButton.textContent = 'Gerando...';
+            pdfButton.disabled = true;
+
+            const options = {
+                margin:       [0.5, 0.5, 0.5, 0.5], // margens [top, left, bottom, right] em polegadas
+                filename:     'relatorio_biblioteca.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true }, // 'scale' melhora a qualidade
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Chama a biblioteca para gerar o PDF
+            html2pdf().set(options).from(content).save()
+                .then(function() {
+                    // Reseta o botão após o download
+                    pdfButton.textContent = 'Baixar Relatório';
+                    pdfButton.disabled = false;
+                })
+                .catch(function(error) {
+                    console.error('Erro ao gerar PDF:', error);
+                    pdfButton.textContent = 'Erro ao gerar';
+                });
+        });
+    });
+</script>
+
+{% endblock content %}

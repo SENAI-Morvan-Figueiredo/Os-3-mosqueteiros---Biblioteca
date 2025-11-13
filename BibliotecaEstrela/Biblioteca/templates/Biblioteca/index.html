@@ -3,6 +3,7 @@
 
 {% block content %}
 
+
     <div style="height: 30em;">
         <ul>
             <h3>Livros</h3>
@@ -115,9 +116,7 @@
                             <div class="row">
                     {% endif %}
 
-                    
                     <div class="col-12 col-md-6 col-lg-3 mb-4">
-                        <a href="{% url 'livro_detalhes' livro.id %} " style="text-decoration: none;">
                         <div class="card h-100 book-item shadow-sm" 
                             data-id="{{ livro.id }}" 
                             data-nome="{{ livro.nome }}"
@@ -138,7 +137,6 @@
                                 <p class="card-text text-muted small mt-auto">{{ livro.autor }}</p>
                             </div>
                         </div>
-                        </a>
                     </div>
 
                     {# Fecha o slide se for o 4º item do grupo ou o último item da lista #}
@@ -195,6 +193,7 @@
             bookItem.classList.add("active");
 
             const bookData = {
+                id: bookItem.dataset.id,
                 nome: bookItem.dataset.nome,
                 autor: bookItem.dataset.autor,
                 imagem: bookItem.dataset.imagem,
@@ -210,7 +209,7 @@
                     <div class="row g-4">
                         <div class="col-md-3 text-center">
                             <img src="${bookData.imagem}" alt="Capa de ${bookData.nome}" class="img-fluid rounded shadow-sm mb-3" style="min-height: 400px; object-fit: cover;">
-                            <a href="#" style="background-color: #1E3B8B;" class="btn btn-primary w-100 vermais">Ver mais</a>
+                            <a href="livros/livro/${bookData.id}/detalhes" style="background-color: #1E3B8B; style="text-decoration: none;"" class="btn btn-primary w-100 vermais">Ver mais</a>
                         </div>
 
                         <div class="col-md-9">

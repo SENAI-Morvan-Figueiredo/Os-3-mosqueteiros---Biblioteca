@@ -1,0 +1,22 @@
+databases:
+  - name: BibliotecaEstrelaDB
+    plan: free
+    databaseName: biblioteca_estrela
+    user: dbuser
+
+services:
+  - type: web
+    plan: free
+    name: BibliotecaEstrela
+    runtime: python
+    buildCommand: './build.sh'
+    startCommand: 'pwd && python -m gunicorn asgi.py:application -k uvicorn.workers.UvicornWorker'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: BibliotecaEstrelaDB
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4

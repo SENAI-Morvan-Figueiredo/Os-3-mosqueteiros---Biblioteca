@@ -2,9 +2,14 @@
 {% load static %}
 
 {% block content %}
+{% load crispy_forms_tags %}
     <main class="text-center" style="padding: 0 10%">
+        
         <div class="row">
-            <div class="d-flex flex-column flex-xl-row gap-5"> <!-- Transforma tudo em 'display: flex', da um espaçamento de gap-5 do bootstrap e alinha tudo no começo da div -->
+        <!-- <h2>Informações do Perfil</h2> -->
+        <!-- <form method="POST" id="perfilForm"> -->
+            {% csrf_token %}
+            <div class="d-flex gap-5"> <!-- Transforma tudo em 'display: flex', da um espaçamento de gap-5 do bootstrap e alinha tudo no começo da div -->
                 
                 <div class="card-perfil estatisticas text-align-start" style="flex:0 0 250px">
                     
@@ -34,19 +39,19 @@
                         <h2>Estatísticas</h2>
 
                         <div class="info-estatisticas">
-                            <p>Livros reservados</p>
+                            <p>Livros em posse: {{ em_posse|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Livros devolvidos</p>
+                            <p>Livros reservados: {{ reservas|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Avaliações</p>
+                            <p>Livros devolvidos: {{ devolvidos|length }}</p>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Lista de desejos</p>
+                            <p>Avaliações: {{ avaliacoes|length }} </p>
                         </div>
 
                     </div>
@@ -55,13 +60,16 @@
 
                 <div class="flex-grow-1 ms-2 d-flex flex-column gap-5"> <!-- Faz com que tudo que esteja dentro dessa div, preencha todo o tamanho. -->
 
-                    <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-3 px-4 py-md-4 px-md-5">
-                        <h2>Informações do Perfil</h2>
+                    <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h2>Informações do Perfil</h2>
+                            <a id="abrir_modal" class="btn-modal-perfil">Deletar perfil</a>
+                        </div>
 
                         <form method="POST" id="perfilForm" class="d-flex flex-column gap-2 w-100">
                             {% csrf_token %}
 
-                            <div class="d-flex flex-column gap-2 flex-lg-row gap-lg-4">
+                            <div class="d-flex flex-row gap-4 w-100">
                                 <div class="campo-perfil d-flex flex-column flex-grow-1">
                                     <label for="username" class="align-self-start">Nome</label>
 
@@ -84,7 +92,7 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex flex-column gap-2 flex-lg-row gap-lg-4">
+                            <div class="d-flex flex-row gap-4 w-100">
                                 <div class="campo-perfil d-flex flex-column flex-grow-1">
                                     <label for="email" class="align-self-start">Email</label>
 
@@ -106,7 +114,7 @@
                                 </div>
                             </div>
 
-                            <div class="campo-perfil d-flex flex-column flex-grow-1">
+                            <div class="campo-perfil d-flex flex-column flex-grow-1 w-100">
                                 <label for="cpf" class="align-self-start">CPF</label>
                                 <div class="input-wrapper d-flex" id="animacao-cpf">
                                     {{ form.cpf }}
@@ -124,8 +132,38 @@
                     <div class="card-perfil d-flex align-items-start py-3 px-4 py-md-4 px-md-5">
                         <h2>Notificações</h2>
                     </div>
-                    
-                    <div class="card-perfil d-flex flex-column align-items-start py-3 px-4 py-md-4 px-md-5">
+ 
+
+                    <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
+                        <h2>Livros em sua posse</h2>
+
+                        <div class="d-flex flex-row w-100 gap-4">
+                            {% for livro in em_posse %}
+
+                            <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
+                                <div class="card h-100 book-item shadow-sm">
+                                    {% if not livro.id_livro.imagem %}
+                                        <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 350px; object-fit: cover;" alt="Sem capa">
+                                    {% else %}
+                                    <div>
+                                        <img src="{{ livro.id_livro.imagem.url }}" class="card-img-top" style="height: 350px; object-fit: cover;" alt="{{ livro.nome }}">
+                                    </div>
+                                    {% endif %}
+                                    <div class="card-body d-flex flex-column text-center">
+                                        <h6 class="card-title fw-bold">{{ livro.id_livro.nome }}</h6>
+                                        <p class="card-text text-muted small mt-auto">{{ livro.id_livro.autor }}</p>
+                                        {{ livro.data_emprestimo }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                    <div class="card-perfil d-flex flex-column align-items-start py-4 px-5">
                         <h2>Livros Reservados</h2>
 
                         <div class="d-flex flex-row w-100 gap-4">
@@ -151,13 +189,19 @@
                             {% endfor %}
                         </div>
                     </div>
+
                     
 
                 </div>
             </div>
         </div>
 
+        {% include 'User/modal_deletar.html' %}
+
+
+    </div>
     <script>
+        // Preview imagem e salvar imagem
         document.getElementById('id_imagem').addEventListener('change', function(event) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -167,10 +211,19 @@
 
             document.getElementById('btn_salvar-imagem').style.display = 'flex';
         });
-
         document.getElementById('btn_salvar-imagem').onclick = style.display = 'none'
+
+
+        // Abrir modal de deletar perfil
+        document.getElementById('abrir_modal').onclick = () => {
+            document.getElementById('modal_deletar').style.display = 'block';
+        };
+        document.getElementById('fechar').onclick = () => {
+            document.getElementById('modal_deletar').style.display = 'none';
+        };
+    
     </script>
 
-    </main>
+</main>
 
 {% endblock content %}

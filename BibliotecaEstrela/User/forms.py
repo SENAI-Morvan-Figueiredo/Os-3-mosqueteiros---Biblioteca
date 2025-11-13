@@ -23,6 +23,28 @@ class UserUpdateForm(forms.ModelForm):
         model = Usuario
         fields = ['username', 'email', 'cpf', 'telefone', 'imagem']
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data.get('new_password')
+
+        if password:
+            user.set_password(password)
+        if commit:
+            user.save()
+
+        return user
+    
+class CompleteSignupForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['telefone', 'cpf']
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.fields['telefone'].required = True
+            self.fields['cpf'].required = True
+            
 class UserUpdateImageForm(forms.ModelForm):
     class Meta:
         model = Usuario

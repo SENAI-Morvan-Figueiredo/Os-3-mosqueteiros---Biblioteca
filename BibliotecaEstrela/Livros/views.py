@@ -5,17 +5,62 @@ from .models import Livros_Generos
 from .forms import GenerosForm, LivrosForm, LivrosGenerosForm
 from django.views.generic import DetailView
 
-class LivroDetalhes(DetailView):
+from django.views.generic.edit import ModelFormMixin
+from Biblioteca.forms import FormAval
+from Biblioteca.models import Avaliacoes, Reserva, Emprestimos
+
+def calc_nota(id):
+    try:
+        avals = [i.nota for i in Avaliacoes.objects.filter(id_livro_id=id)]
+        nota = sum(avals)/len(avals)
+        return {'nota': f'{nota:.2f}', 'num_avals': len(avals)}
+    
+    except:
+        return 0
+
+class LivroDetalhes(ModelFormMixin, DetailView):
     model = Livros
     template_name = 'Detalhes_Livro.html'
-    context_object_name = 'livro'
+
+    form_class = FormAval
+    
+    def get_context_data(self, **kwargs):
+        livro = super().get_context_data(**kwargs)
+        avaliacoes = Avaliacoes.objects.filter(id_livro_id=livro['livros'].pk)
+
+        user_data = {}
+
+        if self.request.user.is_authenticated:
+            user_data['reservas'] = (Reserva.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Em espera"))
+            user_data['emprestimos'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Disponível para retirar"))
+            user_data['emprestimos2'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Retirado"))
+
+        form = self.get_form()
+
+        return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data}
+    
+    def form_valid(self, form):
+        form.instance.id_user_id = self.request.user.id
+        form.instance.id_livro_id = self.object.id
+        return super(LivroDetalhes, self).form_valid(form)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        self.object = self.get_object()
+
+        if form.is_valid() and int(form.data['nota'])<=5 and int(form.data['nota'])>=0:
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        
+    success_url = '#'
 
 def AdicionarCategoria(request):
     if request.method == "POST":
         form = GenerosForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("livros:AdicionarCategoria")
+            return redirect("adicionar_categoria")
     else:
         form = GenerosForm()
 
@@ -34,7 +79,7 @@ def AdicionarLivro(request):
             for genero_id in generos_ids:
                 Livros_Generos.objects.create(id_livros=livro, id_genero_id=genero_id)
 
-            return redirect("Livros:AdicionarLivro")
+            return redirect("adicionar_livro")
     else:
         livro_form = LivrosForm()
         genero_form = LivrosGenerosForm()
@@ -62,3 +107,5 @@ def buscar_livro(request, busca):
 
     return render(request, "Livros.html", {"livros": resultados})
 
+def tela_confirmar(request):
+    return render(request, "Confirmar_emprestimo.html")

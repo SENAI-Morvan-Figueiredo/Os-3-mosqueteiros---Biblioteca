@@ -18,6 +18,20 @@ env.read_env()
 
 MERCADO_PAGO_ACCESS_TOKEN = env('MERCADO_PAGO_ACCESS_TOKEN')
 
+from environ import Env
+
+
+from os import getenv, path
+
+import dj_database_url 
+
+# Lê o arquivo .env
+env = Env()
+env.read_env()
+
+
+import dj_database_url 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
@@ -32,11 +46,12 @@ SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    'underbred-adriana-formally.ngrok-free.dev',
-    ]
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     'underbred-adriana-formally.ngrok-free.dev',
+#     ]
+ALLOWED_HOSTS = ['bibliotecaestrela.onrender.com', 'https://bibliotecaestrela.onrender.com', '*']
 
 AUTH_USER_MODEL = 'User.Usuario'
 
@@ -52,27 +67,61 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    # Aplicações necessárias para poder acessar a biblioteca "django-allauth[socialaccount]"
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     
+    # Para poder ativar a funcionalidade do google
+    'allauth.socialaccount.providers.google',
+
     # Apps criados
     'Biblioteca',
     'Livros',
     'User',
-    'Multas'
+    'Multas',
+    'Bibliotecario'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://underbred-adriana-formally.ngrok-free.dev"
+    'User.apps.UserConfig',
+    'Bibliotecario',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'User.middleware.CompleteProfileMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Serve para saber em qual site as funcionalidades do login deve funcionar
+SITE_ID = 1
+
+
+# Configurações do login com o google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': getenv('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': getenv('OAUTH_GOOGLE_SECRET'),
+            'key': ''
+        }
+    }
+}
 
 ROOT_URLCONF = 'BibliotecaEstrela.urls'
 
@@ -91,11 +140,21 @@ TEMPLATES = [
     },
 ]
 
+# É necessário para que o 'allauth' funcione, está na documentação deles
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
 
 DATABASES = {
     'default': {
@@ -103,7 +162,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -147,7 +205,40 @@ STATICFILES_DIRS = [
     BASE_DIR / 'BibliotecaEstrela' / 'static'
 ]
 
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
+
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Permite que não precise do nome para fazer o login
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+# Permite que possa ser feito login utilizando o email e senha
+ACCOUNT_LOGIN_METHODS = {"email"}  # método(s) de login aceitos
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
+
+# Pula 1 etapa na hora de fazer login pelo google, se quiser testar pode colocar como false e ir na tela de login, clicar no google e ver q tem uma segunda tela antes de finalmente fazer o login.
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 3600  # 1 hora
+
+#Alterar para true no deploy
+SECURE_SSL_REDIRECT = False
+
+CSRF_COOKIE_SECURE = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER="biblioteca.estrela1@gmail.com"
+EMAIL_HOST_PASSWORD="axrjntfffyjcqqet"
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST="smtp.gmail.com"

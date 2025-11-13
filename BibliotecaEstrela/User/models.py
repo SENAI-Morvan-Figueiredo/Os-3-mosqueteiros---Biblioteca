@@ -3,9 +3,15 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class Usuario(AbstractUser):
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     telefone = models.CharField()
     cpf = models.CharField()
     imagem = models.ImageField(upload_to='imagem_perfil', blank=True, null=True)
 
-    REQUIRED_FIELDS=['email', 'telefone', 'cpf']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS=['username', 'telefone', 'cpf']
+
+    username = models.CharField(max_length=150, unique=False, blank=True, null=True)
+
+    def __str__(self):
+        return self.email

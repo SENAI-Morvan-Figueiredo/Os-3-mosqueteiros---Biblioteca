@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <!-- Centralizar a tela -->
-<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro">
+<div class="col-10 d-flex justify-content-center container-principal-login-cadastro mt-3">
 
     <!-- Garantir que os itens estejam sempre no começo do container e criar os paddings -->
     <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
@@ -23,7 +23,7 @@
 
         <div class="linha-login"></div>
 
-        <div class="login-google d-flex justify-content-center"><p>a</p><p>a</p></div>
+        {% include 'User/social_login.html' %}
     </div>
 </div>
 {% endblock content %}

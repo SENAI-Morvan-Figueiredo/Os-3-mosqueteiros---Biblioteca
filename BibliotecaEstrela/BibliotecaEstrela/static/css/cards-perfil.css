@@ -19,6 +19,18 @@
     font-size: 25px;
 }
 
+/* Estilização btn deletar */
+.btn-modal-perfil{
+    text-decoration: none;
+
+    font-weight: 500;
+    font-size: 14px;
+
+    color: #F50000;
+
+    cursor: pointer;
+}
+
 /* Estilização dos labels */
 label{
     font-size: 17px;
