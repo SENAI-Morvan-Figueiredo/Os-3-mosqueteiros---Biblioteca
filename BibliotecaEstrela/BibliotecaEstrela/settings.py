@@ -87,7 +87,8 @@ INSTALLED_APPS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://underbred-adriana-formally.ngrok-free.dev"
     'User.apps.UserConfig',
-    'Bibliotecario',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000'
 ]
 
 MIDDLEWARE = [
