@@ -51,7 +51,18 @@ DEBUG = True
 #     "localhost",
 #     'underbred-adriana-formally.ngrok-free.dev',
 #     ]
-ALLOWED_HOSTS = ['bibliotecaestrela.onrender.com', 'https://bibliotecaestrela.onrender.com', '*']
+ALLOWED_HOSTS = [
+    'bibliotecaestrela.onrender.com',
+    'underbred-adriana-formally.ngrok-free.dev',
+    'localhost',
+    '127.0.0.1'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://bibliotecaestrela.onrender.com",
+    "https://underbred-adriana-formally.ngrok-free.dev"
+]
+
 
 AUTH_USER_MODEL = 'User.Usuario'
 
@@ -82,13 +93,6 @@ INSTALLED_APPS = [
     'User',
     'Multas',
     'Bibliotecario'
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://underbred-adriana-formally.ngrok-free.dev"
-    'User.apps.UserConfig',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000'
 ]
 
 MIDDLEWARE = [
