@@ -2,128 +2,287 @@
 {% load static %}
 
 {% block content %}
-    <style>
+<style>
+    select{
+        padding: 5px 0;
+
+        border-radius: 6px;
+    }
+
+    .custom-select {
+        appearance: none; /* remove o estilo nativo */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        width: 100%;
+        padding: 8px 35px 8px 10px; /* espaço extra pra seta */
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background-color: #ffffff;
+
+        /* adiciona uma seta personalizada */
+        background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+        }
+
+        .custom-select:focus {
+        outline: none;
+        border-color: #999999;
+        box-shadow: 0 0 3px #3b80ff50;
+        }
+
+    .solicitar-extensao-btn{
+        font-size: 17px;
+        padding: 5px 0;
+        font-weight: 500;
+
+        color: #0D074490;
+
+        background-color: #3B80FF37;
+
+        border: none;
+        border-radius: 6px;
+    }
+
+    /* ======= CONTROLES ======= */
+    .btn-carousel {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: black !important;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 1000;
+        transition: opacity 0.2s ease;
+        opacity: 0.7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        line-height: 1; /* já está aí, mantém */
+        font-family: 'Arial', sans-serif; /* força uma fonte previsível */
+
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .btn-carousel:hover { 
+        opacity: 1;
+        background: white;
+    }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+
+    /* ======= CONTAINER ======= */
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .cards-container {
+        display: flex;
+        gap: 1.5rem;
+        scroll-behavior: smooth;
+    }
+
+    /* ======= RESPONSIVIDADE ======= */
+    @media (max-width: 992px) {
+    /* Mobile/Tablet - Scroll manual SEM botões */
+        .carousel-wrapper {
+            overflow-x: auto;
+        }
+        .cards-container {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+        .card-livros {
+            scroll-snap-align: start;
+            min-width: 200px;
+        }
+        
+        /* Remove completamente os botões no mobile */
+        .btn-carousel {
+            display: none !important;
+        }
+    }
+
+    @media (min-width: 993px) {
+        .carousel-wrapper {
+            overflow: hidden;
+        }
+        .cards-container {
+            overflow-x: auto;
+        }
+
+        .cards-container {
+            scrollbar-width: none;        /* Firefox */
+            -ms-overflow-style: none;     /* IE e Edge antigo */
+        }
+
+        .cards-container::-webkit-scrollbar {
+            display: none;                /* Chrome, Safari e Edge moderno */
+        }
+    }
+
+    @media(max-width: 970px){
         select{
-            padding: 5px 0;
-
-            border-radius: 6px;
+            font-size: 12px;
         }
 
-        .custom-select {
-            appearance: none; /* remove o estilo nativo */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-
+        option{
+            font-size: 12px;
             width: 100%;
-            padding: 8px 35px 8px 10px; /* espaço extra pra seta */
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background-color: #ffffff;
-
-            /* adiciona uma seta personalizada */
-            background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 12px;
-            }
-
-            .custom-select:focus {
-            outline: none;
-            border-color: #999999;
-            box-shadow: 0 0 3px #3b80ff50;
-            }
-
-        .solicitar-extensao-btn{
-            font-size: 17px;
-            padding: 5px 0;
-            font-weight: 500;
-    
-            color: #0D074490;
-    
-            background-color: #3B80FF37;
-
-            border: none;
-            border-radius: 6px;
         }
-    </style>
+    }
 
-    <main class="text-center" style="padding: 0 10%">
-        <div class="d-flex gap-5 flex-column">
-            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
-                <h2>Livros em reserva</h2>
+    @media(max-width:600px){
+        select{
+            font-size: 9px;
+        }
+    }
 
-                <div class="d-flex flex-row w-100 gap-4">
-                    {% for reserva in reservas %}
+</style>
 
-                    <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
-                        <div class="card h-100 book-item shadow-sm">
-                            {% if not reserva.id_livro.imagem %}
-                                <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
-                            {% else %}
-                            <div>
-                                <img src="{{ reserva.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
-                            </div>
-                            {% endif %}
-                            <div class="card-body d-flex flex-column text-center">
-                                <h6 class="card-title fw-bold">{{ reserva.id_livro.nome }}</h6>
-                                <p class="card-text text-muted small mt-auto">{{ reserva.id_livro.autor }}</p>
-                                {{ reserva.data_reserva }}
-                            </div>
+<main class="text-center" style="padding: 0 10%">
+    <div class="d-flex gap-5 flex-column">
+
+        <!-- === LIVROS EM RESERVA === -->
+        <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+            <h2>Livros em reserva</h2>
+
+            <div class="carousel-wrapper position-relative w-100">
+                <button class="btn-carousel prev-btn" aria-label="anterior">‹</button>
+
+                <div class="cards-container d-flex flex-row w-100 gap-4">
+                {% for reserva in reservas %}
+                <div class="card-livros col-12 col-md-6 col-lg-3 mb-4 flex-shrink-0" style="min-width: 250px;">
+                    <div class="card h-100 book-item shadow-sm">
+                    {% if not reserva.id_livro.imagem %}
+                        <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
+                    {% else %}
+                        <img src="{{ reserva.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column text-center">
+                        <h6 class="card-title fw-bold">{{ reserva.id_livro.nome }}</h6>
+                        <p class="card-text text-muted small mt-auto">{{ reserva.id_livro.autor }}</p>
+                        {{ reserva.data_reserva }}
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
+                </div>
+
+                <button class="btn-carousel next-btn" aria-label="próximo">›</button>
+            </div>
+        </div>
+
+    <!-- === LIVROS EM EMPRÉSTIMO === -->
+    <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+        <h2>Livros em empréstimo</h2>
+
+        <div class="carousel-wrapper position-relative w-100">
+            <button class="btn-carousel prev-btn" aria-label="anterior">‹</button>
+
+            <div class="cards-container d-flex flex-row gap-4" id="emprestimos-list">
+                {% for emprestimo in emprestimos %}
+                <div class="card-livros col-12 col-md-6 col-lg-3 mb-4 flex-shrink-0" style="min-width: 250px;">
+                    <div class="card h-100 book-item shadow-sm">
+                        {% if not emprestimo.id_livro.imagem %}
+                            <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
+                        {% else %}
+                            <img src="{{ emprestimo.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title fw-bold">{{ emprestimo.id_livro.nome }}</h6>
+                            <p class="card-text text-muted small mt-auto">{{ emprestimo.id_livro.autor }}</p>
+                            {{ emprestimo.data_reserva }}
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-
+                {% endfor %}
             </div>
 
-            <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
-                <h2>Livros em emprestimo</h2>
-
-                <div class="d-flex flex-row w-100 gap-4">
-                    {% for emprestimo in emprestimos %}
-                        <div class="card-livros col-12 col-md-6 col-lg-3 mb-4">
-                            <div class="card h-100 book-item shadow-sm">
-                                {% if not emprestimo.id_livro.imagem %}
-                                    <img src="https://via.placeholder.com/300x450?text=Sem+Capa" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Sem capa">
-                                {% else %}
-                                <div>
-                                    <img src="{{ emprestimo.id_livro.imagem.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ livro.nome }}">
-                                </div>
-                                {% endif %}
-                                <div class="card-body d-flex flex-column text-center">
-                                    <h6 class="card-title fw-bold">{{ emprestimo.id_livro.nome }}</h6>
-                                    <p class="card-text text-muted small mt-auto">{{ emprestimo.id_livro.autor }}</p>
-                                    {{ emprestimo.data_reserva }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            {% if extensoes %}
-                <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
-                    <h2>Solicitar extensão do prazo</h2>
-
-                    <form method="post" class="d-flex flex-column w-100">
-                        {% csrf_token %}
-
-                        <label for="livro" class="align-self-start">Selecione o livro</label>
-                        <select name="livro" id="livro" class="custom-select" required>
-                            <option value="">Selecione um livro</option>
-                            {% for emprestimo in extensoes %}
-                                <option value="{{ emprestimo.id }}" class="ultima-opcao">
-                                    {{ emprestimo.id_livro.nome }}
-                                </option>
-                            {% endfor %}
-                        </select>
-
-                        <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
-                    </form>
-                </div>
-            {% endif %}
-
+            <button class="btn-carousel next-btn" aria-label="próximo">›</button>
         </div>
-    </main>
+    </div>
+
+    <!-- === EXTENSÃO === -->
+    {% if extensoes %}
+        <div class="card-perfil editar-perfil d-flex align-items-start flex-column gap-1 py-4 px-5">
+            <h2>Solicitar extensão do prazo</h2>
+
+            <form method="post" class="d-flex flex-column w-100">
+                {% csrf_token %}
+
+                <label for="livro" class="align-self-start">Selecione o livro</label>
+                <select name="livro" id="livro" class="custom-select" required>
+                    <option value="">Selecione um livro</option>
+                    {% for emprestimo in extensoes %}
+                        <option value="{{ emprestimo.id }}" class="ultima-opcao">
+                            {{ emprestimo.id_livro.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
+            </form>
+        </div>
+    {% endif %}
+
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const wrappers = document.querySelectorAll(".carousel-wrapper");
+
+    wrappers.forEach(wrapper => {
+        const container = wrapper.querySelector(".cards-container");
+        const prevBtn = wrapper.querySelector(".prev-btn");
+        const nextBtn = wrapper.querySelector(".next-btn");
+
+        if (!container || !prevBtn || !nextBtn) return;
+
+        function updateButtons() {
+        const isDesktop = window.innerWidth > 992;
+        const parent = wrapper.closest('.card-perfil') || wrapper;
+        const isOverflowing = container.scrollWidth > parent.clientWidth;
+
+        if (isDesktop && isOverflowing) {
+            prevBtn.style.display = "flex";
+            nextBtn.style.display = "flex";
+        } else {
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+        }
+        }
+
+        function getScrollAmount() {
+        const card = container.querySelector('.card-livros');
+        return card ? card.offsetWidth + 24 : 300;
+        }
+
+        prevBtn.addEventListener("click", () => {
+        container.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
+        });
+
+        nextBtn.addEventListener("click", () => {
+        container.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
+        });
+
+        updateButtons();
+        window.addEventListener("resize", updateButtons);
+        window.addEventListener("load", updateButtons);
+        setTimeout(updateButtons, 100);
+    });
+});
+</script>
 {% endblock content %}
