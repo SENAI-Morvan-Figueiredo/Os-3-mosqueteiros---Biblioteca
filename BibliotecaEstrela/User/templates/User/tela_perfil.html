@@ -34,24 +34,28 @@
                         
                     
 
-                    <div class="campo_estatisticas d-flex flex-column gap-0">
+                    <div class="campo_estatisticas d-flex flex-column align-items-center gap-0">
 
                         <h2>Estatísticas</h2>
 
                         <div class="info-estatisticas">
-                            <p>Livros em posse: {{ em_posse|length }}</p>
+                            <p>Livros em posse:</p>
+                            <div class="info-estatisticas-numeros">{{ em_posse|length }}</div>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Livros reservados: {{ reservas|length }}</p>
+                            <p>Livros reservados:</p>
+                            <div class="info-estatisticas-numeros">{{ reservas|length }}</div>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Livros devolvidos: {{ devolvidos|length }}</p>
+                            <p>Livros devolvidos:</p>
+                            <div class="info-estatisticas-numeros">{{ devolvidos|length }}</div>
                         </div>
 
                         <div class="info-estatisticas">
-                            <p>Avaliações: {{ avaliacoes|length }} </p>
+                            <p>Avaliações:</p>
+                            <div class="info-estatisticas-numeros">{{ avaliacoes|length }}</div>
                         </div>
 
                     </div>

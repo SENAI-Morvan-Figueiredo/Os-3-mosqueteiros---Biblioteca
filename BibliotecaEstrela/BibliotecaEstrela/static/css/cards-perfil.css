@@ -6,7 +6,7 @@
     box-shadow: 0 0 4px black;
 }
 
-.card-perfil .estatisticas{
+.estatisticas{
     border-radius: 15px;
     height: 400px;
 }
@@ -190,25 +190,38 @@ input[type="file"] {
     font-weight: 650;
 
     font-size: 25px;
+
+    margin-bottom: 20px;
 }
 
 .info-estatisticas{
     padding: 0 15px;
+    display: flex;
+    justify-items: space-around;
+    border-bottom: 1px solid #00000030;
+
+    justify-self: center;
+    align-content: center;
+
+    width: 90%;
+
+    margin-bottom: 10px;
 }
 
 .info-estatisticas > p{
     border: transparent;
-    border-bottom: 1px solid #00000030;
+    
+
+    text-align: start;
 
     width: 100%;
 
-    padding-bottom: 5px;
-    /* margin-bottom: 5px; */
+    /* padding-bottom: 5px; */
+    margin-bottom: 10px;
 
     font-size: 17px;
 
-    display: flex;
-    justify-items: space-between;
+    /* height: 100%; */
 }
 
 @media(max-width:1720px){
