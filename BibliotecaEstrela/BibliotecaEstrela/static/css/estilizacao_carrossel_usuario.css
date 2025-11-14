@@ -1,0 +1,145 @@
+select{
+    padding: 5px 0;
+
+    border-radius: 6px;
+}
+
+.custom-select {
+    appearance: none; /* remove o estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 100%;
+    padding: 8px 35px 8px 10px; /* espaço extra pra seta */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #ffffff;
+
+    /* adiciona uma seta personalizada */
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' viewBox='0 0 20 20' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    }
+
+    .custom-select:focus {
+    outline: none;
+    border-color: #999999;
+    box-shadow: 0 0 3px #3b80ff50;
+    }
+
+.solicitar-extensao-btn{
+    font-size: 17px;
+    padding: 5px 0;
+    font-weight: 500;
+
+    color: #0D074490;
+
+    background-color: #3B80FF37;
+
+    border: none;
+    border-radius: 6px;
+}
+
+/* ======= CONTROLES ======= */
+.btn-carousel {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: black !important;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1000;
+    transition: opacity 0.2s ease;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1; /* já está aí, mantém */
+    font-family: 'Arial', sans-serif; /* força uma fonte previsível */
+
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.btn-carousel:hover { 
+    opacity: 1;
+    background: white;
+}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* ======= CONTAINER ======= */
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.cards-container {
+    display: flex;
+    gap: 1.5rem;
+    scroll-behavior: smooth;
+}
+
+/* ======= RESPONSIVIDADE ======= */
+@media (max-width: 992px) {
+/* Mobile/Tablet - Scroll manual SEM botões */
+    .carousel-wrapper {
+        overflow-x: auto;
+    }
+    .cards-container {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 10px;
+        flex-wrap: nowrap;
+    }
+    .card-livros {
+        scroll-snap-align: start;
+        min-width: 200px;
+    }
+    
+    /* Remove completamente os botões no mobile */
+    .btn-carousel {
+        display: none !important;
+    }
+}
+
+@media (min-width: 993px) {
+    .carousel-wrapper {
+        overflow: hidden;
+    }
+    .cards-container {
+        overflow-x: auto;
+    }
+
+    .cards-container {
+        scrollbar-width: none;        /* Firefox */
+        -ms-overflow-style: none;     /* IE e Edge antigo */
+    }
+
+    .cards-container::-webkit-scrollbar {
+        display: none;                /* Chrome, Safari e Edge moderno */
+    }
+}
+
+@media(max-width: 970px){
+    select{
+        font-size: 12px;
+    }
+
+    option{
+        font-size: 12px;
+        width: 100%;
+    }
+}
+
+@media(max-width:600px){
+    select{
+        font-size: 9px;
+    }
+}

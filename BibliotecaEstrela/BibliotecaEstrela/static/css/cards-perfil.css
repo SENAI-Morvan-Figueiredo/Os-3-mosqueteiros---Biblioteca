@@ -208,6 +208,10 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 
+/* .info-estatisticas:last-child{
+    border-bottom: 0;
+} */
+
 .info-estatisticas > p{
     border: transparent;
     
@@ -278,9 +282,20 @@ input[type="file"] {
         margin: 10px 0;
     }
 
+    .info-estatisticas{
+        margin-bottom: 5px;
+    }
+
     .info-estatisticas > p{
         padding-bottom: 4px;
 
+        font-size: 12px;
+
+        margin-bottom: 2px;
+    }
+
+    .info-estatisticas-numeros{
+        padding-bottom: 4px;
         font-size: 12px;
     }
 
@@ -302,6 +317,8 @@ input[type="file"] {
         border-radius: 4px;
 
         padding-right: 60px;
+
+        border: 1px solid #00000034;
     }
     
 }
@@ -338,9 +355,18 @@ input[type="file"] {
         margin: 10px 0;
     }
 
+    .info-estatisticas{
+        margin-bottom: 5px;
+    }
+
     .info-estatisticas > p{
         padding-bottom: 4px;
 
+        font-size: 9px;
+        margin-bottom: 0px;
+    }
+
+    .info-estatisticas-numeros{
         font-size: 9px;
     }
 

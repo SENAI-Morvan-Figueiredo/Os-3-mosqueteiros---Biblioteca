@@ -95,7 +95,7 @@ def tela_perfil(request):
         'imagem_form': imagem_form,
         'reservas': reservas,
         'devolvidos': devolvidos,
-        'em_posse': em_posse,
+        'emprestimos': em_posse,
         'avaliacoes': avaliacoes,
         
     }
