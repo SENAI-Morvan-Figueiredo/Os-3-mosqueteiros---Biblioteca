@@ -1,6 +1,12 @@
 {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' and request.path != '/user/completar_cadastro/' %}
-    <a href="{% url 'tela_perfil' %}" class="estilizacao-btn-sub-header">Perfil</a>
-    <a href="{% url 'historico_perfil' %}" class="estilizacao-btn-sub-header">Histórico</a>
-    <a href="{% url 'notificacoes_perfil' %}" class="estilizacao-btn-sub-header">Notificações</a>
-    <a href="{% url 'multas' %}" class="estilizacao-btn-sub-header">Multas</a>
+    <div class="container-fluid px-3 mb-4" style="background-color: #fff;">
+        <nav class="nav nav-underline gap-3">
+            <a href="{% url 'tela_perfil' %}" class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" >Perfil</a>
+            <a href="{% url 'historico_perfil' %}" class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;"  style="color: black;">Histórico</a>
+            <a href="{% url 'notificacoes_perfil' %}" class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;"  style="color: black;">Notificações</a>
+            <a href="{% url 'multas' %}" class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;"  style="color: black;">Multas</a>
+        </nav>
+    </div>
+
+    
 {% endif %}

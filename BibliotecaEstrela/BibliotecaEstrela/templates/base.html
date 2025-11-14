@@ -28,7 +28,7 @@
         {% include "partials/header.html" %}
     </header>
     {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' and request.path != '/user/completar_cadastro/' %}
-    <div class="sub-header d-flex flex-row">
+    <div class="d-flex flex-row">
         {% include "partials/sub-header-perfil.html" %}
     </div>
     {% endif %}
