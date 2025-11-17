@@ -162,6 +162,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+import logging
+import sys
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

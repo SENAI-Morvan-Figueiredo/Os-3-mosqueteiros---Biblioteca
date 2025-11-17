@@ -21,7 +21,7 @@ def register(request):
     else:
         form = UserRegisterForm()
         
-    return render(request, 'user/register.html', {'form': form})
+    return render(request, 'User/register.html', {'form': form})
 
 @login_required
 def tela_perfil(request):
@@ -95,7 +95,7 @@ def tela_perfil(request):
         'avaliacoes': avaliacoes,
         
     }
-    return render(request, 'user/tela_perfil.html', context)
+    return render(request, 'User/tela_perfil.html', context)
 
 @login_required
 def historico_perfil(request):
@@ -124,7 +124,7 @@ def historico_perfil(request):
         'extensoes': extensoes,
     }
 
-    return render(request, 'user/historico_perfil.html', context)
+    return render(request, 'User/historico_perfil.html', context)
 
 # Completa as informações que estão faltando ao fazer login utilizando a conta do google.
 @login_required
@@ -143,4 +143,4 @@ def complete_signup(request):
     else:
         form = CompleteSignupForm(instance=user)
 
-    return render(request, 'user/complete_signup.html', {'form': form})
+    return render(request, 'User/complete_signup.html', {'form': form})
