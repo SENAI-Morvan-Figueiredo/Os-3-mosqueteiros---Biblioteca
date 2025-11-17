@@ -203,7 +203,8 @@
                         <div class="card-body d-flex flex-column text-center">
                             <h6 class="card-title fw-bold">{{ emprestimo.id_livro.nome }}</h6>
                             <p class="card-text text-muted small mt-auto">{{ emprestimo.id_livro.autor }}</p>
-                            {{ emprestimo.data_reserva }}
+                            <small>Vencimento: {{ emprestimo.data_vencimento|date:"d/m/Y" }}</small>
+                            <div><small>Status: {{ emprestimo.status }}</small></div>
                         </div>
                     </div>
                 </div>
@@ -234,6 +235,33 @@
 
                 <button type="submit" class="solicitar-extensao-btn mt-3 align-self-start w-100">Solicitar Extensão</button>
             </form>
+            
+            {% if pedidos_extensao %}
+                <hr class="my-3" />
+                <h4 class="mt-2">Seus pedidos de extensão</h4>
+                <div class="table-responsive mt-2">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Livro</th>
+                                <th>Status</th>
+                                <th>Data do Pedido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in pedidos_extensao %}
+                            <tr>
+                                <td>{{ pedido.id }}</td>
+                                <td>{{ pedido.id_emprestimo.id_livro.nome }}</td>
+                                <td>{{ pedido.status }}</td>
+                                <td>{{ pedido.id_emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 

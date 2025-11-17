@@ -76,6 +76,8 @@ def atualizar_status(request):
 
 
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 # atualiza reserva (muda de reserva para empréstimo)
 def atualizar_status_reservas(request):
@@ -244,6 +246,10 @@ def dashboard(request):
         status="Cancelado"
     ).order_by('-data_emprestimo') # Ordena do mais novo para o mais antigo
 
+    # Pedidos de extensão pendentes
+    from Biblioteca.models import Pedidos_extensao
+    pedidos_extensao = Pedidos_extensao.objects.filter(status__in=['Pendente', 'pendente']).select_related('id_emprestimo__id_user', 'id_emprestimo__id_livro')
+
     context = {
         # Para os cards de estatística
         "livros": livros_stats,
@@ -254,6 +260,7 @@ def dashboard(request):
         # Para as novas tabelas
         "emprestimos_atrasados": emprestimos_atrasados,
         "emprestimos_cancelados": emprestimos_cancelados,
+        "pedidos_extensao": pedidos_extensao,
     }
     return render(request, 'dashboard.html', context)
 
@@ -311,6 +318,45 @@ def verificar_pendencias(request):
 
     # Redireciona de volta para a página principal de empréstimos
     return redirect("Bibliotecario:emprestimos_atuais")
+
+
+@login_required
+def aprovar_extensao(request, pedido_id):
+    # Apenas usuários administradores podem aprovar
+    if not request.user.is_superuser:
+        return HttpResponseForbidden('Permissão negada')
+
+    from Biblioteca.models import Pedidos_extensao
+    pedido = Pedidos_extensao.objects.filter(id=pedido_id).select_related('id_emprestimo').first()
+    if not pedido:
+        return HttpResponse('Pedido não encontrado', status=404)
+
+    emprestimo = pedido.id_emprestimo
+    # concede 7 dias adicionais
+    emprestimo.prazo_extra = (getattr(emprestimo, 'prazo_extra', 0) or 0) + 7
+    emprestimo.save()
+
+    pedido.status = 'Aprovado'
+    pedido.save()
+
+    return redirect('Bibliotecario:dashboard')
+
+
+@login_required
+def recusar_extensao(request, pedido_id):
+    # Apenas usuários administradores podem recusar
+    if not request.user.is_superuser:
+        return HttpResponseForbidden('Permissão negada')
+
+    from Biblioteca.models import Pedidos_extensao
+    pedido = Pedidos_extensao.objects.filter(id=pedido_id).first()
+    if not pedido:
+        return HttpResponse('Pedido não encontrado', status=404)
+
+    pedido.status = 'Recusado'
+    pedido.save()
+
+    return redirect('Bibliotecario:dashboard')
 
 ########
 # VIEWS PARA PESQUISAS

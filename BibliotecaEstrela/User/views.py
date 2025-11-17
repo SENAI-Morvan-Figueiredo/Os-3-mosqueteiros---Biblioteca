@@ -104,10 +104,18 @@ def tela_perfil(request):
 @login_required
 def historico_perfil(request):
     reservas = Reserva.objects.filter(id_user=request.user)
-    emprestimos = Emprestimos.objects.filter(id_user=request.user, status="Disponível para retirar")
-    
-    # Aqui vamos usar os empréstimos como base para o select
+    # Mostrar empréstimos que o usuário ainda tem em posse.
+    # Antes o filtro trazia apenas 'Disponível para retirar' e removia do usuário
+    # quando o admin marcava como 'Retirado'. Mantemos o empréstimo visível
+    # até que o admin marque 'Devolvido'. Incluímos também casos 'Atrasado'.
+    estados_em_posse = ["Disponível para retirar", "Retirado", "Atrasado"]
+    emprestimos = Emprestimos.objects.filter(id_user=request.user, status__in=estados_em_posse)
+
+    # Aqui vamos usar os empréstimos em posse como base para o select de extensões
     extensoes = emprestimos
+
+    # pedidos já feitos pelo usuário (para mostrar no histórico)
+    pedidos = Pedidos_extensao.objects.filter(id_emprestimo__id_user=request.user).select_related('id_emprestimo')
 
     if request.method == 'POST':
         id_emprestimo = request.POST.get('livro')
@@ -126,6 +134,7 @@ def historico_perfil(request):
         'reservas': reservas,
         'emprestimos': emprestimos,
         'extensoes': extensoes,
+        'pedidos_extensao': pedidos,
     }
 
     return render(request, 'user/historico_perfil.html', context)

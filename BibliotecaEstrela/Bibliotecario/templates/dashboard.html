@@ -161,6 +161,45 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Pedidos de Extensão de Prazo</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Empréstimo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos_extensao %}
+                                <tr>
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.id_emprestimo.id_user.username }}</td>
+                                    <td>{{ pedido.id_emprestimo.id_livro.nome }}</td>
+                                    <td>{{ pedido.id_emprestimo.id }}</td>
+                                    <td>{{ pedido.status }}</td>
+                                    <td>
+                                        <a href="{% url 'Bibliotecario:aprovar_extensao' pedido.id %}" class="btn btn-success btn-sm">Aprovar</a>
+                                        <a href="{% url 'Bibliotecario:recusar_extensao' pedido.id %}" class="btn btn-danger btn-sm">Recusar</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Nenhum pedido de extensão pendente.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div> </div>
 </div>
 
