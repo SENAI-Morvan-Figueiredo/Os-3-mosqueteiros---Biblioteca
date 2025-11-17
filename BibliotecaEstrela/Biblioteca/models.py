@@ -133,6 +133,7 @@ class Notificacoes(models.Model):
     mensagem = models.CharField(max_length=150)
     lido = models.BooleanField("Marca uma notificação como lida/não lida")
     data = models.DateField(auto_now_add=True)
+    
 class Reserva(models.Model):
     id_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_livro = models.ForeignKey(Livros, on_delete=models.CASCADE)

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Usuario
+from django.contrib.auth.forms import SetPasswordForm
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -54,3 +55,13 @@ class UserUpdateImageForm(forms.ModelForm):
                 'accept': 'image/*',  # opcional: limita a imagens
             }),
         }
+
+class SetPasswordFormPTBR(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="Nova senha",
+        widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )
+    new_password2 = forms.CharField(
+        label="Confirmar nova senha",
+        widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )

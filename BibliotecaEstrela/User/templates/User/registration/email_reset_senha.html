@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro cadastro mb-5">
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <h2>Digite seu email</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Enviar link de recuperação</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
