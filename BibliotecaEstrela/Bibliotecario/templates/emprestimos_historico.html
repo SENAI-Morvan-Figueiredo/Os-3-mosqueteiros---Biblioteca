@@ -82,7 +82,7 @@
                                     <th>Data Prevista de Devolução</th>
                                     <th>Dias Restantes</th>
                                     <th>Status</th>
-                                    <th>Ações</th>
+                                
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,7 +120,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ emprestimo.status }}</td>
-                                    <td><a href="#">Detalhes</a></td>
+                                
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -144,7 +144,7 @@
                                     <th>Título do Livro</th>
                                     <th>Data da Reserva</th>
                                     <th>Status</th>
-                                    <th>Ações</th>
+                
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,7 +154,7 @@
                                     <td>{{ reserva.id_livro.nome }}</td>
                                     <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
                                     <td>{{ reserva.status }}</td>
-                                    <td><a href="#">Detalhes</a></td>
+                               
                                 </tr>
                                 {% empty %}
                                 <tr>

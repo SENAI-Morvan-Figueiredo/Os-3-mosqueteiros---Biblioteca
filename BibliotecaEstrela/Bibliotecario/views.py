@@ -23,14 +23,27 @@ def teste(request):
 def emprestimos_atuais(request):
     livros = Livros.objects.all()
     usuarios = Usuario.objects.all()
-    # importante: para futuramente filtrar, troca o do empréstiimppara aqueles que "possue"
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # todo: adicionar uma variável para unicamente o card a esquerda (não gerar conflito)
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    emprestimos = Emprestimos.objects.filter(
-    Q(status="Disponível para retirar") | Q(status="Retirado")
-    )
-    reservas = Reserva.objects.filter(status="Em espera")
+    
+    # Lógica de busca
+    query = request.GET.get('q')
+    if query:
+        emprestimos = Emprestimos.objects.filter(
+            Q(status="Disponível para retirar") | Q(status="Retirado")
+        ).filter(
+            Q(id_user__username__icontains=query) |
+            Q(id_livro__nome__icontains=query) |
+            Q(status__icontains=query)
+        )
+        reservas = Reserva.objects.filter(status="Em espera").filter(
+            Q(id_user__username__icontains=query) |
+            Q(id_livro__nome__icontains=query)
+        )
+    else:
+        emprestimos = Emprestimos.objects.filter(
+            Q(status="Disponível para retirar") | Q(status="Retirado")
+        )
+        reservas = Reserva.objects.filter(status="Em espera")
+    
     context = {
         "livros": livros,
         "usuarios": usuarios,
@@ -203,7 +216,17 @@ def livros(request):
         genero_form = LivrosGenerosForm()
         form = GenerosForm()
 
-    livros = Livros.objects.all()
+    # Lógica de busca para livros
+    query = request.GET.get('q')
+    if query:
+        livros = Livros.objects.filter(
+            Q(nome__icontains=query) |
+            Q(autor__icontains=query) |
+            Q(editora__icontains=query)
+        )
+    else:
+        livros = Livros.objects.all()
+
     generos = Generos.objects.all()
     usuarios = Usuario.objects.all()
     emprestimos = Emprestimos.objects.all()
@@ -237,7 +260,10 @@ def dashboard(request):
         Q(status="Disponível para retirar") | Q(status="Retirado")
     )
     
-    # --- Listas para as novas tabelas ---
+    # --- Importação das Multas ---
+    from Multas.models import Multas
+    
+    # --- Listas para as tabelas ---
     # Mostrar empréstimos atrasados dinamicamente (propriedade calculada) OU status explícito 'Atrasado'
     todos_emprestimos = Emprestimos.objects.all().order_by('data_emprestimo')
     emprestimos_atrasados = [e for e in todos_emprestimos if getattr(e, 'esta_atrasado', False) or (getattr(e, 'status', '') == 'Atrasado')]
@@ -250,6 +276,41 @@ def dashboard(request):
     from Biblioteca.models import Pedidos_extensao
     pedidos_extensao = Pedidos_extensao.objects.filter(status__in=['Pendente', 'pendente']).select_related('id_emprestimo__id_user', 'id_emprestimo__id_livro')
 
+    # Multas pendentes e pagas
+    multas_pendentes = Multas.objects.filter(status='PENDENTE').select_related('id_usuario', 'id_emprestimo__id_livro').order_by('-data_emissao')
+    multas_pagas = Multas.objects.filter(status='PAGO').select_related('id_usuario', 'id_emprestimo__id_livro').order_by('-data_emissao')[:10]  # Últimas 10
+
+    # Calcular valor total das multas pendentes
+    from django.db.models import Sum
+    valor_total_multas = multas_pendentes.aggregate(total=Sum('valor_multa'))['total'] or 0
+
+    # Lógica de busca
+    query = request.GET.get('q')
+    if query:
+        # Filtrar tabelas com base na pesquisa
+        emprestimos_atrasados = [e for e in todos_emprestimos if (getattr(e, 'esta_atrasado', False) or (getattr(e, 'status', '') == 'Atrasado')) and (
+            query.lower() in e.id_user.username.lower() or 
+            query.lower() in e.id_livro.nome.lower() or 
+            query.lower() in e.status.lower()
+        )]
+        
+        emprestimos_cancelados = Emprestimos.objects.filter(
+            status="Cancelado"
+        ).filter(
+            Q(id_user__username__icontains=query) |
+            Q(id_livro__nome__icontains=query)
+        ).order_by('-data_emprestimo')
+        
+        pedidos_extensao = pedidos_extensao.filter(
+            Q(id_emprestimo__id_user__username__icontains=query) |
+            Q(id_emprestimo__id_livro__nome__icontains=query)
+        )
+        
+        multas_pendentes = multas_pendentes.filter(
+            Q(nome_usuario_copia__icontains=query) |
+            Q(cpf_usuario_copia__icontains=query)
+        )
+
     context = {
         # Para os cards de estatística
         "livros": livros_stats,
@@ -257,10 +318,13 @@ def dashboard(request):
         "reservas": reservas_stats, # Usando a contagem de reservas ativas
         "emprestimos_ativos": emprestimos_ativos, # Usando a contagem de ativos
         
-        # Para as novas tabelas
+        # Para as tabelas
         "emprestimos_atrasados": emprestimos_atrasados,
         "emprestimos_cancelados": emprestimos_cancelados,
         "pedidos_extensao": pedidos_extensao,
+        "multas_pendentes": multas_pendentes,
+        "multas_pagas": multas_pagas,
+        "valor_total_multas": valor_total_multas,
     }
     return render(request, 'dashboard.html', context)
 
@@ -363,3 +427,121 @@ def recusar_extensao(request, pedido_id):
 ########
 
 # view para pesquisa de usuário:
+
+# View para ver detalhes de um usuário
+def ver_usuario(request, usuario_id):
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        emprestimos_usuario = Emprestimos.objects.filter(id_user=usuario).order_by('-data_emprestimo')
+        reservas_usuario = Reserva.objects.filter(id_user=usuario).order_by('-data_reserva')
+        
+        # Importar multas se necessário
+        from Multas.models import Multas
+        multas_usuario = Multas.objects.filter(id_usuario=usuario).order_by('-data_emissao')
+        
+        context = {
+            'usuario': usuario,
+            'emprestimos_usuario': emprestimos_usuario,
+            'reservas_usuario': reservas_usuario,
+            'multas_usuario': multas_usuario,
+        }
+        return render(request, 'usuario_detalhes.html', context)
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+        return redirect("Bibliotecario:usuarios")
+
+# View para deletar usuário
+def deletar_usuario(request, usuario_id):
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+        
+        # Verificar se o usuário tem empréstimos ativos antes de deletar
+        emprestimos_ativos = Emprestimos.objects.filter(
+            id_user=usuario, 
+            status__in=['Disponível para retirar', 'Retirado', 'Emprestado']
+        )
+        
+        # Verificar também reservas ativas
+        from Biblioteca.models import Reserva
+        reservas_ativas = Reserva.objects.filter(
+            id_user=usuario,
+            status='Em espera'
+        )
+        
+        # Verificar multas pendentes
+        from Multas.models import Multas
+        multas_pendentes = Multas.objects.filter(
+            id_usuario=usuario,
+            status='PENDENTE'
+        )
+        
+        # Lista de impedimentos
+        impedimentos = []
+        if emprestimos_ativos.exists():
+            impedimentos.append(f"{emprestimos_ativos.count()} empréstimo(s) ativo(s)")
+        if reservas_ativas.exists():
+            impedimentos.append(f"{reservas_ativas.count()} reserva(s) ativa(s)")
+        if multas_pendentes.exists():
+            impedimentos.append(f"{multas_pendentes.count()} multa(s) pendente(s)")
+            
+        if impedimentos:
+            messages.error(request, f"Não é possível deletar o usuário {usuario.username}. Ele possui: {', '.join(impedimentos)}.")
+        else:
+            nome_usuario = usuario.username
+            usuario.delete()
+            messages.success(request, f"Usuário {nome_usuario} foi deletado com sucesso.")
+        
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+    except Exception as e:
+        messages.error(request, f"Erro ao deletar usuário: {str(e)}")
+    
+    return redirect("Bibliotecario:usuarios")
+
+# View para editar livro
+def editar_livro(request, livro_id):
+    try:
+        livro = Livros.objects.get(id=livro_id)
+        
+        if request.method == "POST":
+            form = LivrosForm(request.POST, request.FILES, instance=livro)
+            if form.is_valid():
+                form.save()
+                messages.success(request, f"Livro '{livro.nome}' foi atualizado com sucesso.")
+                return redirect("Bibliotecario:livros_adm")
+        else:
+            form = LivrosForm(instance=livro)
+        
+        context = {
+            'form': form,
+            'livro': livro,
+            'editando': True,
+        }
+        return render(request, 'editar_livro.html', context)
+        
+    except Livros.DoesNotExist:
+        messages.error(request, "Livro não encontrado.")
+        return redirect("Bibliotecario:livros_adm")
+
+# View para deletar livro
+def deletar_livro(request, livro_id):
+    try:
+        livro = Livros.objects.get(id=livro_id)
+        
+        # Verificar se o livro tem empréstimos ativos antes de deletar
+        emprestimos_ativos = Emprestimos.objects.filter(
+            id_livro=livro, 
+            status__in=['Disponível para retirar', 'Retirado']
+        )
+        
+        if emprestimos_ativos.exists():
+            messages.error(request, f"Não é possível deletar o livro '{livro.nome}'. Ele possui empréstimos ativos.")
+        else:
+            nome_livro = livro.nome
+            livro.delete()
+            messages.success(request, f"Livro '{nome_livro}' foi deletado com sucesso.")
+        
+    except Livros.DoesNotExist:
+        messages.error(request, "Livro não encontrado.")
+    
+    return redirect("Bibliotecario:livros_adm")

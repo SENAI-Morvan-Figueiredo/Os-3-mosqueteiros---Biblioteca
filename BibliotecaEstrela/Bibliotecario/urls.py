@@ -13,5 +13,9 @@ urlpatterns = [
     path('verificar_pendencias/', verificar_pendencias, name='verificar_pendencias'),
     path('extensoes/aprovar/<int:pedido_id>/', aprovar_extensao, name='aprovar_extensao'),
     path('extensoes/recusar/<int:pedido_id>/', recusar_extensao, name='recusar_extensao'),
+    path('usuario/<int:usuario_id>/', ver_usuario, name='ver_usuario'),
+    path('usuario/<int:usuario_id>/deletar/', deletar_usuario, name='deletar_usuario'),
+    path('livro/<int:livro_id>/editar/', editar_livro, name='editar_livro'),
+    path('livro/<int:livro_id>/deletar/', deletar_livro, name='deletar_livro'),
 
 ]

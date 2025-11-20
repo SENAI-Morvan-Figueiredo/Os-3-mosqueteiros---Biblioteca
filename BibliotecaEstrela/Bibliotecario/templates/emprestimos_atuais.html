@@ -93,6 +93,23 @@
                 </div>
             </div>
 
+            <!-- Barra de Pesquisa -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar</h4>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:emprestimos_atuais' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por usuário, livro ou status..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Guia de Status dos Empréstimos</h4>
