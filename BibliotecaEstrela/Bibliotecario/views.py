@@ -158,6 +158,46 @@ def emprestimos_historico(request):
     }
     return render(request, 'emprestimos_historico.html', context)
 
+def deletar_emprestimo(request, emprestimo_id):
+    if request.method == 'POST':
+        try:
+            emprestimo = Emprestimos.objects.get(id=emprestimo_id)
+            livro = emprestimo.id_livro
+            
+            # Ao deletar o empréstimo, liberar o livro se estava ocupado
+            if emprestimo.status in ['Retirado', 'Disponível para retirar'] and livro.status == "indisponivel":
+                livro.status = "disponivel"
+                livro.save()
+            
+            emprestimo.delete()
+            return redirect('Bibliotecario:emprestimos_historico')
+        except Emprestimos.DoesNotExist:
+            pass
+    return redirect('Bibliotecario:emprestimos_historico')
+
+def deletar_reserva(request, reserva_id):
+    if request.method == 'POST':
+        try:
+            reserva = Reserva.objects.get(id=reserva_id)
+            livro = reserva.id_livro
+            
+            # Verificar se não há outros empréstimos ativos para este livro antes de liberar
+            emprestimos_ativos = Emprestimos.objects.filter(
+                id_livro=livro,
+                status__in=['Retirado', 'Disponível para retirar']
+            )
+            
+            # Se não há empréstimos ativos e o livro está indisponível, liberar
+            if not emprestimos_ativos.exists() and livro.status == "Indisponivel":
+                livro.status = "disponivel"
+                livro.save()
+            
+            reserva.delete()
+            return redirect('Bibliotecario:emprestimos_historico')
+        except Reserva.DoesNotExist:
+            pass
+    return redirect('Bibliotecario:emprestimos_historico')
+
 # view para todos os usuários (pesquisa/histórico)
 def usuarios(request):
     # Pega os dados para os cards de estatística (sempre todos)
@@ -328,6 +368,138 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
+def exportar_emprestimos_atrasados_csv(request):
+    """Exporta empréstimos atrasados para CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="emprestimos_atrasados_{timezone.now().strftime("%Y%m%d_%H%M")}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM for UTF-8
+    
+    writer = csv.writer(response)
+    writer.writerow(['Usuário', 'Livro', 'Data Empréstimo', 'Data Prevista de Devolução', 'Dias de Atraso'])
+    
+    # Buscar empréstimos atrasados
+    todos_emprestimos = Emprestimos.objects.all()
+    emprestimos_atrasados = [e for e in todos_emprestimos if getattr(e, 'esta_atrasado', False)]
+    
+    for emprestimo in emprestimos_atrasados:
+        writer.writerow([
+            emprestimo.id_user.username,
+            emprestimo.id_livro.nome,
+            emprestimo.data_emprestimo.strftime('%d/%m/%Y'),
+            emprestimo.data_vencimento.strftime('%d/%m/%Y') if emprestimo.data_vencimento else '',
+            emprestimo.dias_atraso if emprestimo.dias_atraso > 0 else '0'
+        ])
+    
+    return response
+
+def exportar_emprestimos_cancelados_csv(request):
+    """Exporta empréstimos cancelados para CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="emprestimos_cancelados_{timezone.now().strftime("%Y%m%d_%H%M")}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM for UTF-8
+    
+    writer = csv.writer(response)
+    writer.writerow(['Usuário', 'Livro', 'Data Limite'])
+    
+    emprestimos_cancelados = Emprestimos.objects.filter(status="Cancelado").order_by('-data_emprestimo')
+    
+    for emprestimo in emprestimos_cancelados:
+        writer.writerow([
+            emprestimo.id_user.username,
+            emprestimo.id_livro.nome,
+            emprestimo.data_emprestimo.strftime('%d/%m/%Y')
+        ])
+    
+    return response
+
+def exportar_pedidos_extensao_csv(request):
+    """Exporta pedidos de extensão para CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="pedidos_extensao_{timezone.now().strftime("%Y%m%d_%H%M")}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM for UTF-8
+    
+    writer = csv.writer(response)
+    writer.writerow(['ID Pedido', 'Usuário', 'Livro', 'ID Empréstimo', 'Status'])
+    
+    from Biblioteca.models import Pedidos_extensao
+    pedidos = Pedidos_extensao.objects.filter(status__in=['Pendente', 'pendente']).select_related('id_emprestimo__id_user', 'id_emprestimo__id_livro')
+    
+    for pedido in pedidos:
+        writer.writerow([
+            pedido.id,
+            pedido.id_emprestimo.id_user.username,
+            pedido.id_emprestimo.id_livro.nome,
+            pedido.id_emprestimo.id,
+            pedido.status
+        ])
+    
+    return response
+
+def exportar_multas_pendentes_csv(request):
+    """Exporta multas pendentes para CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="multas_pendentes_{timezone.now().strftime("%Y%m%d_%H%M")}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM for UTF-8
+    
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Usuário', 'CPF', 'Livro', 'Valor', 'Data Emissão', 'Status'])
+    
+    from Multas.models import Multas
+    multas = Multas.objects.filter(status='PENDENTE').select_related('id_usuario', 'id_emprestimo__id_livro')
+    
+    for multa in multas:
+        livro_nome = multa.id_emprestimo.id_livro.nome if multa.id_emprestimo else 'N/A'
+        writer.writerow([
+            multa.id,
+            multa.nome_usuario_copia,
+            multa.cpf_usuario_copia,
+            livro_nome,
+            f'R$ {multa.valor_multa}',
+            multa.data_emissao.strftime('%d/%m/%Y'),
+            multa.get_status_display()
+        ])
+    
+    return response
+
+def exportar_multas_pagas_csv(request):
+    """Exporta multas pagas para CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="multas_pagas_{timezone.now().strftime("%Y%m%d_%H%M")}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM for UTF-8
+    
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Usuário', 'Livro', 'Valor', 'Data Emissão', 'Status'])
+    
+    from Multas.models import Multas
+    multas = Multas.objects.filter(status='PAGO').select_related('id_usuario', 'id_emprestimo__id_livro').order_by('-data_emissao')[:10]
+    
+    for multa in multas:
+        livro_nome = multa.id_emprestimo.id_livro.nome if multa.id_emprestimo else 'N/A'
+        writer.writerow([
+            multa.id,
+            multa.nome_usuario_copia,
+            livro_nome,
+            f'R$ {multa.valor_multa}',
+            multa.data_emissao.strftime('%d/%m/%Y'),
+            multa.get_status_display()
+        ])
+    
+    return response
 
 def verificar_pendencias(request):
     """

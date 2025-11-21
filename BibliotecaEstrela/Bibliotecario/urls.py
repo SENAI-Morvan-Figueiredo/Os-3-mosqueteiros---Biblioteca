@@ -17,5 +17,13 @@ urlpatterns = [
     path('usuario/<int:usuario_id>/deletar/', deletar_usuario, name='deletar_usuario'),
     path('livro/<int:livro_id>/editar/', editar_livro, name='editar_livro'),
     path('livro/<int:livro_id>/deletar/', deletar_livro, name='deletar_livro'),
-
+    path('emprestimo/<int:emprestimo_id>/deletar/', deletar_emprestimo, name='deletar_emprestimo'),
+    path('reserva/<int:reserva_id>/deletar/', deletar_reserva, name='deletar_reserva'),
+    
+    # URLs para exportar CSV
+    path('csv/emprestimos-atrasados/', exportar_emprestimos_atrasados_csv, name='exportar_emprestimos_atrasados_csv'),
+    path('csv/emprestimos-cancelados/', exportar_emprestimos_cancelados_csv, name='exportar_emprestimos_cancelados_csv'),
+    path('csv/pedidos-extensao/', exportar_pedidos_extensao_csv, name='exportar_pedidos_extensao_csv'),
+    path('csv/multas-pendentes/', exportar_multas_pendentes_csv, name='exportar_multas_pendentes_csv'),
+    path('csv/multas-pagas/', exportar_multas_pagas_csv, name='exportar_multas_pagas_csv'),
 ]
