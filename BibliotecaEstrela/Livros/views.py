@@ -42,6 +42,8 @@ class LivroDetalhes(ModelFormMixin, DetailView):
             form = self.get_form()
 
             return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data, 'generos': generos}
+        else:
+            return {"livro": livro['livros'],'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data, 'generos': generos}
     
     def form_valid(self, form):
         form.instance.id_user_id = self.request.user.id
