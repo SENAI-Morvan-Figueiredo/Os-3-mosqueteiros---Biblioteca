@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro cadastro mb-5">
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <p>Sua senha foi alterada com sucesso!</p>
+        <a href="{% url 'login' %}">Ir para o login</a>
+    </div>
+</div>
+{% endblock content %}

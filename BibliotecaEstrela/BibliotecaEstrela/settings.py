@@ -247,3 +247,10 @@ EMAIL_HOST_PASSWORD="axrjntfffyjcqqet"
 EMAIL_USE_TLS=True
 EMAIL_PORT=587
 EMAIL_HOST="smtp.gmail.com"
+
+# Usado para gerar links absolutos no email
+DEFAULT_FROM_EMAIL = 'biblioteca.estrela1@gmail.com'
+SERVER_EMAIL = 'biblioteca.estrela1@gmail.com'
+
+# Domínio do site (obrigatório para reset de senha funcionar corretamente)
+DEFAULT_DOMAIN = 'localhost:8000'  # no deploy substitua pelo domínio real

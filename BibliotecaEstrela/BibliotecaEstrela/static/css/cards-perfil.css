@@ -9,8 +9,17 @@
 .estatisticas{
     border-radius: 15px;
     max-height: 400px;
+    overflow-y: auto;
 }
 
+.estatisticas::-webkit-scrollbar{
+    width: 10px;
+}
+
+.estatisticas::-webkit-scrollbar-track {
+  background: transparent;
+
+}
 
 /* Estilização do título dos cards */
 .card-perfil h2{
@@ -245,6 +254,15 @@ input[type="file"] {
     .info-estatisticas{
         padding: 0 48px;
     }
+
+    .estilizacao{
+        padding: 4px;
+
+        border: none;
+        border-radius: 6px;
+
+        font-size: 15px;
+    }
 }
 
 @media(max-width:1024px){
@@ -320,6 +338,15 @@ input[type="file"] {
 
         border: 1px solid #00000034;
     }
+
+    .estilizacao{
+        padding: 2px;
+
+        border: none;
+        border-radius: 3px;
+
+        font-size: 15px;
+    }
     
 }
 
@@ -391,6 +418,13 @@ input[type="file"] {
         border-radius: 4px;
 
         padding-right: 60px;
+    }
+
+    .estilizacao{
+        padding: 2px;
+        border-radius: 3px;
+
+        font-size: 12px;
     }
 }
 

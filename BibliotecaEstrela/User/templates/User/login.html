@@ -17,8 +17,11 @@
             <button>Entrar</button>
         </form>
 
-        <div class="redirecionamento-cadastro-login">
-            Não tem uma conta? <a href="{% url 'user_register' %}">Clique aqui.</a>
+        <div class="redirecionamento-cadastro-login d-flex flex-column">
+            <a href="{% url 'password_reset' %}">Esqueci minha senha</a>
+            <div>
+                Não tem uma conta? <a href="{% url 'user_register' %}">Clique aqui.</a>
+            </div>
         </div>
 
         <div class="linha-login"></div>
