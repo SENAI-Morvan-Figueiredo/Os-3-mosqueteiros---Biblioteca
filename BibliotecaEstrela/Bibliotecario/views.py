@@ -162,6 +162,13 @@ def deletar_emprestimo(request, emprestimo_id):
     if request.method == 'POST':
         try:
             emprestimo = Emprestimos.objects.get(id=emprestimo_id)
+            livro = emprestimo.id_livro
+            
+            # Ao deletar o empréstimo, liberar o livro se estava ocupado
+            if emprestimo.status in ['Retirado', 'Disponível para retirar'] and livro.status == "indisponivel":
+                livro.status = "disponivel"
+                livro.save()
+            
             emprestimo.delete()
             return redirect('Bibliotecario:emprestimos_historico')
         except Emprestimos.DoesNotExist:
@@ -172,6 +179,19 @@ def deletar_reserva(request, reserva_id):
     if request.method == 'POST':
         try:
             reserva = Reserva.objects.get(id=reserva_id)
+            livro = reserva.id_livro
+            
+            # Verificar se não há outros empréstimos ativos para este livro antes de liberar
+            emprestimos_ativos = Emprestimos.objects.filter(
+                id_livro=livro,
+                status__in=['Retirado', 'Disponível para retirar']
+            )
+            
+            # Se não há empréstimos ativos e o livro está indisponível, liberar
+            if not emprestimos_ativos.exists() and livro.status == "Indisponivel":
+                livro.status = "disponivel"
+                livro.save()
+            
             reserva.delete()
             return redirect('Bibliotecario:emprestimos_historico')
         except Reserva.DoesNotExist:
