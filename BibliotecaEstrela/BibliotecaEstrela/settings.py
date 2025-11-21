@@ -55,13 +55,8 @@ ALLOWED_HOSTS = [
     'underbred-adriana-formally.ngrok-free.dev',
     'localhost',
     '127.0.0.1'
+    '*'
 ]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://bibliotecaestrela.onrender.com",
-    "https://underbred-adriana-formally.ngrok-free.dev"
-]
-
 
 AUTH_USER_MODEL = 'User.Usuario'
 
