@@ -82,7 +82,7 @@
                                     <th>Data Prevista de Devolução</th>
                                     <th>Dias Restantes</th>
                                     <th>Status</th>
-                                
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,7 +120,14 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ emprestimo.status }}</td>
-                                
+                                    <td>
+                                        <form method="POST" action="{% url 'Bibliotecario:deletar_emprestimo' emprestimo.id %}" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja deletar este empréstimo?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-secondary btn-sm">
+                                                🗑️
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -144,7 +151,7 @@
                                     <th>Título do Livro</th>
                                     <th>Data da Reserva</th>
                                     <th>Status</th>
-                
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,7 +161,14 @@
                                     <td>{{ reserva.id_livro.nome }}</td>
                                     <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
                                     <td>{{ reserva.status }}</td>
-                               
+                                    <td>
+                                        <form method="POST" action="{% url 'Bibliotecario:deletar_reserva' reserva.id %}" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja deletar esta reserva?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-secondary btn-sm">
+                                                🗑️
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>

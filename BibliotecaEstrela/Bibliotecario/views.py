@@ -158,6 +158,26 @@ def emprestimos_historico(request):
     }
     return render(request, 'emprestimos_historico.html', context)
 
+def deletar_emprestimo(request, emprestimo_id):
+    if request.method == 'POST':
+        try:
+            emprestimo = Emprestimos.objects.get(id=emprestimo_id)
+            emprestimo.delete()
+            return redirect('Bibliotecario:emprestimos_historico')
+        except Emprestimos.DoesNotExist:
+            pass
+    return redirect('Bibliotecario:emprestimos_historico')
+
+def deletar_reserva(request, reserva_id):
+    if request.method == 'POST':
+        try:
+            reserva = Reserva.objects.get(id=reserva_id)
+            reserva.delete()
+            return redirect('Bibliotecario:emprestimos_historico')
+        except Reserva.DoesNotExist:
+            pass
+    return redirect('Bibliotecario:emprestimos_historico')
+
 # view para todos os usuários (pesquisa/histórico)
 def usuarios(request):
     # Pega os dados para os cards de estatística (sempre todos)
