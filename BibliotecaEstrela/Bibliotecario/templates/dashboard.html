@@ -81,6 +81,17 @@
                         <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Reservas Atuais: <span class="badge bg-light text-dark rounded-pill">{{ reservas.count }}</span></a>
                         <a href="#" class="btn btn-primary">Data de Hoje: <span class="badge bg-light text-dark rounded-pill">{% now "d/m/Y" %}</span></a>
                         <a href="#" class="btn btn-primary">Valor em Multas: <span class="badge bg-light text-dark rounded-pill">R$ {{ valor_total_multas|floatformat:2 }}</span></a>
+                        {% if livro_mais_avaliado %}
+                            <a href="{% url 'livro_detalhes' livro_mais_avaliado.id %}" class="btn btn-primary">Livro mais popular: <span class="badge bg-light text-dark rounded-pill">{{ livro_mais_avaliado.nome }} — {{ livro_mais_avaliado.num_avaliacoes }} avaliações</span></a>
+                        {% else %}
+                            <a href="#" class="btn btn-primary">Livro mais popular: <span class="badge bg-light text-dark rounded-pill">Nenhum</span></a>
+                        {% endif %}
+
+                        {% if livro_mais_emprestimos %}
+                            <a href="{% url 'livro_detalhes' livro_mais_emprestimos.id %}" class="btn btn-primary">Mais emprestado: <span class="badge bg-light text-dark rounded-pill">{{ livro_mais_emprestimos.nome }} — {{ livro_mais_emprestimos.num_emprestimos }} empréstimos</span></a>
+                        {% else %}
+                            <a href="#" class="btn btn-primary">Mais emprestado: <span class="badge bg-light text-dark rounded-pill">Nenhum</span></a>
+                        {% endif %}
                         
                         <button id="btn-gerar-pdf" class="btn btn-success ms-auto">
                             📄 Gerar Relatório PDF
@@ -334,6 +345,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const pdfButton = document.getElementById('btn-gerar-pdf');
     
     pdfButton.addEventListener('click', function() {
+        // Valores do servidor (injetados no JS) para o resumo executivo
+        const emprestimosAtuais = "{{ emprestimos_ativos.count|default:0 }}";
+        const reservasAtuais = "{{ reservas.count|default:0 }}";
+        const valorMultasRel = "R$ {{ valor_total_multas|floatformat:2 }}";
+        const livroPopularName = "{% if livro_mais_avaliado %}{{ livro_mais_avaliado.nome }}{% else %}Nenhum{% endif %}";
+        const livroPopularCount = "{% if livro_mais_avaliado %}{{ livro_mais_avaliado.num_avaliacoes }}{% else %}0{% endif %}";
+        const livroMaisEmpName = "{% if livro_mais_emprestimos %}{{ livro_mais_emprestimos.nome }}{% else %}Nenhum{% endif %}";
+        const livroMaisEmpCount = "{% if livro_mais_emprestimos %}{{ livro_mais_emprestimos.num_emprestimos }}{% else %}0{% endif %}";
+
         // Criar div temporária para o relatório
         const reportDiv = document.createElement('div');
         reportDiv.style.padding = '20px';
@@ -506,69 +526,81 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
 
             <!-- Resumo Executivo -->
-            <div style="
-                margin-bottom: 25px; 
-                padding: 15px; 
-                background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%); 
-                border-radius: 6px; 
-                border-left: 4px solid #3498db;
-            ">
-                <h3 style="
-                    color: #2c3e50; 
-                    margin: 0 0 12px 0; 
-                    font-size: 14px;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                ">RESUMO EXECUTIVO</h3>
                 <div style="
-                    display: grid; 
-                    grid-template-columns: 1fr 1fr; 
-                    gap: 10px; 
-                    font-size: 10px;
+                    margin-bottom: 25px; 
+                    padding: 15px; 
+                    background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%); 
+                    border-radius: 6px; 
+                    border-left: 4px solid #3498db;
                 ">
+                    <h3 style="
+                        color: #2c3e50; 
+                        margin: 0 0 12px 0; 
+                        font-size: 14px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    ">RESUMO EXECUTIVO</h3>
                     <div style="
-                        padding: 8px; 
-                        background: white; 
-                        border-radius: 4px; 
-                        border: 1px solid #bdc3c7;
-                        text-align: center;
+                        display: grid; 
+                        grid-template-columns: repeat(5, 1fr); 
+                        gap: 10px; 
+                        font-size: 10px;
                     ">
-                        <strong style="color: #e74c3c;">Empréstimos Atrasados:</strong><br>
-                        <span style="font-size: 14px; font-weight: bold; color: #c0392b;">${contadores[0] || 0}</span>
-                    </div>
-                    <div style="
-                        padding: 8px; 
-                        background: white; 
-                        border-radius: 4px; 
-                        border: 1px solid #bdc3c7;
-                        text-align: center;
-                    ">
-                        <strong style="color: #f39c12;">Empréstimos Cancelados:</strong><br>
-                        <span style="font-size: 14px; font-weight: bold; color: #d68910;">${contadores[1] || 0}</span>
-                    </div>
-                    <div style="
-                        padding: 8px; 
-                        background: white; 
-                        border-radius: 4px; 
-                        border: 1px solid #bdc3c7;
-                        text-align: center;
-                    ">
-                        <strong style="color: #9b59b6;">Pedidos de Extensão:</strong><br>
-                        <span style="font-size: 14px; font-weight: bold; color: #8e44ad;">${contadores[2] || 0}</span>
-                    </div>
-                    <div style="
-                        padding: 8px; 
-                        background: white; 
-                        border-radius: 4px; 
-                        border: 1px solid #bdc3c7;
-                        text-align: center;
-                    ">
-                        <strong style="color: #e67e22;">Multas Pendentes:</strong><br>
-                        <span style="font-size: 14px; font-weight: bold; color: #d35400;">${contadores[3] || 0}</span>
+                        <div style="
+                            padding: 8px; 
+                            background: white; 
+                            border-radius: 4px; 
+                            border: 1px solid #bdc3c7;
+                            text-align: center;
+                        ">
+                            <strong style="color: #2c3e50;">Empréstimos Atuais:</strong><br>
+                            <span style="font-size: 14px; font-weight: bold; color: #2c3e50;">${emprestimosAtuais || 0}</span>
+                        </div>
+                        <div style="
+                            padding: 8px; 
+                            background: white; 
+                            border-radius: 4px; 
+                            border: 1px solid #bdc3c7;
+                            text-align: center;
+                        ">
+                            <strong style="color: #2c3e50;">Reservas Atuais:</strong><br>
+                            <span style="font-size: 14px; font-weight: bold; color: #2c3e50;">${reservasAtuais || 0}</span>
+                        </div>
+                        <div style="
+                            padding: 8px; 
+                            background: white; 
+                            border-radius: 4px; 
+                            border: 1px solid #bdc3c7;
+                            text-align: center;
+                        ">
+                            <strong style="color: #2c3e50;">Valor em Multas:</strong><br>
+                            <span style="font-size: 14px; font-weight: bold; color: #2c3e50;">${valorMultasRel}</span>
+                        </div>
+                        <div style="
+                            padding: 8px; 
+                            background: white; 
+                            border-radius: 4px; 
+                            border: 1px solid #bdc3c7;
+                            text-align: center;
+                        ">
+                            <strong style="color: #2c3e50;">Livro mais Popular:</strong><br>
+                            <span style="font-size: 12px; display:block; font-weight:600;">${livroPopularName}</span>
+                            <span style="font-size: 12px; font-weight: bold; color: #2c3e50;">${livroPopularCount} avaliações</span>
+                        </div>
+                        <div style="
+                            padding: 8px; 
+                            background: white; 
+                            border-radius: 4px; 
+                            border: 1px solid #bdc3c7;
+                            text-align: center;
+                        ">
+                            <strong style="color: #2c3e50;">Mais Emprestado:</strong><br>
+                            <span style="font-size: 12px; display:block; font-weight:600;">${livroMaisEmpName}</span>
+                            <span style="font-size: 12px; font-weight: bold; color: #2c3e50;">${livroMaisEmpCount} empréstimos</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             <!-- Tabelas -->
             ${tabelasHtml}
