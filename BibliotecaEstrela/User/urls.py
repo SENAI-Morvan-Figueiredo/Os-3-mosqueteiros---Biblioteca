@@ -18,8 +18,8 @@ urlpatterns = [
     path('multas/', criar_pagamento, name='multas'),
 
 
-    path('login/', LoginView.as_view(template_name='user/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='/user/login'), name='logout'),
+    path('login/', LoginView.as_view(template_name='User/login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='/User/login'), name='logout'),
     path('completar_cadastro/', complete_signup, name='complete_signup'),
 
     path(

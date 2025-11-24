@@ -157,7 +157,7 @@ def criar_pagamento(request):
             'tamanho_lista_multas': itens_pagamento
         }
 
-        return render(request, 'user/multas.html', context)
+        return render(request, 'User/multas.html', context)
     
     else:
-        return render(request, 'user/multas.html', {'total_multa': total})
+        return render(request, 'User/multas.html', {'total_multa': total})
