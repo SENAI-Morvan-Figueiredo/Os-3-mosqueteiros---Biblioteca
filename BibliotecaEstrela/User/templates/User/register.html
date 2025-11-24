@@ -3,10 +3,12 @@
 {% block content %}
 
 <!-- Solução temporaria -->
-<br><br><br><br>
+<!-- <br><br><br><br><br><br><br> -->
 
-<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro cadastro mb-5">
+<div class="col-10 d-flex justify-content-center container-principal-login-cadastro cadastro">
     <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        <h2>Login</h2>
+        <p class="fonte-responsiva">Coloque suas informações para criar uma conta.</p>
         <form method="POST">
             {% csrf_token %}
             
@@ -16,7 +18,7 @@
 
         </form>
         
-        <div class="redirecionamento-cadastro-login">
+        <div class="redirecionamento-cadastro-login fonte-responsiva">
             Já tem uma conta? <a href="{% url 'login' %}">Clique aqui</a>
         </div>
     </div>
@@ -25,5 +27,5 @@
 
 
 <!-- Solução temporaria -->
-<br><br><br>
+<!-- <br><br><br> -->
 {% endblock content %}

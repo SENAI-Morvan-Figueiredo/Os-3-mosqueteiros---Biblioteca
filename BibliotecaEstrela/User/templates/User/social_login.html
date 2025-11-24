@@ -19,3 +19,99 @@
     </a>
     
 </div>
+
+<style>
+    /* Container do botão */
+.btn-social-login {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Botão */
+.info-btn-social-login {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
+    width: fit-content;
+    transition: 0.2s ease;
+}
+
+.info-btn-social-login:hover {
+    background-color: #f7f7f7;
+}
+
+/* Ícone */
+.icon-social-login {
+    width: 28px;
+    height: 28px;
+}
+
+/* Texto */
+.text-social-login {
+    white-space: nowrap;
+}
+
+@media(max-width:970px){
+    .info-btn-social-login{
+        padding: 8px 14px;
+
+        font-size: 12px;
+    }
+
+    .icon-social-login {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+
+/* 📱 Responsividade para tablets */
+/* @media (max-width: 768px) {
+    .info-btn-social-login {
+        padding: 5px 12px;
+
+    }
+
+    .icon-social-login {
+        width: 20px;
+        height: 20px;
+    }
+} */
+
+@media(max-width:600px){
+    .btn-social-login {
+        margin-top: 10px;
+    }
+
+    .icon-social-login {
+        width: 17px;
+        height: 17px;
+    }
+
+    .info-btn-social-login{
+        padding: 6px 12px;
+
+        font-size: 9px;
+    }
+}
+
+
+/* 📱 Responsividade para celulares */
+@media (max-width: 480px) {
+    .btn-social-login {
+        margin-top: 7px;
+    }
+
+}
+
+</style>

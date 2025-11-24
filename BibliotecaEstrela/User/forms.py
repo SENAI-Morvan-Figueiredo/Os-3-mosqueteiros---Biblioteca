@@ -1,17 +1,66 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Usuario
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
+
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     telefone = forms.CharField()
     cpf = forms.CharField()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].label = "Senha"
+        self.fields['password2'].label = "Confirme sua senha"
+
+        self.fields['password2'].help_text = "Digite a mesma senha novamente para confirmação."
+
+        self.fields['username'].widget.attrs.update({
+            'placeholder': 'Digite seu nome'
+        })
+        self.fields['email'].widget.attrs.update({
+            'placeholder': 'Digite seu email'
+        })
+        self.fields['telefone'].widget.attrs.update({
+            'placeholder': 'Digite seu telefone'
+        })
+        self.fields['cpf'].widget.attrs.update({
+            'placeholder': 'Digite seu cpf'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'placeholder': 'Digite sua senha'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'placeholder': 'Confirme sua senha'
+        })
+
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'telefone', 'cpf']
-    
+        fields = ['username', 'email', 'telefone', 'cpf', 'password1', 'password2']
+        labels = {
+            'username': 'Nome*',
+        }
+
+class CustomLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Alterar labels
+        self.fields['username'].label = "Email"
+        self.fields['password'].label = "Senha"
+
+        # Alterar textos de ajuda (opcional)
+        self.fields['username'].help_text = "Digite seu email."
+        self.fields['password'].help_text = "Digite sua senha."
+
+        # Alterar placeholders
+        self.fields['username'].widget.attrs.update({
+            'placeholder': 'Digite seu email'
+        })
+        self.fields['password'].widget.attrs.update({
+            'placeholder': 'Digite sua senha'
+        })
 
 class UserUpdateForm(forms.ModelForm):
     new_password = forms.CharField(

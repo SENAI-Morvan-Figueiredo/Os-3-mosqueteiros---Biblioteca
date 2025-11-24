@@ -43,7 +43,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ALLOWED_HOSTS = [
 #     "127.0.0.1",
@@ -54,7 +54,7 @@ ALLOWED_HOSTS = [
     'bibliotecaestrela.onrender.com',
     'underbred-adriana-formally.ngrok-free.dev',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
     '*'
 ]
 
@@ -156,27 +156,38 @@ WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'BibliotecaEstrela.validators.CustomUserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'BibliotecaEstrela.validators.CustomMinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'BibliotecaEstrela.validators.CustomCommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'BibliotecaEstrela.validators.CustomNumericPasswordValidator',
     },
 ]
 

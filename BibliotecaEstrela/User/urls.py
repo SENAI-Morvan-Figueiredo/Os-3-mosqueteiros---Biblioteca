@@ -2,7 +2,7 @@ from django.urls import path, include, reverse_lazy
 from django.contrib.auth.views import LoginView, LogoutView
 from .views import register, tela_perfil, complete_signup, historico_perfil, notificacoes_perfil, atualizar_notif
 from django.contrib.auth import views as auth_views
-from .forms import SetPasswordFormPTBR
+from .forms import SetPasswordFormPTBR, CustomLoginForm
 
 
 from Multas.views import criar_pagamento
@@ -18,7 +18,15 @@ urlpatterns = [
     path('multas/', criar_pagamento, name='multas'),
 
 
-    path('login/', LoginView.as_view(template_name='user/login.html'), name='login'),
+    path(
+        'login/',
+        LoginView.as_view(
+            template_name='user/login.html',
+            authentication_form=CustomLoginForm
+        ),
+        name='login'
+    ),
+
     path('logout/', LogoutView.as_view(next_page='/user/login'), name='logout'),
     path('completar_cadastro/', complete_signup, name='complete_signup'),
 
