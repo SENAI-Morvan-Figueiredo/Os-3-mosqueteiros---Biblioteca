@@ -324,6 +324,38 @@ def dashboard(request):
     from django.db.models import Sum
     valor_total_multas = multas_pendentes.aggregate(total=Sum('valor_multa'))['total'] or 0
 
+    # --- Livro mais avaliado (por número de avaliações) ---
+    try:
+        from Biblioteca.models import Avaliacoes
+        from django.db.models import Count
+
+        top = Avaliacoes.objects.values('id_livro').annotate(num_avaliacoes=Count('id')).order_by('-num_avaliacoes').first()
+        livro_mais_avaliado = None
+        if top and top.get('id_livro'):
+            try:
+                livro_mais_avaliado = Livros.objects.get(id=top['id_livro'])
+                # Anexa um atributo temporário com a contagem para uso no template
+                setattr(livro_mais_avaliado, 'num_avaliacoes', top.get('num_avaliacoes', 0))
+            except Livros.DoesNotExist:
+                livro_mais_avaliado = None
+    except Exception:
+        livro_mais_avaliado = None
+
+    # --- Livro com mais empréstimos (por número de registros em Emprestimos) ---
+    try:
+        from django.db.models import Count as _Count
+
+        top_emp = Emprestimos.objects.values('id_livro').annotate(num_emprestimos=_Count('id')).order_by('-num_emprestimos').first()
+        livro_mais_emprestimos = None
+        if top_emp and top_emp.get('id_livro'):
+            try:
+                livro_mais_emprestimos = Livros.objects.get(id=top_emp['id_livro'])
+                setattr(livro_mais_emprestimos, 'num_emprestimos', top_emp.get('num_emprestimos', 0))
+            except Livros.DoesNotExist:
+                livro_mais_emprestimos = None
+    except Exception:
+        livro_mais_emprestimos = None
+
     # Lógica de busca
     query = request.GET.get('q')
     if query:
@@ -365,8 +397,11 @@ def dashboard(request):
         "multas_pendentes": multas_pendentes,
         "multas_pagas": multas_pagas,
         "valor_total_multas": valor_total_multas,
+        "livro_mais_avaliado": livro_mais_avaliado,
+        "livro_mais_emprestimos": livro_mais_emprestimos,
     }
     return render(request, 'dashboard.html', context)
+
 
 def exportar_emprestimos_atrasados_csv(request):
     """Exporta empréstimos atrasados para CSV"""
