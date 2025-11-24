@@ -6,11 +6,20 @@
     box-shadow: 0 0 4px black;
 }
 
-.card-perfil.estatisticas{
+.estatisticas{
     border-radius: 15px;
-    height: 400px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
+.estatisticas::-webkit-scrollbar{
+    width: 10px;
+}
+
+.estatisticas::-webkit-scrollbar-track {
+  background: transparent;
+
+}
 
 /* Estilização do título dos cards */
 .card-perfil h2{
@@ -74,9 +83,15 @@ label{
     transition: transform 0.3s ease-in, opacity 0.5s ease;
 }
 
+.aviso-cpf-celular{
+    display: none;
+}
+
 .exclamacao{
     display: flex;
     left: 98%;
+    margin-right: 40px;
+    /* right: 200px; */
 }
 
 .mover{
@@ -121,17 +136,61 @@ label{
 
 /* Estilização campo imagem */
 .imagem{
-    width: 50%;
-    height: 31.25%;
+    position: relative;
 
-    display: flex;
-    justify-self: center;
+    width: 125px;
+    height: 125px;
 
     border-radius: 50%;
+    border: 2px solid #ccc;
 
-    background-color: gray;
+    overflow: hidden;
+    cursor: pointer;
 
-    margin: 5% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #f0f0f0;
+    
+    transition: 0.3s;
+
+    margin: 10px 0;
+}
+
+.imagem-label{
+    margin-bottom: 0;
+}
+
+.imagem:hover {
+    opacity: 0.85;
+    border-color: #888;
+}
+
+.imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* texto centralizado */
+.placeholder-text {
+    position: absolute;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* esconde o texto quando há imagem */
+.imagem img[src] + .placeholder-text {
+    display: none;
+}
+
+/* esconde o input */
+input[type="file"] {
+    display: none;
 }
 
 /* Estilização do título dos cards */
@@ -140,25 +199,279 @@ label{
     font-weight: 650;
 
     font-size: 25px;
+
+    margin-bottom: 20px;
 }
 
 .info-estatisticas{
-    font-size: 20px;
-
     padding: 0 15px;
+    display: flex;
+    justify-items: space-around;
+    border-bottom: 1px solid #00000030;
+
+    justify-self: center;
+    align-content: center;
+
+    width: 90%;
+
+    margin-bottom: 10px;
 }
+
+/* .info-estatisticas:last-child{
+    border-bottom: 0;
+} */
 
 .info-estatisticas > p{
     border: transparent;
-    border-bottom: 1px solid #00000030;
+    
+
+    text-align: start;
 
     width: 100%;
 
-    padding-bottom: 5px;
-    /* margin-bottom: 5px; */
+    /* padding-bottom: 5px; */
+    margin-bottom: 10px;
 
     font-size: 17px;
 
-    display: flex;
-    justify-items: space-between;
+    /* height: 100%; */
 }
+
+@media(max-width:1720px){
+    .exclamacao{
+        left: 97%;
+    }
+}
+
+@media(max-width:1350px){
+    
+    .exclamacao{
+        left: 96%;
+    }
+}
+
+@media(max-width:1200px){
+    .info-estatisticas{
+        padding: 0 48px;
+    }
+
+    .estilizacao{
+        padding: 4px;
+
+        border: none;
+        border-radius: 6px;
+
+        font-size: 15px;
+    }
+}
+
+@media(max-width:1024px){
+    .aviso-cpf{
+        display: none;
+    }
+
+    .aviso-cpf-celular{
+        display: flex;
+        justify-content: center;
+
+        color: #00000060;
+        font-style: italic;
+        font-size: 10px;
+    }
+
+    .exclamacao{
+        display: none;
+    }
+}
+
+@media(max-width:970px){
+    .card-perfil{
+        border-radius: 13px;
+    }
+
+    .card-perfil h2{
+        font-size: 20px;
+    }
+
+    .imagem{
+        width: 90px;
+        height: 90px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas{
+        margin-bottom: 5px;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 4px;
+
+        font-size: 12px;
+
+        margin-bottom: 2px;
+    }
+
+    .info-estatisticas-numeros{
+        padding-bottom: 4px;
+        font-size: 12px;
+    }
+
+    .editarBtn{
+        font-size: 12px;
+        right: 6px;
+    }
+
+    label{
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 30px;
+
+        font-size: 12px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+
+        border: 1px solid #00000034;
+    }
+
+    .estilizacao{
+        padding: 2px;
+
+        border: none;
+        border-radius: 3px;
+
+        font-size: 15px;
+    }
+    
+}
+
+@media(max-width:920px){
+    .editarBtn{
+        font-size: 13px;
+
+        padding: 0 3px;
+
+        right: 7px;
+    }
+}
+
+@media(max-width:767px){
+    .info-estatisticas{
+        padding: 0 24px;
+    }
+}
+
+@media(max-width:600px){
+    .card-perfil{
+        border-radius: 11px;
+    }
+
+    .card-perfil h2{
+        font-size: 17px;
+    }
+
+    .imagem{
+        width: 75px;
+        height: 75px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas{
+        margin-bottom: 5px;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 4px;
+
+        font-size: 9px;
+        margin-bottom: 0px;
+    }
+
+    .info-estatisticas-numeros{
+        font-size: 9px;
+    }
+
+    .editarBtn{
+        font-size: 9px;
+    }
+    
+    .aviso-cpf-celular{
+        font-size: 8px;
+    }
+
+    label{
+        font-size: 9px;
+        margin-bottom: 3px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 25px;
+
+        font-size: 9px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+    }
+
+    .estilizacao{
+        padding: 2px;
+        border-radius: 3px;
+
+        font-size: 12px;
+    }
+}
+
+/* @media(max-width:450px){
+    .card-perfil{
+        border-radius: 10px;
+
+        height: 300px;
+    }
+
+    .card-perfil h2{
+        font-size: 14px;
+    }
+
+    .imagem{
+        width: 50px;
+        height: 50px;
+
+        margin: 10px 0;
+    }
+
+    .info-estatisticas > p{
+        padding-bottom: 3px;
+
+        font-size: 6px;
+    }
+
+    .editarBtn{
+        font-size: 6px;
+    }
+
+     .aviso-cpf-celular{
+        font-size: 5px;
+    }
+
+    label{
+        font-size: 6px;
+        margin-bottom: 2px;
+    }
+
+    #id_username, #id_new_password, #id_email, #id_telefone, #id_cpf{
+        height: 20px;
+
+        font-size: 6px;
+
+        border-radius: 4px;
+
+        padding-right: 60px;
+    }
+} */

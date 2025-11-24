@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="col-10 d-flex justify-content-center py-5 container-principal-login-cadastro cadastro mb-5">
+    <div class="col-md-8 offset-2 container-login-cadastro d-flex flex-column align-items-start py-4">
+        
+        <h3>Redefinir Senha</h3>
+
+        <form method="post" class="d-flex flex-column">
+            {% csrf_token %}
+
+            {% if validlink %}
+                {{ form|crispy }}
+            {% else %}
+                <p>O link de redefinição é inválido ou já foi usado.</p>
+            {% endif %}
+
+
+            <button type="submit" class="btn btn-primary">Alterar senha</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

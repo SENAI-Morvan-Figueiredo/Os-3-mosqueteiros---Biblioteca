@@ -27,7 +27,7 @@
 }
 
 /* Deixa os labels dos inputs no começo */
-#div_id_username, #div_id_password, #div_id_email, #div_id_telefone, #div_id_cpf, #div_id_password1, #div_id_password2{
+#div_id_username, #div_id_password, #div_id_email, #div_id_telefone, #div_id_cpf, #div_id_password1, #div_id_password2, #id_new_password1, #id_new_password2{
     display: flex;
     flex-direction: column;
     align-items: start;

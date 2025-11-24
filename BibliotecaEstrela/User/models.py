@@ -6,6 +6,7 @@ class Usuario(AbstractUser):
     email = models.EmailField(unique=True)
     telefone = models.CharField()
     cpf = models.CharField()
+    imagem = models.ImageField(upload_to='imagem_perfil', blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS=['username', 'telefone', 'cpf']

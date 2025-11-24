@@ -14,8 +14,11 @@
     <link rel="stylesheet" href="{% static 'css/cards-perfil.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilizacao-sub-header.css' %}">
     <link rel="stylesheet" href="{% static 'css/login-cadastro.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilizacao_card_livros.css' %}">
     <link rel="stylesheet" href="{% static 'css/btn-social-login.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilizacao_modal_deletar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilizacao_card_livros.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilizacao_carrossel_usuario.css' %}">
 
 </head>
 <body>
@@ -25,7 +28,7 @@
         {% include "partials/header.html" %}
     </header>
     {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' and request.path != '/user/completar_cadastro/' %}
-    <div class="sub-header d-flex flex-row">
+    <div class="d-flex flex-row">
         {% include "partials/sub-header-perfil.html" %}
     </div>
     {% endif %}

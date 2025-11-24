@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<style>
+    .table-responsive{
+        max-height: 300px; 
+        overflow-y: auto; 
+    }
+</style>
+
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page" 
+           style="color: black;" 
+           href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link active px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page"
+           style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Informações</h4>
+                    <div class="d-flex justify-content-start gap-3 mt-3">
+                        <a href="#" class="btn btn-primary">Empréstimos atuais: <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span></a>
+                        <a href="#" class="btn btn-primary">Reservas Atuais: <span class="badge bg-primary rounded-pill">{{ reservas.count }}</span></a>
+                        <form method="POST" action="{% url 'Bibliotecario:verificar_pendencias' %}" class="ms-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary shadow-sm">
+                                Verificar Pendências
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de Pesquisa -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar</h4>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:emprestimos_atuais' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por usuário, livro ou status..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Guia de Status dos Empréstimos</h4>
+                    
+                    <div class="row text-center">
+                    <!-- Disponível para retirar -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-primary fw-bold">📦 Disponível para Retirar</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Após o empréstimo ser criado, o usuário tem <b>7 dias</b> para retirar o livro na biblioteca.
+                            </p>
+                            </div>
+                        </div>
+
+                        <!-- Retirado -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-success fw-bold">📚 Retirado</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Quando o livro é retirado, o usuário tem <b>21 dias</b> para devolver o exemplar.
+                            </p>
+                            </div>
+                        </div>
+
+                        <!-- Devolvido -->
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text-secondary fw-bold">✅ Devolvido</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                Ao devolver o livro, o status deve ser atualizado para <b>“Devolvido”</b>, e o empréstimo é considerado <b>completo</b>.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-md-12 mb-3">
+                            <div class="p-3 border rounded-3 bg-light shadow-sm h-100">
+                            <h5 class="text fw-bold">🔎 Verificar Pendências</h5>
+                            <p class="text-muted mt-2 mb-0">
+                                O botão <b>“Verificar Pendências”</b>, localizado acima, analisa todos os empréstimos e reservas em andamento. <br>
+                                Ele atualiza automaticamente os que estão <b>em atraso</b> e <b>cancela</b> aqueles que não foram retirados dentro do prazo.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-4 mb-0" style="font-size: 0.9rem;">
+                    💡 <b>Dica:</b> mantenha os status atualizados para evitar confusões e garantir o controle correto dos empréstimos.
+                    </p>
+                </div>
+            </div>
+            {% if messages %}
+                <div class="container-fluid">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Empréstimos Atuais:</h4>
+                    <form method="post" action="{% url 'Bibliotecario:atualizar_status' %}">
+                        {% csrf_token %}
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Usuário</th>
+                                                <th>Livro</th>
+                                                <th>Data Empréstimo</th>
+                                                <th>Data prevista de devolução</th>
+                                                <th>Dias Restantes</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for emprestimo in emprestimos %}
+                                            <tr>
+                                                <td>{{ emprestimo.id_user.username }}</td>
+                                                <td>{{ emprestimo.id_livro.nome }}</td>
+                                                <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                                <td>
+                                                    {% if emprestimo.status == 'Disponível para retirar' %}
+                                                        {{ emprestimo.data_retirada_limite|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        {{ emprestimo.data_vencimento|date:"d/m/Y" }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if emprestimo.status == 'Disponível para retirar' %}
+                                                        {% if emprestimo.dias_para_retirada > 0 %}
+                                                            {{ emprestimo.dias_para_retirada }} dias
+                                                        {% else %}
+                                                            Último dia
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if emprestimo.dias_restantes > 0 %}
+                                                            {{ emprestimo.dias_restantes }} dias
+                                                        {% elif emprestimo.dias_atraso > 0 %}
+                                                            Atrasado {{ emprestimo.dias_atraso }} dias
+                                                        {% else %}
+                                                            Hoje
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <select class="form-select" name="status_{{ emprestimo.id }}">
+                                                        <option value="Disponível para retirar" {% if emprestimo.status == "Disponível para retirar" %}selected{% endif %}>Disponível para Retirar</option>
+                                                        <option value="Retirado" {% if emprestimo.status == "Retirado" %}selected{% endif %}>Retirado</option>
+                                                        <option value="Devolvido" {% if emprestimo.status == "Devolvido" %}selected{% endif %}>Devolvido</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4">Nenhum empréstimo registrado.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="text-end mt-2">
+                                    <a href="{% url 'Bibliotecario:emprestimos_historico' %}" class="btn btn-primary">Ver mais</a>
+                                    <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                                </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Reservas Atuais:</h4>
+                    <form method="post" action="{% url 'Bibliotecario:atualizar_status_reservas' %}">
+                        {% csrf_token %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Livro</th>
+                                        <th>Data Reserva</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reserva in reservas %}
+                                    <tr>
+                                        <td>{{ reserva.id_user.username }}</td>
+                                        <td>{{ reserva.id_livro.nome }}</td>
+                                        <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <select class="form-select" name="status_{{ reserva.id }}">
+                                                <option value="Em espera" {% if reserva.status == "Em espera" %}selected{% endif %}>Em espera</option>
+                                                <option value="Finalizado" {% if reserva.status == "Finalizado" %}selected{% endif %}>Finalizado</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">Nenhuma reserva registrada.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-end mt-2">
+                            <a href="{% url 'Bibliotecario:emprestimos_historico' %}" class="btn btn-primary">Ver mais</a>
+                            <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

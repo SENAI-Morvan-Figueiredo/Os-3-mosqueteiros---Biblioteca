@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header"  
+           style="color: black;" 
+           href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link active px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page"
+           style="color: black;" 
+           href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Editar Livro: {{ livro.nome }}</h2>
+            <a href="{% url 'Bibliotecario:livros_adm' %}" class="btn btn-secondary mb-3">Voltar</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Informações do Livro</h5>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.nome|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.autor|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.editora|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.data_publicacao|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.status|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.imagem|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                {{ form.descricao|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        {% if livro.imagem %}
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label">Imagem Atual:</label>
+                                <div class="text-center">
+                                    <img src="{{ livro.imagem.url }}" alt="{{ livro.nome }}" 
+                                         style="max-width: 200px; height: auto;" class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <a href="{% url 'Bibliotecario:livros_adm' %}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

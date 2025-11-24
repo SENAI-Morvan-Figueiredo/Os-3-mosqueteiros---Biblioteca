@@ -74,4 +74,47 @@ animacaoCpf.addEventListener('mouseleave', () => {
     document.getElementById('exclamacao').classList.remove('apagar');
 });
 
+// Funcionalidade carrossel nas telas de usuário. Aplica responsividade, também.
+document.addEventListener("DOMContentLoaded", () => {
+    const wrappers = document.querySelectorAll(".carousel-wrapper");
 
+    wrappers.forEach(wrapper => {
+        const container = wrapper.querySelector(".cards-container");
+        const prevBtn = wrapper.querySelector(".prev-btn");
+        const nextBtn = wrapper.querySelector(".next-btn");
+
+        if (!container || !prevBtn || !nextBtn) return;
+
+        function updateButtons() {
+        const isDesktop = window.innerWidth > 992;
+        const parent = wrapper.closest('.card-perfil') || wrapper;
+        const isOverflowing = container.scrollWidth > parent.clientWidth;
+
+        if (isDesktop && isOverflowing) {
+            prevBtn.style.display = "flex";
+            nextBtn.style.display = "flex";
+        } else {
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+        }
+        }
+
+        function getScrollAmount() {
+        const card = container.querySelector('.card-livros');
+        return card ? card.offsetWidth + 24 : 300;
+        }
+
+        prevBtn.addEventListener("click", () => {
+        container.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
+        });
+
+        nextBtn.addEventListener("click", () => {
+        container.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
+        });
+
+        updateButtons();
+        window.addEventListener("resize", updateButtons);
+        window.addEventListener("load", updateButtons);
+        setTimeout(updateButtons, 100);
+    });
+});

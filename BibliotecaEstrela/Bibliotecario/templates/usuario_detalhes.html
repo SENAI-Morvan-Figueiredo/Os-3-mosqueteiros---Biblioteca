@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" 
+           style="color: black;" 
+           href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link active px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page"  
+           style="color: black;" 
+           href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Detalhes do Usuário: {{ usuario.username }}</h2>
+            <a href="{% url 'Bibliotecario:usuarios' %}" class="btn btn-secondary mb-3">Voltar</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informações do Usuário -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Informações Pessoais</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Nome:</strong> {{ usuario.username }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ usuario.email }}</li>
+                        <li class="list-group-item"><strong>Telefone:</strong> {{ usuario.telefone|default:"Não informado" }}</li>
+                        <li class="list-group-item"><strong>CPF:</strong> {{ usuario.cpf }}</li>
+                        <li class="list-group-item"><strong>Cadastrado em:</strong> {{ usuario.date_joined|date:"d/m/Y" }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empréstimos -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Empréstimos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Livro</th>
+                                    <th>Data Empréstimo</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_usuario %}
+                                <tr>
+                                    <td>{{ emprestimo.id }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if emprestimo.status == "Devolvido" %}
+                                            <span class="badge bg-success">{{ emprestimo.status }}</span>
+                                        {% elif emprestimo.status == "Retirado" %}
+                                            <span class="badge bg-primary">{{ emprestimo.status }}</span>
+                                        {% elif emprestimo.status == "Cancelado" %}
+                                            <span class="badge bg-secondary">{{ emprestimo.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">{{ emprestimo.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">Nenhum empréstimo encontrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservas -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Reservas</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Livro</th>
+                                    <th>Data Reserva</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reserva in reservas_usuario %}
+                                <tr>
+                                    <td>{{ reserva.id }}</td>
+                                    <td>{{ reserva.id_livro.nome }}</td>
+                                    <td>{{ reserva.data_reserva|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if reserva.status == "Finalizado" %}
+                                            <span class="badge bg-success">{{ reserva.status }}</span>
+                                        {% elif reserva.status == "Em espera" %}
+                                            <span class="badge bg-warning">{{ reserva.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ reserva.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">Nenhuma reserva encontrada.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multas -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Multas</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Valor</th>
+                                    <th>Data Emissão</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for multa in multas_usuario %}
+                                <tr>
+                                    <td>{{ multa.id }}</td>
+                                    <td>R$ {{ multa.valor_multa }}</td>
+                                    <td>{{ multa.data_emissao|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if multa.status == "PAGO" %}
+                                            <span class="badge bg-success">{{ multa.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">{{ multa.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">Nenhuma multa encontrada.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

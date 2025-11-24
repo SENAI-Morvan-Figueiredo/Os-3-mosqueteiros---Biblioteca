@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .table-responsive{
+        max-height: 300px; 
+        overflow-y: auto; 
+    }
+</style>
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" 
+           style="color: black;" 
+           href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link active px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page"  
+           style="color: black;" 
+           href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+           href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <!-- Mensagens de feedback -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar</h4>
+                    
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:usuarios' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por nome, email ou CPF..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Usuários</h4>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Email Contato</th>
+                                    <th>Telefone Contato</th>
+                                    <th>CPF</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios_lista_tabela %}
+                                <tr>
+                                    <td>{{ usuario.username }}</td>
+                                    <td>{{ usuario.email }}</td>
+                                    <td>{{ usuario.telefone }}</td>
+                                    <td>{{ usuario.cpf }}</td>
+                                    <td>
+                                        <a href="{% url 'Bibliotecario:ver_usuario' usuario.id %}" class="btn btn-info btn-sm">Ver</a>
+                                        <a href="{% url 'Bibliotecario:deletar_usuario' usuario.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar este usuário?')">Deletar</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">Nenhum usuário cadastrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

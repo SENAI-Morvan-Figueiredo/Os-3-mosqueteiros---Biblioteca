@@ -1,0 +1,647 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .table-responsive{
+        max-height: 300px; 
+        overflow-y: auto; 
+    }
+</style>
+<div class="container-fluid px-3">
+    <nav class="nav nav-underline gap-3">
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" 
+            style="color: black;" 
+            href="{% url 'Bibliotecario:teste' %}">
+            Início
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+            href="{% url 'Bibliotecario:emprestimos_atuais' %}">
+            Empréstimos
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+            href="{% url 'Bibliotecario:livros_adm' %}">
+            Acervo
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+            href="{% url 'Bibliotecario:emprestimos_historico' %}">
+            Histórico
+        </a>
+        <a class="nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header" style="color: black;" 
+            href="{% url 'Bibliotecario:usuarios' %}">
+            Perfis
+        </a>
+        <a class="nav-link active px-2 px-md-4 px-lg-5 responsividade_sub-header" aria-current="page" 
+            style="color: black;" 
+            href="{% url 'Bibliotecario:dashboard' %}">
+            Relatórios
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid p-4">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-2 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mx-auto my-3 bg-secondary rounded-circle" style="width: 120px; height: 120px; background-image: url('https://www.shutterstock.com/image-vector/default-avatar-photo-placeholder-grey-600nw-2007531536.jpg'); background-size: cover;"></div>
+                    
+                    <h5 class="card-title mb-4">Estatísticas</h5>
+
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Livros Totais
+                            <span class="badge bg-primary rounded-pill">{{ livros.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Usuários
+                            <span class="badge bg-primary rounded-pill">{{ usuarios.count }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Empréstimos Ativos
+                            <span class="badge bg-primary rounded-pill">{{ emprestimos_ativos.count }}</span> 
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Multas
+                            <span class="badge bg-primary rounded-pill">{{ multas_pendentes.count }}</span> 
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-12" id="relatorio-content">
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Informações</h4>
+                    <div class="d-flex justify-content-start align-items-center gap-3 mt-3 flex-wrap">
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Empréstimos atuais: <span class="badge bg-light text-dark rounded-pill">{{ emprestimos_ativos.count }}</span></a>
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}" class="btn btn-primary">Reservas Atuais: <span class="badge bg-light text-dark rounded-pill">{{ reservas.count }}</span></a>
+                        <a href="#" class="btn btn-primary">Data de Hoje: <span class="badge bg-light text-dark rounded-pill">{% now "d/m/Y" %}</span></a>
+                        <a href="#" class="btn btn-primary">Valor em Multas: <span class="badge bg-light text-dark rounded-pill">R$ {{ valor_total_multas|floatformat:2 }}</span></a>
+                        
+                        <button id="btn-gerar-pdf" class="btn btn-success ms-auto">
+                            📄 Gerar Relatório PDF
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Buscar nos Relatórios</h4>
+                    <form class="d-flex" role="search" method="GET" action="{% url 'Bibliotecario:dashboard' %}">
+                        <input class="form-control me-2" 
+                               type="search" 
+                               placeholder="Buscar por usuário, livro, CPF..." 
+                               aria-label="Search"
+                               name="q" 
+                               value="{{ request.GET.q|default:'' }}"/>
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                        {% if request.GET.q %}
+                            <a href="{% url 'Bibliotecario:dashboard' %}" class="btn btn-secondary btn-outline-secondary ms-2">Limpar</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Empréstimos Atrasados</h4>
+                        <a href="{% url 'Bibliotecario:exportar_emprestimos_atrasados_csv' %}" class="btn btn-success btn-sm">
+                            📊 Exportar CSV
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Data Empréstimo</th>
+                                    <th>Data Prevista de Devolução</th>
+                                    <th>Dias Restantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_atrasados %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                    <td>{{ emprestimo.data_vencimento|date:"d/m/Y" }}</td>
+                                    <td>{% if emprestimo.dias_restantes > 0 %}{{ emprestimo.dias_restantes }} dias{% elif emprestimo.dias_atraso > 0 %}Atrasado {{ emprestimo.dias_atraso }} dias{% else %}Hoje{% endif %}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">Nenhum empréstimo atrasado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Empréstimos Cancelados (Não retirados)</h4>
+                        <a href="{% url 'Bibliotecario:exportar_emprestimos_cancelados_csv' %}" class="btn btn-success btn-sm">
+                            📊 Exportar CSV
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Data (Limite)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emprestimo in emprestimos_cancelados %}
+                                <tr>
+                                    <td>{{ emprestimo.id_user.username }}</td>
+                                    <td>{{ emprestimo.id_livro.nome }}</td>
+                                    <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Nenhum empréstimo cancelado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Pedidos de Extensão de Prazo</h4>
+                        <a href="{% url 'Bibliotecario:exportar_pedidos_extensao_csv' %}" class="btn btn-success btn-sm">
+                            📊 Exportar CSV
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Empréstimo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos_extensao %}
+                                <tr>
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.id_emprestimo.id_user.username }}</td>
+                                    <td>{{ pedido.id_emprestimo.id_livro.nome }}</td>
+                                    <td>{{ pedido.id_emprestimo.id }}</td>
+                                    <td>{{ pedido.status }}</td>
+                                    <td>
+                                        <a href="{% url 'Bibliotecario:aprovar_extensao' pedido.id %}" class="btn btn-success btn-sm">Aprovar</a>
+                                        <a href="{% url 'Bibliotecario:recusar_extensao' pedido.id %}" class="btn btn-danger btn-sm">Recusar</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Nenhum pedido de extensão pendente.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>               
+                </div>
+            </div>
+
+            <!-- Tabela de Multas Pendentes -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Multas Pendentes</h4>
+                        <a href="{% url 'Bibliotecario:exportar_multas_pendentes_csv' %}" class="btn btn-success btn-sm">
+                            📊 Exportar CSV
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>CPF</th>
+                                    <th>Livro</th>
+                                    <th>Valor</th>
+                                    <th>Data Emissão</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for multa in multas_pendentes %}
+                                <tr>
+                                    <td>{{ multa.id }}</td>
+                                    <td>{{ multa.nome_usuario_copia }}</td>
+                                    <td>{{ multa.cpf_usuario_copia }}</td>
+                                    <td>
+                                        {% if multa.id_emprestimo %}
+                                            {{ multa.id_emprestimo.id_livro.nome }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>R$ {{ multa.valor_multa }}</td>
+                                    <td>{{ multa.data_emissao|date:"d/m/Y" }}</td>
+                                    <td><span class="badge bg-warning">{{ multa.get_status_display }}</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">Nenhuma multa pendente.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Multas Pagas (Últimas 10) -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Multas Pagas Recentemente</h4>
+                        <a href="{% url 'Bibliotecario:exportar_multas_pagas_csv' %}" class="btn btn-success btn-sm">
+                            📊 Exportar CSV
+                        </a>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>Livro</th>
+                                    <th>Valor</th>
+                                    <th>Data Emissão</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for multa in multas_pagas %}
+                                <tr>
+                                    <td>{{ multa.id }}</td>
+                                    <td>{{ multa.nome_usuario_copia }}</td>
+                                    <td>
+                                        {% if multa.id_emprestimo %}
+                                            {{ multa.id_emprestimo.id_livro.nome }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>R$ {{ multa.valor_multa }}</td>
+                                    <td>{{ multa.data_emissao|date:"d/m/Y" }}</td>
+                                    <td><span class="badge bg-success">{{ multa.get_status_display }}</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Nenhuma multa paga recentemente.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const pdfButton = document.getElementById('btn-gerar-pdf');
+    
+    pdfButton.addEventListener('click', function() {
+        // Criar div temporária para o relatório
+        const reportDiv = document.createElement('div');
+        reportDiv.style.padding = '20px';
+        reportDiv.style.fontFamily = '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+        reportDiv.style.backgroundColor = 'white';
+        reportDiv.style.color = '#2c3e50';
+        reportDiv.style.lineHeight = '1.4';
+        
+        // Data atual formatada
+        const agora = new Date();
+        const dataHora = agora.toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Extrair dados das tabelas de forma mais limpa
+        const dadosTabelas = [];
+        const cards = document.querySelectorAll('#relatorio-content .card');
+        
+        cards.forEach(function(card, index) {
+            if (index <= 1) return; // Pular cards de informações e busca
+            
+            const titulo = card.querySelector('.card-title')?.textContent?.trim();
+            if (!titulo) return;
+            
+            const tabela = card.querySelector('table');
+            if (!tabela) return;
+            
+            const headers = Array.from(tabela.querySelectorAll('thead th')).map(th => th.textContent.trim()).filter(h => h !== 'Ações');
+            const rows = [];
+            
+            tabela.querySelectorAll('tbody tr').forEach(tr => {
+                const cells = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
+                // Remover coluna de ações se existir
+                if (cells.length > headers.length) {
+                    cells.pop();
+                }
+                if (cells.length > 0 && !cells[0].includes('Nenhum') && !cells[0].includes('encontrado')) {
+                    rows.push(cells);
+                }
+            });
+            
+            dadosTabelas.push({ titulo, headers, rows });
+        });
+
+        // Contadores para o resumo
+        const contadores = dadosTabelas.map(t => t.rows.length);
+        
+        // HTML do relatório ultra profissional
+        let tabelasHtml = '';
+        dadosTabelas.forEach((tabela, index) => {
+            let tabelaHtml = `
+                <div style="margin-bottom: 25px; page-break-inside: avoid;">
+                    <h3 style="
+                        color: #34495e; 
+                        font-size: 14px; 
+                        font-weight: 600; 
+                        margin: 0 0 12px 0; 
+                        padding-bottom: 6px; 
+                        border-bottom: 2px solid #3498db;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    ">${tabela.titulo}</h3>
+            `;
+            
+            if (tabela.rows.length === 0) {
+                tabelaHtml += `
+                    <p style="
+                        font-size: 10px; 
+                        color: #7f8c8d; 
+                        text-align: center; 
+                        padding: 15px; 
+                        background: #f8f9fa; 
+                        border-radius: 4px;
+                        margin: 0;
+                    ">Nenhum registro encontrado</p>
+                `;
+            } else {
+                tabelaHtml += `
+                    <table style="
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        font-size: 9px; 
+                        margin: 0;
+                        background: white;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    ">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+                `;
+                
+                tabela.headers.forEach(header => {
+                    tabelaHtml += `
+                        <th style="
+                            padding: 8px 6px; 
+                            color: white; 
+                            font-weight: 600; 
+                            text-align: center; 
+                            font-size: 9px;
+                            border: none;
+                            text-transform: uppercase;
+                            letter-spacing: 0.3px;
+                        ">${header}</th>
+                    `;
+                });
+                
+                tabelaHtml += '</tr></thead><tbody>';
+                
+                tabela.rows.forEach((row, rowIndex) => {
+                    const bgColor = rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa';
+                    tabelaHtml += `<tr style="background: ${bgColor};">`;
+                    
+                    row.forEach(cell => {
+                        tabelaHtml += `
+                            <td style="
+                                padding: 6px 4px; 
+                                border: 1px solid #e9ecef; 
+                                text-align: center; 
+                                font-size: 9px;
+                                color: #2c3e50;
+                                vertical-align: middle;
+                            ">${cell || '-'}</td>
+                        `;
+                    });
+                    
+                    tabelaHtml += '</tr>';
+                });
+                
+                tabelaHtml += '</tbody></table>';
+            }
+            
+            tabelaHtml += '</div>';
+            tabelasHtml += tabelaHtml;
+        });
+
+        reportDiv.innerHTML = `
+            <!-- Cabeçalho -->
+            <div style="
+                text-align: center; 
+                margin-bottom: 30px; 
+                padding-bottom: 20px; 
+                border-bottom: 3px solid #3498db;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 20px;
+                border-radius: 8px;
+            ">
+                <h1 style="
+                    color: #2c3e50; 
+                    margin: 0; 
+                    font-size: 22px; 
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">SISTEMA DE BIBLIOTECA</h1>
+                <h2 style="
+                    color: #7f8c8d; 
+                    margin: 8px 0 0 0; 
+                    font-size: 16px;
+                    font-weight: 400;
+                ">Relatório Gerencial</h2>
+                <p style="
+                    color: #95a5a6; 
+                    margin: 8px 0 0 0; 
+                    font-size: 10px;
+                    font-weight: 500;
+                ">Gerado em: ${dataHora}</p>
+            </div>
+
+            <!-- Resumo Executivo -->
+            <div style="
+                margin-bottom: 25px; 
+                padding: 15px; 
+                background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%); 
+                border-radius: 6px; 
+                border-left: 4px solid #3498db;
+            ">
+                <h3 style="
+                    color: #2c3e50; 
+                    margin: 0 0 12px 0; 
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                ">RESUMO EXECUTIVO</h3>
+                <div style="
+                    display: grid; 
+                    grid-template-columns: 1fr 1fr; 
+                    gap: 10px; 
+                    font-size: 10px;
+                ">
+                    <div style="
+                        padding: 8px; 
+                        background: white; 
+                        border-radius: 4px; 
+                        border: 1px solid #bdc3c7;
+                        text-align: center;
+                    ">
+                        <strong style="color: #e74c3c;">Empréstimos Atrasados:</strong><br>
+                        <span style="font-size: 14px; font-weight: bold; color: #c0392b;">${contadores[0] || 0}</span>
+                    </div>
+                    <div style="
+                        padding: 8px; 
+                        background: white; 
+                        border-radius: 4px; 
+                        border: 1px solid #bdc3c7;
+                        text-align: center;
+                    ">
+                        <strong style="color: #f39c12;">Empréstimos Cancelados:</strong><br>
+                        <span style="font-size: 14px; font-weight: bold; color: #d68910;">${contadores[1] || 0}</span>
+                    </div>
+                    <div style="
+                        padding: 8px; 
+                        background: white; 
+                        border-radius: 4px; 
+                        border: 1px solid #bdc3c7;
+                        text-align: center;
+                    ">
+                        <strong style="color: #9b59b6;">Pedidos de Extensão:</strong><br>
+                        <span style="font-size: 14px; font-weight: bold; color: #8e44ad;">${contadores[2] || 0}</span>
+                    </div>
+                    <div style="
+                        padding: 8px; 
+                        background: white; 
+                        border-radius: 4px; 
+                        border: 1px solid #bdc3c7;
+                        text-align: center;
+                    ">
+                        <strong style="color: #e67e22;">Multas Pendentes:</strong><br>
+                        <span style="font-size: 14px; font-weight: bold; color: #d35400;">${contadores[3] || 0}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabelas -->
+            ${tabelasHtml}
+
+            <!-- Rodapé -->
+            <div style="
+                margin-top: 30px; 
+                text-align: center; 
+                font-size: 8px; 
+                color: #95a5a6; 
+                border-top: 1px solid #bdc3c7; 
+                padding-top: 15px;
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 4px;
+            ">
+                <p style="margin: 0 0 5px 0; font-weight: 500;">
+                    Sistema de Biblioteca - Relatório Gerado Automaticamente
+                </p>
+                <p style="margin: 0; font-size: 7px;">
+                    ${dataHora} | Documento Confidencial
+                </p>
+            </div>
+        `;
+
+        // Feedback visual melhorado
+        pdfButton.innerHTML = '⏳ Gerando...';
+        pdfButton.disabled = true;
+        pdfButton.style.opacity = '0.6';
+
+        const options = {
+            margin: [10, 10, 10, 10],
+            filename: `relatorio_biblioteca_${agora.toISOString().slice(0, 10)}.pdf`,
+            image: { type: 'jpeg', quality: 0.95 },
+            html2canvas: { 
+                scale: 1.5, 
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                letterRendering: true,
+                logging: false
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait',
+                compress: true,
+                precision: 2
+            },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        // Gerar PDF
+        html2pdf().set(options).from(reportDiv).save()
+            .then(function() {
+                pdfButton.innerHTML = '✅ Concluído!';
+                pdfButton.style.opacity = '1';
+                setTimeout(function() {
+                    pdfButton.innerHTML = '📄 Gerar Relatório PDF';
+                    pdfButton.disabled = false;
+                }, 2500);
+            })
+            .catch(function(error) {
+                console.error('Erro ao gerar PDF:', error);
+                pdfButton.innerHTML = '❌ Erro!';
+                pdfButton.style.opacity = '1';
+                setTimeout(function() {
+                    pdfButton.innerHTML = '📄 Gerar Relatório PDF';
+                    pdfButton.disabled = false;
+                }, 3000);
+            });
+    });
+});
+</script>
+
+{% endblock content %}

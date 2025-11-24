@@ -1,6 +1,31 @@
 {% if '/user/' in request.path and request.path != '/user/cadastro/' and request.path != '/user/login/' and request.path != '/user/completar_cadastro/' %}
-    <a href="{% url 'tela_perfil' %}" class="estilizacao-btn-sub-header">Perfil</a>
-    <a href="#" class="estilizacao-btn-sub-header">Histórico</a>
-    <a href="#" class="estilizacao-btn-sub-header">Notificações</a>
-    <a href="#" class="estilizacao-btn-sub-header">Multas</a>
+<div class="container-fluid px-3 mb-4" style="background-color: #fff;">
+    <nav class="nav nav-underline gap-3">
+        <a href="{% url 'tela_perfil' %}"
+           class="cor_subheader nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header {% if request.resolver_match.url_name == 'tela_perfil' %}active{% endif %}">
+            Perfil
+        </a>
+
+        <a href="{% url 'historico_perfil' %}"
+           class="cor_subheader nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header {% if request.resolver_match.url_name == 'historico_perfil' %}active{% endif %}">
+            Histórico
+        </a>
+
+        <a href="{% url 'notificacoes_perfil' %}"
+           class="cor_subheader nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header {% if request.resolver_match.url_name == 'notificacoes_perfil' %}active{% endif %}">
+            Notificações
+        </a>
+
+        <a href="{% url 'multas' %}"
+           class="cor_subheader nav-link px-2 px-md-4 px-lg-5 responsividade_sub-header {% if request.resolver_match.url_name == 'multas' %}active{% endif %}">
+            Multas
+        </a>
+    </nav>
+</div>
+
+<style>
+    .cor_subheader {
+        color: black !important;
+    }
+</style>
 {% endif %}

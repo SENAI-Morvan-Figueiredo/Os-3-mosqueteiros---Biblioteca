@@ -7,7 +7,7 @@ from django.views.generic import DetailView
 
 from django.views.generic.edit import ModelFormMixin
 from Biblioteca.forms import FormAval
-from Biblioteca.models import Avaliacoes
+from Biblioteca.models import Avaliacoes, Reserva, Emprestimos
 
 def calc_nota(id):
     try:
@@ -27,9 +27,23 @@ class LivroDetalhes(ModelFormMixin, DetailView):
     def get_context_data(self, **kwargs):
         livro = super().get_context_data(**kwargs)
         avaliacoes = Avaliacoes.objects.filter(id_livro_id=livro['livros'].pk)
-        form = self.get_form()
 
-        return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk)}
+        user_data = {}
+
+        # Pega os gêneros relacionados a este livro através da tabela Livros_Generos
+        generos_qs = Livros_Generos.objects.filter(id_livros=livro['livros'].pk).select_related('id_genero')
+        generos = [g.id_genero.nome_genero for g in generos_qs]
+
+        if self.request.user.is_authenticated:
+            user_data['reservas'] = (Reserva.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Em espera"))
+            user_data['emprestimos'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Disponível para retirar"))
+            user_data['emprestimos2'] = (Emprestimos.objects.filter(id_livro_id=livro['livros'].pk, id_user=self.request.user.id, status="Retirado"))
+
+            form = self.get_form()
+
+            return {"livro": livro['livros'], "form": form, 'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data, 'generos': generos}
+        else:
+            return {"livro": livro['livros'],'avaliacoes': avaliacoes, 'nota': calc_nota(livro['livros'].pk), 'user_data': user_data, 'generos': generos}
     
     def form_valid(self, form):
         form.instance.id_user_id = self.request.user.id
@@ -98,3 +112,6 @@ def buscar_livro(request, busca):
     resultados = Livros.objects.filter(nome__contains=busca)
 
     return render(request, "Livros.html", {"livros": resultados})
+
+def tela_confirmar(request):
+    return render(request, "Confirmar_emprestimo.html")

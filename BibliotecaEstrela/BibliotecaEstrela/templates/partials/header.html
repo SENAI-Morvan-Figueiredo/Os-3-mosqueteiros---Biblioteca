@@ -43,7 +43,20 @@
             </li>
 
             {% if user.is_authenticated and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
-                <li class="nav-item">
+                <li class="nav-item img-perfil" id="img-perfil">
+                    <img src="{% if user.imagem %}{{ user.imagem.url }}{% else %}{% static 'img/placeholder.png' %}{% endif %}" alt="">
+                    <div class="opcoes-perfil">
+                        <a href="{% url 'tela_perfil' %}">Perfil</a>
+                        <a href="{% url 'historico_perfil' %}">Histórico</a>
+                        <a href="#">Notificações</a>
+                        <a href="{% url 'multas' %}">Multas</a>
+                        <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                        </form>
+                    </div>
+                </li>
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="{% url 'tela_perfil' %}">Perfil</a>
                 </li>
                 <li class="nav-item">
@@ -51,7 +64,7 @@
                         {% csrf_token %}
                         <button class="nav-link" type="submit">Logout</button>
                     </form>
-                </li>
+                </li> -->
             {% else %}
                 <li class="nav-item">
                     <a class="btn btn-link nav-link" href="{% url 'login' %}">Login</a>
@@ -62,3 +75,45 @@
         </div>
     </div>
 </nav>
+
+<script>
+
+    const imgPerfil = document.getElementById('img-perfil');
+    const opcoes = imgPerfil.querySelector('.opcoes-perfil');
+    let menuAberto = false;
+
+    imgPerfil.addEventListener('mouseenter', () => {
+        if (!menuAberto) {
+            imgPerfil.style.borderColor = 'white';
+        }
+    });
+
+    imgPerfil.addEventListener('mouseleave', () => {
+        if (!menuAberto) {
+            imgPerfil.style.borderColor = 'black';
+        }
+    });
+
+    imgPerfil.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuAberto = !menuAberto;
+
+        if (menuAberto) {
+            opcoes.style.display = 'flex';
+            imgPerfil.style.borderColor = 'white';
+            imgPerfil.style.boxShadow = '0 0 8px rgba(255,255,255,0.6)'; // brilho opcional
+        } else {
+            opcoes.style.display = 'none';
+            imgPerfil.style.borderColor = 'black';
+            imgPerfil.style.boxShadow = 'none';
+        }
+    });
+
+    document.addEventListener('click', () => {
+        opcoes.style.display = 'none';
+        imgPerfil.style.borderColor = 'black';
+        imgPerfil.style.boxShadow = 'none';
+        menuAberto = false;
+    });
+    
+</script>

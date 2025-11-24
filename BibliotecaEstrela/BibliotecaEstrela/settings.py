@@ -11,12 +11,25 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from environ import Env
+
+env = Env()
+env.read_env()
+
+MERCADO_PAGO_ACCESS_TOKEN = env('MERCADO_PAGO_ACCESS_TOKEN')
 
 from environ import Env
+
+
+from os import getenv, path
+import os
+
+import dj_database_url 
 
 # Lê o arquivo .env
 env = Env()
 env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,9 +43,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SECRET_KEY = 'django-insecure-ti7qv^&9^#sa(j@3wbe-re+io$ihl4x4$v(ci46s(gwlm=tesi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     'underbred-adriana-formally.ngrok-free.dev',
+#     ]
+ALLOWED_HOSTS = [
+    'bibliotecaestrela.onrender.com',
+    'underbred-adriana-formally.ngrok-free.dev',
+    'localhost',
+    '127.0.0.1'
+    '*'
+]
 
 AUTH_USER_MODEL = 'User.Usuario'
 
@@ -60,11 +84,14 @@ INSTALLED_APPS = [
     # Apps criados
     'Biblioteca',
     'Livros',
-    'User.apps.UserConfig',
+    'User',
+    'Multas',
+    'Bibliotecario'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,8 +115,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': env('OAUTH_GOOGLE_CLIENT_ID'),
-            'secret': env('OAUTH_GOOGLE_SECRET'),
+            'client_id': getenv('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': getenv('OAUTH_GOOGLE_SECRET'),
             'key': ''
         }
     }
@@ -127,13 +154,13 @@ WSGI_APPLICATION = 'BibliotecaEstrela.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -177,6 +204,14 @@ STATICFILES_DIRS = [
     BASE_DIR / 'BibliotecaEstrela' / 'static'
 ]
 
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
+
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -191,3 +226,25 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
 
 # Pula 1 etapa na hora de fazer login pelo google, se quiser testar pode colocar como false e ir na tela de login, clicar no google e ver q tem uma segunda tela antes de finalmente fazer o login.
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 3600  # 1 hora
+
+#Alterar para true no deploy
+SECURE_SSL_REDIRECT = False
+
+CSRF_COOKIE_SECURE = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER="biblioteca.estrela1@gmail.com"
+EMAIL_HOST_PASSWORD="axrjntfffyjcqqet"
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST="smtp.gmail.com"
+
+# Usado para gerar links absolutos no email
+DEFAULT_FROM_EMAIL = 'biblioteca.estrela1@gmail.com'
+SERVER_EMAIL = 'biblioteca.estrela1@gmail.com'
+
+# Domínio do site (obrigatório para reset de senha funcionar corretamente)
+DEFAULT_DOMAIN = 'localhost:8000'  # no deploy substitua pelo domínio real

@@ -1,0 +1,32 @@
+/* Estilos do painel de detalhes (mantidos) */
+.book-item {
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.book-item:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.07);
+    transform: scale(0.95);
+}
+
+.book-item.active {
+    border-color: #1D3A8C;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.details-container {
+    background: #fff;
+    border: 1px solid #1D3A8C;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem; /* Aumentado para dar espaço */
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.4s ease-out;
+    position: relative;
+}
+
+.card-livros{
+    max-width: 270px;
+}
