@@ -50,10 +50,6 @@ class CustomLoginForm(AuthenticationForm):
         self.fields['username'].label = "Email"
         self.fields['password'].label = "Senha"
 
-        # Alterar textos de ajuda (opcional)
-        self.fields['username'].help_text = "Digite seu email."
-        self.fields['password'].help_text = "Digite sua senha."
-
         # Alterar placeholders
         self.fields['username'].widget.attrs.update({
             'placeholder': 'Digite seu email'
