@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg bg-body-primary" style="background-color: #1D3A8C;">
+<nav class="navbar navbar-expand-lg bg-body-primary navbar-dark" style="background-color: #1D3A8C;">
     <div class="container-fluid">
         <a href="/">
             <img src={% static "Logo_Biblioteca_Estrela-Photoroom_1-removebg-preview 2.svg" %}>
@@ -51,8 +51,8 @@
                         <a href="#">Notificações</a>
                         <a href="{% url 'multas' %}">Multas</a>
                         <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Logout</button>
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
                         </form>
                     </div>
                 </li>

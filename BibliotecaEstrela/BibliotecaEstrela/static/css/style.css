@@ -7,6 +7,24 @@ body{
     padding: 5px 10px 5px 0;
 }
 
+.navbar-toggler{
+    border-color: #ffffff;
+}
+
+.navbar-toggler-icon {
+    /* Diminui a altura e largura do ícone. Experimente o valor que melhor se encaixa. */
+    width: 1.2em; 
+    height: 1.2em;
+    
+    /* Se você quiser garantir que o SVG não seja cortado: */
+    background-size: 100% 100%; 
+}
+
+/* Opcional: Se quiser que o botão (área clicável) seja menor */
+.navbar-toggler {
+    padding: 0.25rem 0.5rem; /* Diminui o preenchimento interno do botão */
+}
+
 .nav-search {
     flex: 1;
     max-width: 800px;
@@ -129,4 +147,76 @@ body{
 
 .opcoes-perfil button:hover {
     background: #d1d5e0;
+}
+
+@media (max-width:1300px){
+    .fonte-footer {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .opcoes-perfil{
+        left: 0;
+    }
+
+    .nav-link{
+        font-size: 14px;
+    }
+
+    .img-perfil{
+        width: 35px;
+        height: 35px;
+    }
+
+    .header-input {
+        border-radius: 18px;
+        min-width: 200px;
+        max-width: 800px;
+        font-size: 14px;
+    }
+
+    .btn-header {
+        border-radius: 18px;
+        width: 8em;
+        font-size: 14px;
+    }
+
+    .footer-title{
+        font-size: 20px;
+    }
+
+    .fonte-footer {
+        font-size: 14px !important;
+    }
+}
+
+@media(max-width:600px){
+    .nav-link{
+        font-size: 12px;
+    }
+
+    .img-perfil{
+        width: 30px;
+        height: 30px;
+    }
+
+    .header-input {
+        border-radius: 16px;
+        min-width: 200px;
+        max-width: 800px;
+        height: 2.8em;
+        font-size: 12px;
+    }
+
+    .btn-header {
+        border-radius: 16px;
+        width: 7.5em;
+        height: 2.8em;
+        font-size: 12px;
+    }
+
+    .fonte-footer {
+        font-size: 12px !important;
+    }
 }

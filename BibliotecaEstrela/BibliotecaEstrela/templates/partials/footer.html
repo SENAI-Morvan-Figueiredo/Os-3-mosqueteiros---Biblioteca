@@ -14,7 +14,7 @@
           <h6 class="text-uppercase fw-bold mb-4 footer-title">
           Sobre a Biblioteca Estrela
           </h6>
-          <p style="font-size: 18px;">
+          <p class="fonte-footer" style="font-size: 18px;">
             Inspirados pela obra A Hora da Estrela, de Clarice Lispector,
             carregamos em nosso nome a ideia de que cada leitor é uma estrela em busca de sua própria hora, 
             o instante em que a leitura transforma, ilumina e dá voz.<br>
@@ -35,18 +35,18 @@
           <h6 class="text-uppercase fw-bold mb-4 footer-title">
             Links Rápidos
           </h6>
-          <p>
+          <p class="fonte-footer">
             <a href="/" class="text-reset mb-4">Inicio</a>
           </p>
-          <p>
+          <p class="fonte-footer">
             <a href="{% url 'livros' %}" class="text-reset">Catalogo</a>
-          </p>
+          </p class="fonte-footer">
           {% if user.is_authenticated %}
-            <p>
+            <p class="fonte-footer">
               <a href="{% url 'tela_perfil' %}" class="text-reset">Perfil</a>
             </p>
           {% else %}
-            <p>
+            <p class="fonte-footer">
               <a href="{% url 'login' %}" class="text-reset">Perfil</a>
             </p>
           {% endif %}
@@ -59,15 +59,15 @@
           <!-- Links -->
           <h6 class="text-uppercase fw-bold mb-4 footer-title">Contato</h6>
           <p class="ps-4">Rua das Estrelas, 123 — Bairro Luz - São Paulo — SP</p>
-          <p>
+          <p class="fonte-footer">
             <img src="{% static 'icone-telefone.svg' %}" alt="">
             +55 (11) 3123-4567
           </p>
-          <p>
+          <p class="fonte-footer">
             <img src="{% static 'icone-email.svg' %}" alt="">
             contato@bibliotecaestrela.org
           </p>
-          <p>
+          <p class="fonte-footer">
             <img src="{% static 'icone-info.svg' %}" alt="">
             Horário de funcionamento: Seg. a sex. das 09:00 até 19:00 - Sáb. das  09:00 até 18:00 
           </p>
