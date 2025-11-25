@@ -28,7 +28,7 @@
         background-size: 12px;
         }
 
-        .custom-select:focus {
+    .custom-select:focus {
         outline: none;
         border-color: #999999;
         box-shadow: 0 0 3px #3b80ff50;
@@ -141,10 +141,64 @@
             font-size: 12px;
             width: 100%;
         }
+        .custom-select {
+            width: 100%;
+            padding: 4px 35px 4px 10px; /* espaço extra pra seta */
+            font-size: 12px;
+            border: 1px solid #ccc;
+            
+            background-size: 12px;
+        }
+        .solicitar-extensao-btn{
+            font-size: 12px;
+            padding: 4px 0;
+
+            border-radius: 6px;
+        }
+
+        h4 {
+            font-size: 12px;
+        }
+
+        table.table-sm th,
+        table.table-sm td {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
     }
 
     @media(max-width:600px){
         select{
+            font-size: 9px;
+        }
+        .custom-select {
+            width: 100%;
+            padding: 4px 35px 4px 10px; /* espaço extra pra seta */
+            font-size: 9px;
+            border: 1px solid #ccc;
+            
+            background-size: 12px;
+        }
+        .solicitar-extensao-btn{
+            font-size: 9px;
+            padding: 4px 0;
+
+            border-radius: 6px;
+        }
+
+        h4 {
+            font-size: 9px;
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+
+        table.table-sm th,
+        table.table-sm td {
+            padding: 6px 8px;
             font-size: 9px;
         }
     }
@@ -249,13 +303,13 @@
                                 <th>Data do Pedido</th>
                             </tr>
                         </thead>
-                        <tbody>
+                            <tbody>
                             {% for pedido in pedidos_extensao %}
                             <tr>
-                                <td>{{ pedido.id }}</td>
-                                <td>{{ pedido.id_emprestimo.id_livro.nome }}</td>
-                                <td>{{ pedido.status }}</td>
-                                <td>{{ pedido.id_emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                                <td data-label="Pedido">{{ pedido.id }}</td>
+                                <td data-label="Livro">{{ pedido.id_emprestimo.id_livro.nome }}</td>
+                                <td data-label="Status">{{ pedido.status }}</td>
+                                <td data-label="Data do Pedido">{{ pedido.id_emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
