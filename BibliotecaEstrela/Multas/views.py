@@ -121,9 +121,9 @@ def criar_pagamento(request):
         pagamento_data = {
             'items': itens_pagamento,
             'back_urls': {
-                'success': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
-                'failure': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
-                'pending': 'https://underbred-adriana-formally.ngrok-free.dev/user/multas/',
+                'success': 'https://arthur312.pythonanywhere.com/user/multas/',
+                'failure': 'https://arthur312.pythonanywhere.com/user/multas/',
+                'pending': 'https://arthur312.pythonanywhere.com/user/multas/',
             },
             'auto_return': 'approved',
             "external_reference": f"MULTA-{usuario.id}"

@@ -42,13 +42,29 @@
                 <a class="nav-link" href="{% url 'livros' %}">Catalogo</a>
             </li>
 
-            {% if user.is_authenticated and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
+            {% if user.is_superuser and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
+                <li class="nav-item img-perfil" id="img-perfil">
+                    <img src="{% if user.imagem %}{{ user.imagem.url }}{% else %}{% static 'img/placeholder.png' %}{% endif %}" alt="">
+                    <div class="opcoes-perfil">
+                        <a href="{% url 'Bibliotecario:teste' %}">Inicio</a>
+                        <a href="{% url 'Bibliotecario:emprestimos_atuais' %}">Emprestimos</a>
+                        <a href="{% url 'Bibliotecario:livros_adm' %}">Acervo</a>
+                        <a href="{% url 'Bibliotecario:emprestimos_historico' %}">Histórico</a>
+                        <a href="{% url 'Bibliotecario:usuarios' %}">Perfis</a>
+                        <a href="{% url 'Bibliotecario:dashboard' %}">Relatórios</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
+                </li>
+            {% elif user.is_authenticated and request.path != '/user/cadastro/' and request.path != '/user/login/' %}
                 <li class="nav-item img-perfil" id="img-perfil">
                     <img src="{% if user.imagem %}{{ user.imagem.url }}{% else %}{% static 'img/placeholder.png' %}{% endif %}" alt="">
                     <div class="opcoes-perfil">
                         <a href="{% url 'tela_perfil' %}">Perfil</a>
                         <a href="{% url 'historico_perfil' %}">Histórico</a>
-                        <a href="#">Notificações</a>
+                        <a href="notificacoes_perfil">Notificações</a>
                         <a href="{% url 'multas' %}">Multas</a>
                         <form action="{% url 'logout' %}" method="post">
                             {% csrf_token %}
@@ -67,7 +83,7 @@
                 </li> -->
             {% else %}
                 <li class="nav-item">
-                    <a class="btn btn-link nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
             {% endif %}
 

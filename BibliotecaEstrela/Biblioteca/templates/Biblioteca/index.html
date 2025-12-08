@@ -49,11 +49,36 @@
 
         /* Em telas pequenas (mobile), mostra apenas o primeiro card de cada slide */
         @media (max-width: 767.98px) {
-            #carrosselLivros .carousel-inner .carousel-item > div {
-                display: none;
+
+            /* remove qualquer grid/col do bootstrap dentro do carrossel */
+            #carrosselLivros .carousel-item .row {
+                display: flex !important;
+                flex-wrap: nowrap !important;
             }
-            #carrosselLivros .carousel-inner .carousel-item > div:first-child {
+
+            /* cada card deve ter um tamanho fixo */
+            #carrosselLivros .carousel-item .col-12.col-md-6.col-lg-3 {
+                min-width: 70%;     /* ajustável — 70% da tela por card */
+                flex: 0 0 auto;
+            }
+
+            /* ativa scroll horizontal */
+            #carrosselLivros .carousel-inner {
                 display: block;
+                /* white-space: nowrap; */
+                overflow-x: auto;
+                scroll-behavior: smooth;
+            }
+
+            /* esconde as setas do carrossel */
+            #carrosselLivros .carousel-control-prev,
+            #carrosselLivros .carousel-control-next {
+                display: none !important;
+            }
+
+            /* remove padding lateral invisível do bootstrap */
+            #carrosselLivros .carousel-inner::-webkit-scrollbar {
+                height: 6px;
             }
         }
         
@@ -104,7 +129,10 @@
     </div>
     
     <div class="container my-5">
-        <h2 class="mb-4">Livros Disponíveis</h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-4">Livros Disponíveis</h2>
+            <a href="{% url 'livros' %}" class="fonte-responsiva" style="justify-self: center; color: #000;">ver todos</a>
+        </div>
         <p class="mb-4">Veja a lista de livros que podem ser emprestados ou reservados.</p>
 
         {% if livros %}
